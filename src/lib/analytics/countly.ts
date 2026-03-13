@@ -1,0 +1,108 @@
+import Countly from "countly-sdk-web";
+import { AnalyticsEngine } from "./types";
+
+/**
+ * Countly Analytics Implementation
+ */
+export class CountlyAnalytics implements AnalyticsEngine {
+  private isInitialized = false;
+  private readonly appKey: string;
+  private readonly serverUrl: string;
+  private readonly appId: string;
+
+  constructor() {
+    this.appKey = process.env.NEXT_PUBLIC_COUNTLY_APP_KEY || "";
+    this.serverUrl = process.env.NEXT_PUBLIC_COUNTLY_SERVER_URL || "";
+    this.appId = process.env.NEXT_PUBLIC_COUNTLY_APP_ID || "";
+
+    if (typeof window !== "undefined") {
+      this.initialize();
+    }
+  }
+
+  private initialize(): void {
+    if (this.isInitialized) return;
+
+    if (!this.appKey || !this.serverUrl) {
+      return;
+    }
+
+    try {
+      Countly.init({
+        app_key: this.appKey,
+        url: this.serverUrl,
+
+        // Enable features
+        debug: process.env.NODE_ENV === "development",
+
+        // Automatic tracking
+        track_pageview: false, // We'll track manually for better control
+        track_sessions: true,
+        track_scrolls: true,
+        track_clicks: true,
+        track_links: true,
+
+        // Use cookies for device ID
+        use_session_cookie: true,
+        session_cookie_timeout: 30, // minutes
+
+        // Disable error tracking (as per user request)
+        track_errors: false,
+      });
+
+      this.isInitialized = true;
+    } catch (error) {}
+  }
+
+  trackPageView(pageName: string): void {
+    if (!this.isInitialized) return;
+
+    try {
+      Countly.track_pageview(pageName);
+    } catch (error) {}
+  }
+
+  setUserId(userId: string): void {
+    if (!this.isInitialized) return;
+
+    try {
+      Countly.change_id(userId || "anonymous", true);
+    } catch (error) {}
+  }
+
+  setUserProperties(props: Record<string, any>): void {
+    if (!this.isInitialized) return;
+
+    try {
+      Countly.user_details({
+        name:
+          props.firstName && props.lastName
+            ? `${props.firstName} ${props.lastName}`
+            : props.username,
+        username: props.username,
+        email: props.email,
+        phone: props.phoneNumber,
+        custom: {
+          userId: props.userId,
+          ...props.custom,
+        },
+      });
+    } catch (error) {}
+  }
+
+  startSession(): void {}
+
+  endSession(): void {}
+
+  trackEvent(eventName: string, data?: Record<string, any>): void {
+    if (!this.isInitialized) return;
+
+    try {
+      Countly.add_event({
+        key: eventName,
+        count: 1,
+        segmentation: data,
+      });
+    } catch (error) {}
+  }
+}

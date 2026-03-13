@@ -1,0 +1,479 @@
+[FLOW-1] 🔍 Viewer mount — rawURL: https://test.diu0f3ifxk4jl.amplifyapp.com/course/170/view
+page-36bc91f657c0306e.js:1 [FLOW-2] 🔍 Viewer searchParams — page: "null", mode: "null", shortname: "null", pretestDone: "null", rawSearch: ""
+page-36bc91f657c0306e.js:1 [FLOW-5] 📦 useCourseData returned — downloadedPageIndex: 0, downloadedLoading: true, courseSource: "null", checkingMode: true, useStreaming: false
+4374-f4fe9205d8636d1d.js:1 [PreTest] isPreTestCompleted — courseId: 170, quizId: , resultsShown: false, attempted: false, result: false
+page-36bc91f657c0306e.js:1 [PreTest] 🔎 Resolved — local: false, api: false, attempted: false, zustand: false, param: false, RESOLVED: false, online: true
+page-36bc91f657c0306e.js:1 [FLOW-3] 🔍 determineMode start — mode: "null", shortnameParam: "null", online: true
+2977-653f5110183691f4.js:1 [FLOW-4] 🚀 useCourseData effect — initialPage: "null", disabled: true, skipDownload: false, courseId: 170, loadedFromIDB: false
+2977-653f5110183691f4.js:1 [useCourseData] ⏸️ Disabled - skipping fetch {courseId: '170'}
+page-36bc91f657c0306e.js:1 [FLOW-1] 🔍 Viewer mount — rawURL: https://test.diu0f3ifxk4jl.amplifyapp.com/course/170/view
+page-36bc91f657c0306e.js:1 [FLOW-2] 🔍 Viewer searchParams — page: "null", mode: "null", shortname: "null", pretestDone: "null", rawSearch: ""
+page-36bc91f657c0306e.js:1 [FLOW-5] 📦 useCourseData returned — downloadedPageIndex: 0, downloadedLoading: true, courseSource: "null", checkingMode: true, useStreaming: false
+4374-f4fe9205d8636d1d.js:1 [PreTest] isPreTestCompleted — courseId: 170, quizId: , resultsShown: false, attempted: false, result: false
+page-36bc91f657c0306e.js:1 [PreTest] 🔎 Resolved — local: false, api: false, attempted: false, zustand: false, param: false, RESOLVED: false, online: true
+page-36bc91f657c0306e.js:1 [FLOW-3] 🔍 determineMode start — mode: "null", shortnameParam: "null", online: true
+2977-653f5110183691f4.js:1 [FLOW-4] 🚀 useCourseData effect — initialPage: "null", disabled: true, skipDownload: false, courseId: 170, loadedFromIDB: false
+2977-653f5110183691f4.js:1 [useCourseData] ⏸️ Disabled - skipping fetch {courseId: '170'}
+layout-dd98a0c683195537.js:1  HEAD https://staging.academy.noorahealth.org/api/v2/?__ping=1771847884168 net::ERR_NAME_NOT_RESOLVED
+n @ layout-dd98a0c683195537.js:1
+t @ layout-dd98a0c683195537.js:1
+s @ layout-dd98a0c683195537.js:1
+oT @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+uh @ 4bd1b696-2dc94e503d17f270.js:1
+uO @ 4bd1b696-2dc94e503d17f270.js:1
+uT @ 4bd1b696-2dc94e503d17f270.js:1
+(anonymous) @ 4bd1b696-2dc94e503d17f270.js:1
+up @ 4bd1b696-2dc94e503d17f270.js:1
+i9 @ 4bd1b696-2dc94e503d17f270.js:1
+i8 @ 4bd1b696-2dc94e503d17f270.js:1
+uD @ 4bd1b696-2dc94e503d17f270.js:1
+T @ 1075-6cdf89743e87034e.js:1Understand this error
+page-36bc91f657c0306e.js:1 [FLOW-1] 🔍 Viewer mount — rawURL: https://test.diu0f3ifxk4jl.amplifyapp.com/course/170/view
+page-36bc91f657c0306e.js:1 [FLOW-2] 🔍 Viewer searchParams — page: "null", mode: "null", shortname: "null", pretestDone: "null", rawSearch: ""
+page-36bc91f657c0306e.js:1 [FLOW-5] 📦 useCourseData returned — downloadedPageIndex: 0, downloadedLoading: true, courseSource: "null", checkingMode: true, useStreaming: false
+4374-f4fe9205d8636d1d.js:1 [PreTest] isPreTestCompleted — courseId: 170, quizId: , resultsShown: false, attempted: false, result: false
+page-36bc91f657c0306e.js:1 [PreTest] 🔎 Resolved — local: false, api: false, attempted: false, zustand: false, param: false, RESOLVED: false, online: true
+layout-dd98a0c683195537.js:1  HEAD https://staging.academy.noorahealth.org/api/v2/?__ping=1771847884174 net::ERR_NAME_NOT_RESOLVED
+n @ layout-dd98a0c683195537.js:1
+t @ layout-dd98a0c683195537.js:1
+s @ layout-dd98a0c683195537.js:1
+oT @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+uh @ 4bd1b696-2dc94e503d17f270.js:1
+uO @ 4bd1b696-2dc94e503d17f270.js:1
+uT @ 4bd1b696-2dc94e503d17f270.js:1
+(anonymous) @ 4bd1b696-2dc94e503d17f270.js:1
+up @ 4bd1b696-2dc94e503d17f270.js:1
+i9 @ 4bd1b696-2dc94e503d17f270.js:1
+i8 @ 4bd1b696-2dc94e503d17f270.js:1
+uD @ 4bd1b696-2dc94e503d17f270.js:1
+T @ 1075-6cdf89743e87034e.js:1Understand this error
+layout-dd98a0c683195537.js:1  HEAD https://staging.academy.noorahealth.org/api/v2/?__ping=1771847884192 net::ERR_NAME_NOT_RESOLVED
+n @ layout-dd98a0c683195537.js:1
+t @ layout-dd98a0c683195537.js:1
+s @ layout-dd98a0c683195537.js:1
+oT @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+uh @ 4bd1b696-2dc94e503d17f270.js:1
+(anonymous) @ 4bd1b696-2dc94e503d17f270.js:1
+up @ 4bd1b696-2dc94e503d17f270.js:1
+i9 @ 4bd1b696-2dc94e503d17f270.js:1
+i8 @ 4bd1b696-2dc94e503d17f270.js:1
+uO @ 4bd1b696-2dc94e503d17f270.js:1
+uT @ 4bd1b696-2dc94e503d17f270.js:1
+(anonymous) @ 4bd1b696-2dc94e503d17f270.js:1
+up @ 4bd1b696-2dc94e503d17f270.js:1
+i9 @ 4bd1b696-2dc94e503d17f270.js:1
+i8 @ 4bd1b696-2dc94e503d17f270.js:1
+uD @ 4bd1b696-2dc94e503d17f270.js:1
+T @ 1075-6cdf89743e87034e.js:1Understand this error
+1075-6cdf89743e87034e.js:1 [usePWA] Error checking for updates: TypeError: Failed to update a ServiceWorker for scope ('https://test.diu0f3ifxk4jl.amplifyapp.com/') with script ('https://test.diu0f3ifxk4jl.amplifyapp.com/service-worker.js'): An unknown error occurred when fetching the script.
+window.console.error @ 1075-6cdf89743e87034e.js:1
+r @ layout-dd98a0c683195537.js:1
+await in r
+t @ layout-dd98a0c683195537.js:1
+oT @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+uh @ 4bd1b696-2dc94e503d17f270.js:1
+uO @ 4bd1b696-2dc94e503d17f270.js:1
+uT @ 4bd1b696-2dc94e503d17f270.js:1
+(anonymous) @ 4bd1b696-2dc94e503d17f270.js:1
+up @ 4bd1b696-2dc94e503d17f270.js:1
+i9 @ 4bd1b696-2dc94e503d17f270.js:1
+i8 @ 4bd1b696-2dc94e503d17f270.js:1
+uD @ 4bd1b696-2dc94e503d17f270.js:1
+T @ 1075-6cdf89743e87034e.js:1Understand this error
+page-36bc91f657c0306e.js:1 [FLOW-1] 🔍 Viewer mount — rawURL: https://test.diu0f3ifxk4jl.amplifyapp.com/course/170/view
+page-36bc91f657c0306e.js:1 [FLOW-2] 🔍 Viewer searchParams — page: "null", mode: "null", shortname: "null", pretestDone: "null", rawSearch: ""
+page-36bc91f657c0306e.js:1 [FLOW-5] 📦 useCourseData returned — downloadedPageIndex: 0, downloadedLoading: true, courseSource: "null", checkingMode: true, useStreaming: false
+4374-f4fe9205d8636d1d.js:1 [PreTest] isPreTestCompleted — courseId: 170, quizId: , resultsShown: false, attempted: false, result: false
+page-36bc91f657c0306e.js:1 [PreTest] 🔎 Resolved — local: false, api: false, attempted: false, zustand: false, param: false, RESOLVED: false, online: true
+page-36bc91f657c0306e.js:1 [FLOW-3] 🔍 determineMode start — mode: "null", shortnameParam: "null", online: true
+2977-653f5110183691f4.js:1 [FLOW-4] 🚀 useCourseData effect — initialPage: "null", disabled: true, skipDownload: false, courseId: 170, loadedFromIDB: false
+2977-653f5110183691f4.js:1 [useCourseData] ⏸️ Disabled - skipping fetch {courseId: '170'}
+page-36bc91f657c0306e.js:1 [FLOW-1] 🔍 Viewer mount — rawURL: https://test.diu0f3ifxk4jl.amplifyapp.com/course/170/view
+page-36bc91f657c0306e.js:1 [FLOW-2] 🔍 Viewer searchParams — page: "null", mode: "null", shortname: "null", pretestDone: "null", rawSearch: ""
+page-36bc91f657c0306e.js:1 [FLOW-5] 📦 useCourseData returned — downloadedPageIndex: 0, downloadedLoading: true, courseSource: "null", checkingMode: true, useStreaming: false
+4374-f4fe9205d8636d1d.js:1 [PreTest] isPreTestCompleted — courseId: 170, quizId: , resultsShown: false, attempted: false, result: false
+page-36bc91f657c0306e.js:1 [PreTest] 🔎 Resolved — local: false, api: false, attempted: false, zustand: false, param: false, RESOLVED: false, online: true
+4374-f4fe9205d8636d1d.js:1 [OFFLINE_TRACKER] Zustand rehydration fallback timeout - assuming rehydrated
+layout-dd98a0c683195537.js:1  HEAD https://staging.academy.noorahealth.org/api/v2/?__ping=1771847884226 net::ERR_NAME_NOT_RESOLVED
+n @ layout-dd98a0c683195537.js:1
+t @ layout-dd98a0c683195537.js:1
+s @ layout-dd98a0c683195537.js:1
+oT @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+o5 @ 4bd1b696-2dc94e503d17f270.js:1
+o9 @ 4bd1b696-2dc94e503d17f270.js:1
+uh @ 4bd1b696-2dc94e503d17f270.js:1
+uO @ 4bd1b696-2dc94e503d17f270.js:1
+uT @ 4bd1b696-2dc94e503d17f270.js:1
+(anonymous) @ 4bd1b696-2dc94e503d17f270.js:1
+up @ 4bd1b696-2dc94e503d17f270.js:1
+i9 @ 4bd1b696-2dc94e503d17f270.js:1
+i8 @ 4bd1b696-2dc94e503d17f270.js:1
+uD @ 4bd1b696-2dc94e503d17f270.js:1
+T @ 1075-6cdf89743e87034e.js:1Understand this error
+page-36bc91f657c0306e.js:1 [FLOW-1] 🔍 Viewer mount — rawURL: https://test.diu0f3ifxk4jl.amplifyapp.com/course/170/view
+page-36bc91f657c0306e.js:1 [FLOW-2] 🔍 Viewer searchParams — page: "null", mode: "null", shortname: "null", pretestDone: "null", rawSearch: ""
+page-36bc91f657c0306e.js:1 [FLOW-5] 📦 useCourseData returned — downloadedPageIndex: 0, downloadedLoading: true, courseSource: "null", checkingMode: true, useStreaming: false
+4374-f4fe9205d8636d1d.js:1 [PreTest] isPreTestCompleted — courseId: 170, quizId: , resultsShown: false, attempted: false, result: false
+page-36bc91f657c0306e.js:1 [PreTest] 🔎 Resolved — local: false, api: false, attempted: false, zustand: false, param: false, RESOLVED: false, online: true
+4374-f4fe9205d8636d1d.js:1 [OFFLINE_TRACKER] Zustand rehydration fallback timeout - assuming rehydrated
+page-36bc91f657c0306e.js:1 [FLOW-1] 🔍 Viewer mount — rawURL: https://test.diu0f3ifxk4jl.amplifyapp.com/course/170/view
+page-36bc91f657c0306e.js:1 [FLOW-2] 🔍 Viewer searchParams — page: "null", mode: "null", shortname: "null", pretestDone: "null", rawSearch: ""
+page-36bc91f657c0306e.js:1 [FLOW-5] 📦 useCourseData returned — downloadedPageIndex: 0, downloadedLoading: true, courseSource: "null", checkingMode: true, useStreaming: false
+4374-f4fe9205d8636d1d.js:1 [PreTest] isPreTestCompleted — courseId: 170, quizId: , resultsShown: false, attempted: false, result: false
+page-36bc91f657c0306e.js:1 [PreTest] 🔎 Resolved — local: false, api: false, attempted: false, zustand: false, param: false, RESOLVED: false, online: true
+page-36bc91f657c0306e.js:1 [FLOW-1] 🔍 Viewer mount — rawURL: https://test.diu0f3ifxk4jl.amplifyapp.com/course/170/view
+page-36bc91f657c0306e.js:1 [FLOW-2] 🔍 Viewer searchParams — page: "null", mode: "null", shortname: "null", pretestDone: "null", rawSearch: ""
+page-36bc91f657c0306e.js:1 [FLOW-5] 📦 useCourseData returned — downloadedPageIndex: 0, downloadedLoading: true, courseSource: "null", checkingMode: true, useStreaming: false
+4374-f4fe9205d8636d1d.js:1 [PreTest] isPreTestCompleted — courseId: 170, quizId: , resultsShown: false, attempted: false, result: false
+page-36bc91f657c0306e.js:1 [PreTest] 🔎 Resolved — local: false, api: false, attempted: false, zustand: false, param: false, RESOLVED: false, online: true
+page-36bc91f657c0306e.js:1 [FLOW-1] 🔍 Viewer mount — rawURL: https://test.diu0f3ifxk4jl.amplifyapp.com/course/170/view
+page-36bc91f657c0306e.js:1 [FLOW-2] 🔍 Viewer searchParams — page: "null", mode: "null", shortname: "null", pretestDone: "null", rawSearch: ""
+page-36bc91f657c0306e.js:1 [FLOW-5] 📦 useCourseData returned — downloadedPageIndex: 0, downloadedLoading: true, courseSource: "null", checkingMode: true, useStreaming: false
+4374-f4fe9205d8636d1d.js:1 [PreTest] isPreTestCompleted — courseId: 170, quizId: , resultsShown: false, attempted: false, result: false
+page-36bc91f657c0306e.js:1 [PreTest] 🔎 Resolved — local: false, api: false, attempted: false, zustand: false, param: false, RESOLVED: false, online: true
+page-36bc91f657c0306e.js:1 [FLOW-1] 🔍 Viewer mount — rawURL: https://test.diu0f3ifxk4jl.amplifyapp.com/course/170/view
+page-36bc91f657c0306e.js:1 [FLOW-2] 🔍 Viewer searchParams — page: "null", mode: "null", shortname: "null", pretestDone: "null", rawSearch: ""
+page-36bc91f657c0306e.js:1 [FLOW-5] 📦 useCourseData returned — downloadedPageIndex: 0, downloadedLoading: true, courseSource: "null", checkingMode: true, useStreaming: false
+4374-f4fe9205d8636d1d.js:1 [PreTest] isPreTestCompleted — courseId: 170, quizId: , resultsShown: false, attempted: false, result: false
+page-36bc91f657c0306e.js:1 [PreTest] 🔎 Resolved — local: false, api: false, attempted: false, zustand: false, param: false, RESOLVED: false, online: true
+page-36bc91f657c0306e.js:1 [FLOW-1] 🔍 Viewer mount — rawURL: https://test.diu0f3ifxk4jl.amplifyapp.com/course/170/view
+page-36bc91f657c0306e.js:1 [FLOW-2] 🔍 Viewer searchParams — page: "null", mode: "null", shortname: "null", pretestDone: "null", rawSearch: ""
+page-36bc91f657c0306e.js:1 [FLOW-5] 📦 useCourseData returned — downloadedPageIndex: 0, downloadedLoading: true, courseSource: "null", checkingMode: true, useStreaming: false
+4374-f4fe9205d8636d1d.js:1 [PreTest] isPreTestCompleted — courseId: 170, quizId: , resultsShown: false, attempted: false, result: false
+page-36bc91f657c0306e.js:1 [PreTest] 🔎 Resolved — local: false, api: false, attempted: false, zustand: false, param: false, RESOLVED: false, online: true
+4374-f4fe9205d8636d1d.js:1 [OFFLINE_TRACKER] Zustand rehydration fallback timeout - assuming rehydrated
+page-36bc91f657c0306e.js:1 [FLOW-1] 🔍 Viewer mount — rawURL: https://test.diu0f3ifxk4jl.amplifyapp.com/course/170/view
+page-36bc91f657c0306e.js:1 [FLOW-2] 🔍 Viewer searchParams — page: "null", mode: "null", shortname: "null", pretestDone: "null", rawSearch: ""
+page-36bc91f657c0306e.js:1 [FLOW-5] 📦 useCourseData returned — downloadedPageIndex: 0, downloadedLoading: true, courseSource: "null", checkingMode: true, useStreaming: false
+4374-f4fe9205d8636d1d.js:1 [PreTest] isPreTestCompleted — courseId: 170, quizId: , resultsShown: false, attempted: false, result: false
+page-36bc91f657c0306e.js:1 [PreTest] 🔎 Resolved — local: false, api: false, attempted: false, zustand: false, param: false, RESOLVED: false, online: true
+2page-36bc91f657c0306e.js:1 [FLOW-3b] ➡️ determineMode → IDB mode (downloaded course found)
+page-36bc91f657c0306e.js:1 [FLOW-1] 🔍 Viewer mount — rawURL: https://test.diu0f3ifxk4jl.amplifyapp.com/course/170/view
+page-36bc91f657c0306e.js:1 [FLOW-2] 🔍 Viewer searchParams — page: "null", mode: "null", shortname: "null", pretestDone: "null", rawSearch: ""
+page-36bc91f657c0306e.js:1 [FLOW-5] 📦 useCourseData returned — downloadedPageIndex: 0, downloadedLoading: true, courseSource: "null", checkingMode: true, useStreaming: false
+4374-f4fe9205d8636d1d.js:1 [PreTest] isPreTestCompleted — courseId: 170, quizId: , resultsShown: false, attempted: false, result: false
+page-36bc91f657c0306e.js:1 [PreTest] 🔎 Resolved — local: false, api: false, attempted: false, zustand: false, param: false, RESOLVED: false, online: true
+2977-653f5110183691f4.js:1 [FLOW-4] 🚀 useCourseData effect — initialPage: "null", disabled: true, skipDownload: false, courseId: 170, loadedFromIDB: false
+2977-653f5110183691f4.js:1 [useCourseData] ⏸️ Disabled - skipping fetch {courseId: '170'}
+page-36bc91f657c0306e.js:1 [FLOW-3b] ➡️ determineMode → IDB mode (downloaded course found)
+page-36bc91f657c0306e.js:1 [FLOW-1] 🔍 Viewer mount — rawURL: https://test.diu0f3ifxk4jl.amplifyapp.com/course/170/view
+page-36bc91f657c0306e.js:1 [FLOW-2] 🔍 Viewer searchParams — page: "null", mode: "null", shortname: "null", pretestDone: "null", rawSearch: ""
+page-36bc91f657c0306e.js:1 [FLOW-5] 📦 useCourseData returned — downloadedPageIndex: 0, downloadedLoading: true, courseSource: "null", checkingMode: false, useStreaming: false
+4374-f4fe9205d8636d1d.js:1 [PreTest] isPreTestCompleted — courseId: 170, quizId: , resultsShown: false, attempted: false, result: false
+page-36bc91f657c0306e.js:1 [PreTest] 🔎 Resolved — local: false, api: false, attempted: false, zustand: false, param: false, RESOLVED: false, online: true
+2977-653f5110183691f4.js:1 [FLOW-4] 🚀 useCourseData effect — initialPage: "null", disabled: false, skipDownload: false, courseId: 170, loadedFromIDB: false
+2977-653f5110183691f4.js:1 [useCourseData] 🚀 Starting course fetch: {courseId: '170', initialPage: null, isOnline: true, isAuthenticated: true}
+2977-653f5110183691f4.js:1 [useCourseData] 📂 Step 1: Checking IndexedDB...
+page-36bc91f657c0306e.js:1 [FLOW-1] 🔍 Viewer mount — rawURL: https://test.diu0f3ifxk4jl.amplifyapp.com/course/170/view
+page-36bc91f657c0306e.js:1 [FLOW-2] 🔍 Viewer searchParams — page: "null", mode: "null", shortname: "null", pretestDone: "null", rawSearch: ""
+page-36bc91f657c0306e.js:1 [FLOW-5] 📦 useCourseData returned — downloadedPageIndex: 0, downloadedLoading: true, courseSource: "null", checkingMode: false, useStreaming: false
+4374-f4fe9205d8636d1d.js:1 [PreTest] isPreTestCompleted — courseId: 170, quizId: , resultsShown: false, attempted: false, result: false
+page-36bc91f657c0306e.js:1 [PreTest] 🔎 Resolved — local: false, api: false, attempted: false, zustand: false, param: false, RESOLVED: false, online: true
+2977-653f5110183691f4.js:1 [useCourseData] ✅ Course found in IndexedDB! {courseId: '170', sections: 26}
+2977-653f5110183691f4.js:1 [FLOW-4a] 📌 IDB pageToLoad — initialPage: "null", pageToLoad: 0, sectionTitle: "Pre-test", sectionType: "quiz", totalSections: 26
+page-36bc91f657c0306e.js:1 [FLOW-1] 🔍 Viewer mount — rawURL: https://test.diu0f3ifxk4jl.amplifyapp.com/course/170/view
+page-36bc91f657c0306e.js:1 [FLOW-2] 🔍 Viewer searchParams — page: "null", mode: "null", shortname: "null", pretestDone: "null", rawSearch: ""
+page-36bc91f657c0306e.js:1 [FLOW-5] 📦 useCourseData returned — downloadedPageIndex: 0, downloadedLoading: true, courseSource: "indexeddb", checkingMode: false, useStreaming: false
+4374-f4fe9205d8636d1d.js:1 [PreTest] isPreTestCompleted — courseId: 170, quizId: , resultsShown: false, attempted: false, result: false
+page-36bc91f657c0306e.js:1 [PreTest] 🔎 Resolved — local: false, api: false, attempted: false, zustand: false, param: false, RESOLVED: false, online: true
+page-36bc91f657c0306e.js:1 [CourseViewer] 🎮 Rendering QuizRenderer — isPreTest: false, quizId: 1994, preTestQuizId: null, currentPageIndex: 0, preTestIndex: null, passing onPreTestComplete: true
+page-36bc91f657c0306e.js:1 [QuizRenderer] 🚀 Mounted — isPreTest: false, quizId: 1994, onPreTestComplete: true, courseId: 170
+page-36bc91f657c0306e.js:1 [FLOW-1] 🔍 Viewer mount — rawURL: https://test.diu0f3ifxk4jl.amplifyapp.com/course/170/view
+page-36bc91f657c0306e.js:1 [FLOW-2] 🔍 Viewer searchParams — page: "null", mode: "null", shortname: "null", pretestDone: "null", rawSearch: ""
+page-36bc91f657c0306e.js:1 [FLOW-5] 📦 useCourseData returned — downloadedPageIndex: 0, downloadedLoading: true, courseSource: "indexeddb", checkingMode: false, useStreaming: false
+4374-f4fe9205d8636d1d.js:1 [PreTest] isPreTestCompleted — courseId: 170, quizId: , resultsShown: false, attempted: false, result: false
+page-36bc91f657c0306e.js:1 [PreTest] 🔎 Resolved — local: false, api: false, attempted: false, zustand: false, param: false, RESOLVED: false, online: true
+page-36bc91f657c0306e.js:1 [CourseViewer] 🎮 Rendering QuizRenderer — isPreTest: false, quizId: 1994, preTestQuizId: null, currentPageIndex: 0, preTestIndex: null, passing onPreTestComplete: true
+page-36bc91f657c0306e.js:1 [QuizRenderer] 🚀 Mounted — isPreTest: false, quizId: 1994, onPreTestComplete: true, courseId: 170
+689-fbf0e6d76da3784d.js:1 [OFFLINE_TRACKER] getCompletionData - Course: 170, Completed: 21/23 {224f5026dc07ddd0f034fb4a6b4217de: true, ea6dd3f76d0ce7cdd848c33dff66fa8d: true, 6774b570e0efbc7be92e28fb6edbe766: true, 7f70b67907dd5e018dcf0007a0ee553b: true, f7af350d29af0936510d0bc479cde4f2: true, …}
+689-fbf0e6d76da3784d.js:1 [OFFLINE_TRACKER] setCompletionData - Course: 170, Completed: 21/23 {224f5026dc07ddd0f034fb4a6b4217de: true, ea6dd3f76d0ce7cdd848c33dff66fa8d: true, 6774b570e0efbc7be92e28fb6edbe766: true, 7f70b67907dd5e018dcf0007a0ee553b: true, f7af350d29af0936510d0bc479cde4f2: true, …}
+2977-653f5110183691f4.js:1 [loadAndPopulateTrackerData] ✅ Merged completion data for course 170: tracker=23, existing=23, merged=23
+page-36bc91f657c0306e.js:1 [FLOW-1] 🔍 Viewer mount — rawURL: https://test.diu0f3ifxk4jl.amplifyapp.com/course/170/view
+page-36bc91f657c0306e.js:1 [FLOW-2] 🔍 Viewer searchParams — page: "null", mode: "null", shortname: "null", pretestDone: "null", rawSearch: ""
+page-36bc91f657c0306e.js:1 [FLOW-5] 📦 useCourseData returned — downloadedPageIndex: 0, downloadedLoading: true, courseSource: "indexeddb", checkingMode: false, useStreaming: false
+4374-f4fe9205d8636d1d.js:1 [PreTest] isPreTestCompleted — courseId: 170, quizId: , resultsShown: false, attempted: false, result: false
+page-36bc91f657c0306e.js:1 [PreTest] 🔎 Resolved — local: false, api: false, attempted: false, zustand: false, param: false, RESOLVED: false, online: true
+page-36bc91f657c0306e.js:1 [CourseViewer] 🎮 Rendering QuizRenderer — isPreTest: false, quizId: 1994, preTestQuizId: null, currentPageIndex: 0, preTestIndex: null, passing onPreTestComplete: true
+page-36bc91f657c0306e.js:1 [QuizRenderer] 🚀 Mounted — isPreTest: false, quizId: 1994, onPreTestComplete: true, courseId: 170
+2977-653f5110183691f4.js:1 [perf] loadPageContentFromIDB page=0 IDB=34.2ms HTML-process=117.7ms total=152.0ms
+2977-653f5110183691f4.js:1 [useCourseData] ✅ Course loading completed {courseId: '170', hasData: false, hasError: false, source: null}
+page-36bc91f657c0306e.js:1 [FLOW-1] 🔍 Viewer mount — rawURL: https://test.diu0f3ifxk4jl.amplifyapp.com/course/170/view
+page-36bc91f657c0306e.js:1 [FLOW-2] 🔍 Viewer searchParams — page: "null", mode: "null", shortname: "null", pretestDone: "null", rawSearch: ""
+page-36bc91f657c0306e.js:1 [FLOW-5] 📦 useCourseData returned — downloadedPageIndex: 0, downloadedLoading: false, courseSource: "indexeddb", checkingMode: false, useStreaming: false
+4374-f4fe9205d8636d1d.js:1 [PreTest] isPreTestCompleted — courseId: 170, quizId: , resultsShown: false, attempted: false, result: false
+page-36bc91f657c0306e.js:1 [PreTest] 🔎 Resolved — local: false, api: false, attempted: false, zustand: false, param: false, RESOLVED: false, online: true
+page-36bc91f657c0306e.js:1 [CourseViewer] 🎮 Rendering QuizRenderer — isPreTest: false, quizId: 1994, preTestQuizId: null, currentPageIndex: 0, preTestIndex: null, passing onPreTestComplete: true
+page-36bc91f657c0306e.js:1 [QuizRenderer] 🚀 Mounted — isPreTest: false, quizId: 1994, onPreTestComplete: true, courseId: 170
+page-36bc91f657c0306e.js:1 [FLOW-6] 📄 FINAL RENDER — currentPageIndex: 0, initialPage: "null", useStreaming: false, sectionTitle: "Pre-test", sectionType: "quiz", totalSections: 26
+5The resource <URL> was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.Understand this warning

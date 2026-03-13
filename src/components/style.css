@@ -1,0 +1,1911 @@
+@font-face {
+  font-family: "Poppins";
+  src: url("style_resources/fonts/Poppins-Regular.ttf");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Poppins Medium";
+  src: url("style_resources/fonts/Poppins-Medium.ttf");
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Poppins Light";
+  src: url("style_resources/fonts/Poppins-Light.ttf");
+  font-weight: 100;
+  font-style: normal;
+}
+body {
+  margin: 20 !important;
+  max-height: 100vh;
+  max-width: 100vw;
+  background-color: red;
+}
+
+table {
+  border: none !important;
+  max-width: 100%;
+  font-size: 0.8em;
+}
+table td {
+  border: none !important;
+  padding: 0 !important;
+}
+table img {
+  height: auto;
+}
+
+intro-section {
+  min-height: 90vh !important;
+  padding-top: 75px;
+  flex-direction: column;
+  background-image: url("style_resources/logos/noora_logo_color.png");
+  background-size: 100px;
+  background-position: top 25px center;
+  background-repeat: no-repeat;
+}
+intro-section img {
+  height: 40vh;
+  width: 100vw;
+  max-width: 100vw;
+}
+intro-section content {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  padding: 5% 15%;
+}
+intro-section content .title,
+intro-section content lesson-title,
+intro-section content module-title {
+  font-size: 1.5em;
+  font-weight: bolder;
+  font-family: "Poppins Medium", sans-serif;
+}
+intro-section content module-title {
+  color: #dd3e77;
+}
+intro-section content lesson-title {
+  color: red;
+  padding-top: 10%;
+}
+intro-section content module-description,
+intro-section content lesson-description {
+  font-family: "Poppins Light", sans-serif;
+  line-height: 1.2em;
+}
+
+video-section {
+  background-image:
+    url("style_resources/shapes/square-orange.svg"),
+    url("style_resources/shapes/square-blue-border.svg"),
+    url("style_resources/shapes/square-orange.svg"),
+    url("style_resources/shapes/square-blue-border.svg");
+  background-position:
+    top 15vh right -15vw,
+    top -25vh right -40vw,
+    bottom 15vh left -15vw,
+    bottom -25vh left -40vw;
+  background-size:
+    100px 100px,
+    300px 300px,
+    100px 100px,
+    300px 300px;
+  background-repeat: no-repeat;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  gap: 50px;
+}
+video-section p {
+  margin: 0 50px;
+}
+video-section video-content {
+  box-sizing: border-box;
+  border: 1px solid red;
+  border-radius: 20px;
+  width: 100%;
+}
+video-section video-content img {
+  margin: 0;
+  width: 100%;
+  max-width: 100%;
+}
+
+audio-section {
+  align-items: unset !important;
+  background-color: #fdfaf7;
+}
+audio-section content,
+audio-section slide {
+  gap: 5%;
+}
+
+noor-section {
+  align-items: unset !important;
+}
+noor-section content,
+noor-section slide {
+  background-color: #37b7e6;
+  background-image:
+    url("style_resources/shapes/square-green.svg"),
+    url("style_resources/shapes/square-pink.svg");
+  background-position:
+    top -35vh left -40vw,
+    bottom -30vh right -40vw;
+  background-size: 300px 300px;
+  background-repeat: no-repeat;
+}
+noor-section content:nth-of-type(even),
+noor-section slide:nth-of-type(even) {
+  background-image:
+    url("style_resources/shapes/square-green.svg"),
+    url("style_resources/shapes/square-pink.svg");
+  background-position:
+    top -35vh left 60vw,
+    bottom -30vh right 60vw;
+}
+noor-section p {
+  color: white;
+  font-size: 1.3em;
+  font-family: "Poppins", sans-serif;
+  line-height: 1.2em;
+}
+noor-section #prevBtn,
+noor-section #nextBtn {
+  color: white;
+}
+
+content-section {
+  align-items: unset !important;
+  background-color: #faa31a;
+}
+content-section[color="pink"] {
+  background-color: #dd3e77;
+}
+content-section[color="orange"] {
+  background-color: #faa31a;
+}
+content-section[color="blue"] {
+  background-color: #37b7e6;
+}
+content-section[color="green"] {
+  background-color: red;
+}
+content-section[color="black"] {
+  background-color: white;
+}
+content-section[color="black"] content,
+content-section[color="black"] slide {
+  margin: 3%;
+  border: 3px solid #333;
+  max-width: 94vw !important;
+}
+content-section content,
+content-section slide {
+  flex: 0 0 auto !important;
+  padding: 15% 5% !important;
+  max-width: 90vw !important;
+  margin: 5vw;
+  border-radius: 20px;
+  background-color: white;
+}
+content-section content img,
+content-section slide img {
+  max-width: 100%;
+  object-fit: contain;
+}
+content-section content p,
+content-section slide p {
+  font-family: "Poppins", sans-serif;
+  line-height: 1.2em;
+}
+content-section #prevBtn,
+content-section #nextBtn {
+  border-radius: 25px;
+  background-color: red;
+  font-size: 1.2em;
+  font-weight: 900;
+  color: white;
+  text-align: center;
+  padding: 5px 30px;
+  bottom: 5vh;
+  top: unset;
+  content: unset;
+  height: auto;
+  line-height: 1.2;
+}
+content-section #prevBtn {
+  left: 10vw;
+}
+content-section #nextBtn {
+  right: 10vw;
+}
+
+info-section {
+  align-items: unset;
+  background-color: #fdfaf7;
+}
+info-section content,
+info-section slide {
+  background-image:
+    url("style_resources/shapes/square-blue.svg"),
+    url("style_resources/shapes/square-green-border.svg");
+  background-position:
+    top -5vh right -15vw,
+    bottom -25vh left -40vw;
+  background-size:
+    100px 100px,
+    300px 300px;
+  background-repeat: no-repeat;
+  padding: 5% !important;
+}
+info-section content:nth-of-type(even),
+info-section slide:nth-of-type(even) {
+  background-image:
+    url("style_resources/shapes/square-blue.svg"),
+    url("style_resources/shapes/square-green-border.svg");
+  background-position:
+    top -5vh right 85vw,
+    bottom -25vh left 60vw;
+}
+info-section #prevBtn,
+info-section #nextBtn {
+  top: 40vh;
+  color: #dd3e77;
+}
+info-section[type="feedback"] content,
+info-section[type="feedback"] slide {
+  background-image:
+    url("style_resources/shapes/square-blue-border.svg"),
+    url("style_resources/shapes/square-blue-border.svg");
+  background-position:
+    top -40vh left -40vw,
+    bottom -40vh right -40vw;
+  background-size: 300px 300px;
+  background-repeat: no-repeat;
+  padding: 5% !important;
+}
+info-section[type="gallery"] h2 {
+  color: #444;
+  font-size: 160%;
+  margin-bottom: 0;
+}
+info-section[type="gallery"] content,
+info-section[type="gallery"] slide {
+  background-image:
+    url("style_resources/shapes/square-green-border.svg"),
+    url("style_resources/shapes/square-orange.svg");
+  background-position:
+    top -30vh right -45vw,
+    bottom -5vh left -5vw;
+  background-size: 300px, 100px;
+}
+info-section[type="gallery"] content:nth-of-type(even),
+info-section[type="gallery"] slide:nth-of-type(even) {
+  background-image:
+    url("style_resources/shapes/square-green-border.svg"),
+    url("style_resources/shapes/square-orange.svg");
+  background-position:
+    top -30vh left -45vw,
+    bottom -5vh right -5vw;
+}
+info-section[type="gallery"] content img,
+info-section[type="gallery"] slide img {
+  object-fit: cover;
+  border-radius: 50%;
+  width: 50vw;
+  height: 50vw;
+  max-width: 400px;
+  max-height: 400px;
+  margin: 10% 0;
+}
+info-section[type="1"] content,
+info-section[type="1"] slide {
+  background-image:
+    url("style_resources/shapes/square-blue.svg"),
+    url("style_resources/shapes/square-green-border.svg");
+}
+info-section[type="1"] content:nth-of-type(even),
+info-section[type="1"] slide:nth-of-type(even) {
+  background-image:
+    url("style_resources/shapes/square-blue.svg"),
+    url("style_resources/shapes/square-green-border.svg");
+}
+info-section[type="2"] content,
+info-section[type="2"] slide {
+  padding: 10% !important;
+  background-image:
+    url("style_resources/shapes/square-pink.svg"),
+    url("style_resources/shapes/square-orange-border.svg");
+}
+info-section[type="2"] content:nth-of-type(even),
+info-section[type="2"] slide:nth-of-type(even) {
+  background-image:
+    url("style_resources/shapes/square-pink.svg"),
+    url("style_resources/shapes/square-orange-border.svg");
+}
+info-section[type="3"] content,
+info-section[type="3"] slide {
+  padding: 10% !important;
+  background-image:
+    url("style_resources/shapes/square-orange.svg"),
+    url("style_resources/shapes/square-blue-border.svg");
+}
+info-section[type="3"] content:nth-of-type(even),
+info-section[type="3"] slide:nth-of-type(even) {
+  background-image:
+    url("style_resources/shapes/square-orange.svg"),
+    url("style_resources/shapes/square-blue-border.svg");
+}
+info-section[type="4"] content,
+info-section[type="4"] slide {
+  padding: 10% !important;
+  background-image:
+    url("style_resources/shapes/square-pink.svg"),
+    url("style_resources/shapes/square-green-border.svg");
+}
+info-section[type="4"] content:nth-of-type(even),
+info-section[type="4"] slide:nth-of-type(even) {
+  background-image:
+    url("style_resources/shapes/square-pink.svg"),
+    url("style_resources/shapes/square-green-border.svg");
+}
+
+what-we-learned-section {
+  background-image:
+    url("style_resources/shapes/double_circle.svg"),
+    url("style_resources/shapes/double_circle.svg"),
+    url("style_resources/shapes/double_circle.svg"),
+    url("style_resources/shapes/double_circle.svg"),
+    url("style_resources/shapes/double_circle.svg"),
+    url("style_resources/shapes/double_circle.svg");
+  background-position:
+    top -20% left -60%,
+    top 0 right -80%,
+    top -15% right 20%,
+    bottom -20% right -50%,
+    bottom -10% left 50%,
+    bottom 10% left -90%;
+  background-size:
+    200px 200px,
+    200px 200px,
+    100px 100px,
+    200px 200px,
+    100px 100px,
+    200px 200px;
+  background-repeat: no-repeat;
+}
+what-we-learned-section section-title {
+  width: 100%;
+  align-self: start;
+  text-align: center;
+  font-size: 1.3em;
+  font-family: "Poppins Medium", sans-serif;
+  line-height: 1.2em;
+  padding: 5% 10%;
+}
+
+next-lesson-section {
+  flex-direction: column;
+  background-color: #37b7e6;
+  color: white;
+  font-size: 1.3em;
+  font-family: "Poppins", sans-serif;
+  line-height: 1.2em;
+  text-align: center;
+  padding: 5%;
+  justify-content: center;
+}
+
+index-section {
+  background-image:
+    url("style_resources/shapes/square-orange.svg"),
+    url("style_resources/shapes/square-blue-border.svg");
+  background-position:
+    top -5vh right -5vw,
+    bottom -30vh left -40vw;
+  background-size:
+    100px 100px,
+    300px 300px;
+  background-repeat: no-repeat;
+}
+index-section content {
+  gap: 20px;
+}
+index-section content item {
+  display: flex;
+  width: 100%;
+  position: relative;
+  border: 2px solid grey;
+  padding: 5%;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  color: #dd3e77;
+  font-weight: 900;
+}
+index-section content item[color="pink"] {
+  color: #dd3e77;
+}
+index-section content item[color="green"] {
+  color: red;
+}
+index-section content item[color="blue"] {
+  color: #37b7e6;
+}
+index-section content item[color="orange"] {
+  color: #faa31a;
+}
+index-section content item:before {
+  display: flex;
+  content: attr(order);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 30px;
+  background-color: #dd3e77;
+  border-radius: 50%;
+  margin: -10px;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+index-section content item:before[color="pink"] {
+  background-color: #dd3e77;
+}
+index-section content item:before[color="green"] {
+  background-color: red;
+}
+index-section content item:before[color="blue"] {
+  background-color: #37b7e6;
+}
+index-section content item:before[color="orange"] {
+  background-color: #faa31a;
+}
+
+chapter-section {
+  background-color: #dd3e77;
+}
+chapter-section content {
+  font-size: 1.3em;
+  color: white;
+  gap: 24px;
+  padding: 5% !important;
+}
+chapter-section content img {
+  height: auto;
+  width: 40vw;
+  max-width: 200px;
+  background-color: white;
+  border-radius: 50%;
+  border: 15px solid #faa31a;
+  padding: 10%;
+  box-sizing: content-box;
+  overflow: visible;
+  margin: 0;
+}
+
+definition-section {
+  align-items: unset;
+  background-color: #fdfaf7;
+}
+definition-section content,
+definition-section slide {
+  justify-content: unset !important;
+  padding: 5% !important;
+}
+definition-section content img,
+definition-section slide img {
+  width: 100%;
+  max-width: 100%;
+  object-fit: cover;
+  margin: 24px 0;
+}
+definition-section #prevBtn,
+definition-section #nextBtn {
+  border-radius: 25px;
+  background-color: #faa31a;
+  font-size: 1.2em;
+  font-weight: 900;
+  color: white;
+  text-align: center;
+  padding: 5px 30px;
+  bottom: 5vh;
+  top: unset;
+  content: unset;
+}
+definition-section #prevBtn {
+  left: 10vw;
+}
+definition-section #prevBtn:after {
+  padding-left: 5px;
+  content: "PREV";
+}
+definition-section #nextBtn {
+  right: 10vw;
+}
+definition-section #nextBtn:before {
+  padding-right: 5px;
+  content: "NEXT";
+}
+
+feedback-result {
+  display: flex;
+}
+feedback-result feedback-card {
+  width: 100vw;
+  margin: 10px;
+  border-radius: 25px;
+  outline-offset: -15px;
+  background-color: white;
+  overflow: hidden;
+  border: 5px solid red;
+  outline: 3px dashed red;
+  padding: 5%;
+}
+feedback-result feedback-card[color="pink"] {
+  border: 5px solid #dd3e77;
+  outline: 3px dashed #dd3e77;
+}
+feedback-result feedback-card[color="blue"] {
+  border: 5px solid #37b7e6;
+  outline: 3px dashed #37b7e6;
+}
+feedback-result feedback-card[color="orange"] {
+  border: 5px solid #faa31a;
+  outline: 3px dashed #faa31a;
+}
+feedback-result feedback-card[color="green"] {
+  border: 5px solid red;
+  outline: 3px dashed red;
+}
+feedback-result feedback-card content {
+  background-color: #fdfaf7;
+  text-align: left !important;
+}
+feedback-result feedback-card content answer {
+  width: 100%;
+  color: #dd3e77;
+  display: flex;
+  box-sizing: border-box;
+  background-color: white;
+  text-align: center;
+  border: 1px solid grey;
+  padding: 5%;
+}
+
+activity-time-section {
+  background-color: #444746;
+  background-image:
+    url("style_resources/shapes/square-pink.svg"),
+    url("style_resources/shapes/square-blue.svg");
+  background-position:
+    top -35vh right -35vw,
+    bottom -35vh left -35vw;
+  background-size: 300px 300px;
+  background-repeat: no-repeat;
+}
+activity-time-section content {
+  color: white;
+}
+activity-time-section content img {
+  width: 50%;
+  height: auto;
+  margin-bottom: 25px;
+}
+activity-time-section content h1 {
+  color: white !important;
+  font-size: 2em;
+}
+activity-time-section content p {
+  font-size: 1.2em;
+}
+
+know-more {
+  display: flex;
+  flex-direction: column;
+  width: 60vw;
+  margin: auto;
+}
+know-more.columns {
+  width: 85vw;
+}
+know-more item {
+  background-color: white !important;
+  color: #dd3e77 !important;
+  border: 1px solid #dd3e77;
+  font-weight: bold;
+  display: block;
+  width: auto;
+  margin-bottom: 1em;
+}
+know-more item img {
+  max-width: 256px;
+  max-height: 378px;
+  height: auto;
+  width: auto;
+}
+know-more item[highlighted] {
+  background: #dd3e77 !important;
+  color: white !important;
+}
+know-more modal {
+  margin: 5%;
+  color: #333;
+  border: 3px solid #dd3e77;
+  display: flex;
+  align-items: center;
+  background: white !important;
+}
+know-more modal.lead {
+  font-size: 1.3em;
+}
+know-more modal .close {
+  position: absolute;
+  left: 24px;
+  top: 24px;
+  width: 28px;
+  height: 28px;
+}
+know-more modal .close:before,
+know-more modal .close:after {
+  position: absolute;
+  left: 15px;
+  content: " ";
+  height: 33px;
+  width: 2px;
+  background-color: #dd3e77;
+}
+know-more modal .close:before {
+  transform: rotate(45deg);
+}
+know-more modal .close:after {
+  transform: rotate(-45deg);
+}
+know-more modal[color="blue"] {
+  width: auto;
+  left: 0;
+  right: 0;
+  top: 10%;
+  padding: 5%;
+  border: 5px solid #37b7e6;
+  outline: 3px dashed #37b7e6;
+}
+know-more modal[color="blue"] h1,
+know-more modal[color="blue"] h2 {
+  color: #37b7e6;
+}
+know-more modal[color="blue"] .close:before,
+know-more modal[color="blue"] .close:after {
+  background-color: #37b7e6;
+}
+know-more[color="pink"] item {
+  color: #dd3e77 !important;
+  border: 1px solid #dd3e77;
+}
+know-more[color="pink"] item[highlighted] {
+  background: #dd3e77 !important;
+  color: white !important;
+}
+know-more[color="pink"] modal {
+  border: 3px solid #dd3e77;
+}
+know-more[color="pink"] modal .close:before,
+know-more[color="pink"] modal .close:after {
+  background-color: #dd3e77;
+}
+know-more[color="blue"] item {
+  color: #37b7e6 !important;
+  border: 1px solid #37b7e6;
+}
+know-more[color="blue"] item[highlighted] {
+  background: #37b7e6 !important;
+  color: white !important;
+}
+know-more[color="blue"] modal {
+  border: 3px solid #37b7e6;
+}
+know-more[color="blue"] modal .close:before,
+know-more[color="blue"] modal .close:after {
+  background-color: #37b7e6;
+}
+know-more[color="orange"] item {
+  color: #faa31a !important;
+  border: 1px solid #faa31a;
+}
+know-more[color="orange"] item[highlighted] {
+  background: #faa31a !important;
+  color: white !important;
+}
+know-more[color="orange"] modal {
+  border: 3px solid #faa31a;
+}
+know-more[color="orange"] modal .close:before,
+know-more[color="orange"] modal .close:after {
+  background-color: #faa31a;
+}
+know-more[color="green"] item {
+  color: red !important;
+  border: 1px solid red;
+}
+know-more[color="green"] item[highlighted] {
+  background: red !important;
+  color: white !important;
+}
+know-more[color="green"] modal {
+  border: 3px solid red;
+}
+know-more[color="green"] modal .close:before,
+know-more[color="green"] modal .close:after {
+  background-color: red;
+}
+
+.modal-fade {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  background-color: rgba(255, 255, 255, 0.75);
+}
+
+noor {
+  width: 100vw;
+  min-height: 50%;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-image: url("style_resources/noor/noor_1.png");
+}
+noor[icon="1"] {
+  background-image: url("style_resources/noor/noor_1.png");
+}
+noor[icon="2"] {
+  background-image: url("style_resources/noor/noor_2.png");
+}
+noor[icon="3"] {
+  background-image: url("style_resources/noor/noor_3.png");
+}
+noor[icon="4"] {
+  background-image: url("style_resources/noor/noor_4.png");
+}
+noor[icon="5"] {
+  background-image: url("style_resources/noor/noor_5.png");
+}
+noor[icon="6"] {
+  background-image: url("style_resources/noor/noor_6.png");
+}
+noor[icon="7"] {
+  background-image: url("style_resources/noor/noor_7.png");
+}
+noor[icon="8"] {
+  background-image: url("style_resources/noor/noor_8.png");
+}
+noor[icon="9"] {
+  background-image: url("style_resources/noor/noor_9.png");
+}
+noor[icon="10"] {
+  background-image: url("style_resources/noor/noor_10.png");
+}
+
+.question-box {
+  background-color: #faa31a;
+  text-align: center;
+  padding: 50px;
+  color: white;
+  font-size: 1.2em;
+  font-family: Poppins, sans-serif;
+  line-height: 1.2em;
+  border-radius: 100px;
+}
+
+.container,
+intro-section,
+video-section,
+audio-section,
+noor-section,
+content-section,
+info-section,
+what-we-learned-section,
+next-lesson-section,
+index-section,
+chapter-section,
+definition-section,
+activity-time-section {
+  position: relative;
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  min-height: 100vh;
+  overflow-x: scroll;
+  align-items: center;
+}
+.container[pagination="true"] .pagination,
+intro-section[pagination="true"] .pagination,
+video-section[pagination="true"] .pagination,
+audio-section[pagination="true"] .pagination,
+noor-section[pagination="true"] .pagination,
+content-section[pagination="true"] .pagination,
+info-section[pagination="true"] .pagination,
+what-we-learned-section[pagination="true"] .pagination,
+next-lesson-section[pagination="true"] .pagination,
+index-section[pagination="true"] .pagination,
+chapter-section[pagination="true"] .pagination,
+definition-section[pagination="true"] .pagination,
+activity-time-section[pagination="true"] .pagination {
+  display: flex;
+  position: fixed;
+  width: 80%;
+  left: 10%;
+  top: 45px;
+  gap: 5px;
+  z-index: 1000;
+}
+.container[pagination="true"] .pagination .pagination-item,
+intro-section[pagination="true"] .pagination .pagination-item,
+video-section[pagination="true"] .pagination .pagination-item,
+audio-section[pagination="true"] .pagination .pagination-item,
+noor-section[pagination="true"] .pagination .pagination-item,
+content-section[pagination="true"] .pagination .pagination-item,
+info-section[pagination="true"] .pagination .pagination-item,
+what-we-learned-section[pagination="true"] .pagination .pagination-item,
+next-lesson-section[pagination="true"] .pagination .pagination-item,
+index-section[pagination="true"] .pagination .pagination-item,
+chapter-section[pagination="true"] .pagination .pagination-item,
+definition-section[pagination="true"] .pagination .pagination-item,
+activity-time-section[pagination="true"] .pagination .pagination-item {
+  width: 100%;
+  height: 5px;
+  border-radius: 15px;
+  background-color: darkgrey;
+}
+.container[pagination="true"] .pagination .pagination-item.active,
+intro-section[pagination="true"] .pagination .pagination-item.active,
+video-section[pagination="true"] .pagination .pagination-item.active,
+audio-section[pagination="true"] .pagination .pagination-item.active,
+noor-section[pagination="true"] .pagination .pagination-item.active,
+content-section[pagination="true"] .pagination .pagination-item.active,
+info-section[pagination="true"] .pagination .pagination-item.active,
+what-we-learned-section[pagination="true"] .pagination .pagination-item.active,
+next-lesson-section[pagination="true"] .pagination .pagination-item.active,
+index-section[pagination="true"] .pagination .pagination-item.active,
+chapter-section[pagination="true"] .pagination .pagination-item.active,
+definition-section[pagination="true"] .pagination .pagination-item.active,
+activity-time-section[pagination="true"] .pagination .pagination-item.active {
+  background-color: red;
+}
+.container p,
+intro-section p,
+video-section p,
+audio-section p,
+noor-section p,
+content-section p,
+info-section p,
+what-we-learned-section p,
+next-lesson-section p,
+index-section p,
+chapter-section p,
+definition-section p,
+activity-time-section p,
+.container h1,
+intro-section h1,
+video-section h1,
+audio-section h1,
+noor-section h1,
+content-section h1,
+info-section h1,
+what-we-learned-section h1,
+next-lesson-section h1,
+index-section h1,
+chapter-section h1,
+definition-section h1,
+activity-time-section h1,
+.container h2,
+intro-section h2,
+video-section h2,
+audio-section h2,
+noor-section h2,
+content-section h2,
+info-section h2,
+what-we-learned-section h2,
+next-lesson-section h2,
+index-section h2,
+chapter-section h2,
+definition-section h2,
+activity-time-section h2,
+.container h3,
+intro-section h3,
+video-section h3,
+audio-section h3,
+noor-section h3,
+content-section h3,
+info-section h3,
+what-we-learned-section h3,
+next-lesson-section h3,
+index-section h3,
+chapter-section h3,
+definition-section h3,
+activity-time-section h3,
+.container h4,
+intro-section h4,
+video-section h4,
+audio-section h4,
+noor-section h4,
+content-section h4,
+info-section h4,
+what-we-learned-section h4,
+next-lesson-section h4,
+index-section h4,
+chapter-section h4,
+definition-section h4,
+activity-time-section h4,
+.container span,
+intro-section span,
+video-section span,
+audio-section span,
+noor-section span,
+content-section span,
+info-section span,
+what-we-learned-section span,
+next-lesson-section span,
+index-section span,
+chapter-section span,
+definition-section span,
+activity-time-section span {
+  font-family: "Poppins", sans-serif;
+  line-height: 1.2em;
+}
+.container p[color="blue"],
+intro-section p[color="blue"],
+video-section p[color="blue"],
+audio-section p[color="blue"],
+noor-section p[color="blue"],
+content-section p[color="blue"],
+info-section p[color="blue"],
+what-we-learned-section p[color="blue"],
+next-lesson-section p[color="blue"],
+index-section p[color="blue"],
+chapter-section p[color="blue"],
+definition-section p[color="blue"],
+activity-time-section p[color="blue"],
+.container h1[color="blue"],
+intro-section h1[color="blue"],
+video-section h1[color="blue"],
+audio-section h1[color="blue"],
+noor-section h1[color="blue"],
+content-section h1[color="blue"],
+info-section h1[color="blue"],
+what-we-learned-section h1[color="blue"],
+next-lesson-section h1[color="blue"],
+index-section h1[color="blue"],
+chapter-section h1[color="blue"],
+definition-section h1[color="blue"],
+activity-time-section h1[color="blue"],
+.container h2[color="blue"],
+intro-section h2[color="blue"],
+video-section h2[color="blue"],
+audio-section h2[color="blue"],
+noor-section h2[color="blue"],
+content-section h2[color="blue"],
+info-section h2[color="blue"],
+what-we-learned-section h2[color="blue"],
+next-lesson-section h2[color="blue"],
+index-section h2[color="blue"],
+chapter-section h2[color="blue"],
+definition-section h2[color="blue"],
+activity-time-section h2[color="blue"],
+.container h3[color="blue"],
+intro-section h3[color="blue"],
+video-section h3[color="blue"],
+audio-section h3[color="blue"],
+noor-section h3[color="blue"],
+content-section h3[color="blue"],
+info-section h3[color="blue"],
+what-we-learned-section h3[color="blue"],
+next-lesson-section h3[color="blue"],
+index-section h3[color="blue"],
+chapter-section h3[color="blue"],
+definition-section h3[color="blue"],
+activity-time-section h3[color="blue"],
+.container h4[color="blue"],
+intro-section h4[color="blue"],
+video-section h4[color="blue"],
+audio-section h4[color="blue"],
+noor-section h4[color="blue"],
+content-section h4[color="blue"],
+info-section h4[color="blue"],
+what-we-learned-section h4[color="blue"],
+next-lesson-section h4[color="blue"],
+index-section h4[color="blue"],
+chapter-section h4[color="blue"],
+definition-section h4[color="blue"],
+activity-time-section h4[color="blue"],
+.container span[color="blue"],
+intro-section span[color="blue"],
+video-section span[color="blue"],
+audio-section span[color="blue"],
+noor-section span[color="blue"],
+content-section span[color="blue"],
+info-section span[color="blue"],
+what-we-learned-section span[color="blue"],
+next-lesson-section span[color="blue"],
+index-section span[color="blue"],
+chapter-section span[color="blue"],
+definition-section span[color="blue"],
+activity-time-section span[color="blue"] {
+  color: #37b7e6;
+  font-weight: bold;
+}
+.container p[color="pink"],
+intro-section p[color="pink"],
+video-section p[color="pink"],
+audio-section p[color="pink"],
+noor-section p[color="pink"],
+content-section p[color="pink"],
+info-section p[color="pink"],
+what-we-learned-section p[color="pink"],
+next-lesson-section p[color="pink"],
+index-section p[color="pink"],
+chapter-section p[color="pink"],
+definition-section p[color="pink"],
+activity-time-section p[color="pink"],
+.container h1[color="pink"],
+intro-section h1[color="pink"],
+video-section h1[color="pink"],
+audio-section h1[color="pink"],
+noor-section h1[color="pink"],
+content-section h1[color="pink"],
+info-section h1[color="pink"],
+what-we-learned-section h1[color="pink"],
+next-lesson-section h1[color="pink"],
+index-section h1[color="pink"],
+chapter-section h1[color="pink"],
+definition-section h1[color="pink"],
+activity-time-section h1[color="pink"],
+.container h2[color="pink"],
+intro-section h2[color="pink"],
+video-section h2[color="pink"],
+audio-section h2[color="pink"],
+noor-section h2[color="pink"],
+content-section h2[color="pink"],
+info-section h2[color="pink"],
+what-we-learned-section h2[color="pink"],
+next-lesson-section h2[color="pink"],
+index-section h2[color="pink"],
+chapter-section h2[color="pink"],
+definition-section h2[color="pink"],
+activity-time-section h2[color="pink"],
+.container h3[color="pink"],
+intro-section h3[color="pink"],
+video-section h3[color="pink"],
+audio-section h3[color="pink"],
+noor-section h3[color="pink"],
+content-section h3[color="pink"],
+info-section h3[color="pink"],
+what-we-learned-section h3[color="pink"],
+next-lesson-section h3[color="pink"],
+index-section h3[color="pink"],
+chapter-section h3[color="pink"],
+definition-section h3[color="pink"],
+activity-time-section h3[color="pink"],
+.container h4[color="pink"],
+intro-section h4[color="pink"],
+video-section h4[color="pink"],
+audio-section h4[color="pink"],
+noor-section h4[color="pink"],
+content-section h4[color="pink"],
+info-section h4[color="pink"],
+what-we-learned-section h4[color="pink"],
+next-lesson-section h4[color="pink"],
+index-section h4[color="pink"],
+chapter-section h4[color="pink"],
+definition-section h4[color="pink"],
+activity-time-section h4[color="pink"],
+.container span[color="pink"],
+intro-section span[color="pink"],
+video-section span[color="pink"],
+audio-section span[color="pink"],
+noor-section span[color="pink"],
+content-section span[color="pink"],
+info-section span[color="pink"],
+what-we-learned-section span[color="pink"],
+next-lesson-section span[color="pink"],
+index-section span[color="pink"],
+chapter-section span[color="pink"],
+definition-section span[color="pink"],
+activity-time-section span[color="pink"] {
+  color: #dd3e77;
+  font-weight: bold;
+}
+.container p[color="green"],
+intro-section p[color="green"],
+video-section p[color="green"],
+audio-section p[color="green"],
+noor-section p[color="green"],
+content-section p[color="green"],
+info-section p[color="green"],
+what-we-learned-section p[color="green"],
+next-lesson-section p[color="green"],
+index-section p[color="green"],
+chapter-section p[color="green"],
+definition-section p[color="green"],
+activity-time-section p[color="green"],
+.container h1[color="green"],
+intro-section h1[color="green"],
+video-section h1[color="green"],
+audio-section h1[color="green"],
+noor-section h1[color="green"],
+content-section h1[color="green"],
+info-section h1[color="green"],
+what-we-learned-section h1[color="green"],
+next-lesson-section h1[color="green"],
+index-section h1[color="green"],
+chapter-section h1[color="green"],
+definition-section h1[color="green"],
+activity-time-section h1[color="green"],
+.container h2[color="green"],
+intro-section h2[color="green"],
+video-section h2[color="green"],
+audio-section h2[color="green"],
+noor-section h2[color="green"],
+content-section h2[color="green"],
+info-section h2[color="green"],
+what-we-learned-section h2[color="green"],
+next-lesson-section h2[color="green"],
+index-section h2[color="green"],
+chapter-section h2[color="green"],
+definition-section h2[color="green"],
+activity-time-section h2[color="green"],
+.container h3[color="green"],
+intro-section h3[color="green"],
+video-section h3[color="green"],
+audio-section h3[color="green"],
+noor-section h3[color="green"],
+content-section h3[color="green"],
+info-section h3[color="green"],
+what-we-learned-section h3[color="green"],
+next-lesson-section h3[color="green"],
+index-section h3[color="green"],
+chapter-section h3[color="green"],
+definition-section h3[color="green"],
+activity-time-section h3[color="green"],
+.container h4[color="green"],
+intro-section h4[color="green"],
+video-section h4[color="green"],
+audio-section h4[color="green"],
+noor-section h4[color="green"],
+content-section h4[color="green"],
+info-section h4[color="green"],
+what-we-learned-section h4[color="green"],
+next-lesson-section h4[color="green"],
+index-section h4[color="green"],
+chapter-section h4[color="green"],
+definition-section h4[color="green"],
+activity-time-section h4[color="green"],
+.container span[color="green"],
+intro-section span[color="green"],
+video-section span[color="green"],
+audio-section span[color="green"],
+noor-section span[color="green"],
+content-section span[color="green"],
+info-section span[color="green"],
+what-we-learned-section span[color="green"],
+next-lesson-section span[color="green"],
+index-section span[color="green"],
+chapter-section span[color="green"],
+definition-section span[color="green"],
+activity-time-section span[color="green"] {
+  color: red;
+  font-weight: bold;
+}
+.container p[color="orange"],
+intro-section p[color="orange"],
+video-section p[color="orange"],
+audio-section p[color="orange"],
+noor-section p[color="orange"],
+content-section p[color="orange"],
+info-section p[color="orange"],
+what-we-learned-section p[color="orange"],
+next-lesson-section p[color="orange"],
+index-section p[color="orange"],
+chapter-section p[color="orange"],
+definition-section p[color="orange"],
+activity-time-section p[color="orange"],
+.container h1[color="orange"],
+intro-section h1[color="orange"],
+video-section h1[color="orange"],
+audio-section h1[color="orange"],
+noor-section h1[color="orange"],
+content-section h1[color="orange"],
+info-section h1[color="orange"],
+what-we-learned-section h1[color="orange"],
+next-lesson-section h1[color="orange"],
+index-section h1[color="orange"],
+chapter-section h1[color="orange"],
+definition-section h1[color="orange"],
+activity-time-section h1[color="orange"],
+.container h2[color="orange"],
+intro-section h2[color="orange"],
+video-section h2[color="orange"],
+audio-section h2[color="orange"],
+noor-section h2[color="orange"],
+content-section h2[color="orange"],
+info-section h2[color="orange"],
+what-we-learned-section h2[color="orange"],
+next-lesson-section h2[color="orange"],
+index-section h2[color="orange"],
+chapter-section h2[color="orange"],
+definition-section h2[color="orange"],
+activity-time-section h2[color="orange"],
+.container h3[color="orange"],
+intro-section h3[color="orange"],
+video-section h3[color="orange"],
+audio-section h3[color="orange"],
+noor-section h3[color="orange"],
+content-section h3[color="orange"],
+info-section h3[color="orange"],
+what-we-learned-section h3[color="orange"],
+next-lesson-section h3[color="orange"],
+index-section h3[color="orange"],
+chapter-section h3[color="orange"],
+definition-section h3[color="orange"],
+activity-time-section h3[color="orange"],
+.container h4[color="orange"],
+intro-section h4[color="orange"],
+video-section h4[color="orange"],
+audio-section h4[color="orange"],
+noor-section h4[color="orange"],
+content-section h4[color="orange"],
+info-section h4[color="orange"],
+what-we-learned-section h4[color="orange"],
+next-lesson-section h4[color="orange"],
+index-section h4[color="orange"],
+chapter-section h4[color="orange"],
+definition-section h4[color="orange"],
+activity-time-section h4[color="orange"],
+.container span[color="orange"],
+intro-section span[color="orange"],
+video-section span[color="orange"],
+audio-section span[color="orange"],
+noor-section span[color="orange"],
+content-section span[color="orange"],
+info-section span[color="orange"],
+what-we-learned-section span[color="orange"],
+next-lesson-section span[color="orange"],
+index-section span[color="orange"],
+chapter-section span[color="orange"],
+definition-section span[color="orange"],
+activity-time-section span[color="orange"] {
+  color: #faa31a;
+  font-weight: bold;
+}
+
+.content,
+card content,
+know-more modal content,
+card card-content,
+know-more modal card-content,
+audio-section content,
+audio-section slide,
+noor-section content,
+noor-section slide,
+content-section content,
+content-section slide,
+info-section content,
+info-section slide,
+info-section[type="feedback"] content,
+info-section[type="feedback"] slide,
+index-section content,
+chapter-section content,
+definition-section content,
+definition-section slide,
+activity-time-section content {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 100vw;
+  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
+  padding: 45px;
+  text-align: center;
+  max-width: 100vw;
+}
+
+#slider-container {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  height: 100vh;
+  touch-action: pan-x;
+  overflow-x: scroll;
+}
+
+.slide {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 100vw;
+  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
+  padding: 45px;
+  text-align: center;
+  max-height: 100vh;
+  max-width: 100vw;
+}
+
+#prevBtn,
+#nextBtn {
+  position: fixed;
+  top: 50vh;
+  font-size: 2em;
+  cursor: pointer;
+  border: none;
+  padding: 10px;
+  z-index: 1000;
+  touch-action: none;
+  height: auto;
+  line-height: 1;
+}
+
+#prevBtn {
+  left: 5vw;
+}
+
+#nextBtn {
+  right: 5vw;
+}
+
+card,
+know-more modal {
+  width: 65vw;
+  min-height: 65vw;
+  position: absolute;
+  top: 20%;
+  left: 12%;
+  right: 12%;
+  display: grid;
+  border-radius: 40px;
+  outline-offset: -20px;
+  padding: 15px;
+  transition: transform 0.5s ease;
+  transform-origin: bottom center;
+  cursor: pointer;
+  background-color: white;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+card[color="pink"],
+know-more modal[color="pink"] {
+  border: 5px solid #dd3e77;
+  outline: 3px dashed #dd3e77;
+}
+card[color="blue"],
+know-more modal[color="blue"] {
+  border: 5px solid #37b7e6;
+  outline: 3px dashed #37b7e6;
+}
+card[color="orange"],
+know-more modal[color="orange"] {
+  border: 5px solid #faa31a;
+  outline: 3px dashed #faa31a;
+}
+card[color="green"],
+know-more modal[color="green"] {
+  border: 5px solid red;
+  outline: 3px dashed red;
+}
+card[left],
+know-more modal[left] {
+  transform: rotate(-5deg);
+}
+card[right],
+know-more modal[right] {
+  transform: rotate(5deg);
+}
+card.active,
+know-more modal.active {
+  transform: rotate(0);
+  z-index: 1;
+}
+card content,
+know-more modal content,
+card card-content,
+know-more modal card-content {
+  height: 100%;
+  padding: 5%;
+  background-color: #fdfaf7;
+  border-radius: 20px;
+}
+card content img,
+know-more modal content img,
+card card-content img,
+know-more modal card-content img {
+  height: auto;
+  width: 50%;
+  max-width: 90%;
+  max-height: 300px;
+  object-fit: contain;
+  pointer-events: none;
+}
+card content p,
+know-more modal content p,
+card card-content p,
+know-more modal card-content p {
+  text-align: center;
+  margin: 0 5%;
+}
+card.animate-leave,
+know-more modal.animate-leave {
+  animation: leave 0.3s;
+  animation-fill-mode: both;
+  animation-timing-function: ease-in-out;
+}
+card.right-card.animate-back,
+know-more modal.right-card.animate-back {
+  animation: backR 0.3s;
+  animation-fill-mode: both;
+  animation-timing-function: ease-in-out;
+}
+card.left-card.animate-back,
+know-more modal.left-card.animate-back {
+  animation: backL 0.3s;
+  animation-fill-mode: both;
+  animation-timing-function: ease-in-out;
+}
+@keyframes leave {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-110%);
+    transform: translateY(-110%) translateX(-20%);
+  }
+}
+@keyframes backR {
+  from {
+    transform: translateY(-110%);
+    transform: translateY(-110%) translateX(-20%);
+  }
+  to {
+    transform: translateY(0) rotate(5deg);
+  }
+}
+@keyframes backL {
+  from {
+    transform: translateY(-110%);
+    transform: translateY(-110%) translateX(-20%);
+  }
+  to {
+    transform: translateY(0) rotate(-5deg);
+  }
+}
+
+noora-button,
+know-more item {
+  border-radius: 25px;
+  background-color: red;
+  font-family: "Poppins", sans-serif;
+  line-height: 1.2em;
+  color: white;
+  padding: 5%;
+}
+noora-button[color="pink"],
+know-more item[color="pink"] {
+  background-color: #dd3e77;
+}
+noora-button[color="orange"],
+know-more item[color="orange"] {
+  background-color: #faa31a;
+}
+noora-button[color="blue"],
+know-more item[color="blue"] {
+  background-color: #37b7e6;
+}
+noora-button[color="green"],
+know-more item[color="green"] {
+  background-color: red;
+}
+
+/* Audio embed */
+button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  outline: none;
+  width: 40px;
+  height: 40px;
+  float: left;
+}
+
+.audio-player-container {
+  --seek-before-width: 0%;
+  --buffered-width: 0%;
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  height: 80px;
+  background: white;
+  border-radius: 100px;
+  box-shadow: 0 0 2px black;
+}
+.audio-player-container .play-icon {
+  margin: 24px 0 0 24px;
+  background-size: 24px;
+  background-repeat: no-repeat;
+}
+.audio-player-container .play-icon.play {
+  background-image: url("style_resources/icons/pause_icon.svg");
+}
+.audio-player-container .play-icon.pause {
+  background-image: url("style_resources/icons/play_icon.svg");
+}
+.audio-player-container .time {
+  display: inline-block;
+  text-align: center;
+  margin: 28.5px 5px 18.5px 0;
+  float: left;
+}
+
+input[type="range"] {
+  position: relative;
+  -webkit-appearance: none;
+  width: 48%;
+  padding: 0;
+  height: 19px;
+  margin: 30px 10px;
+  float: left;
+  outline: none;
+  background-color: transparent;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 5px;
+  cursor: pointer;
+  background: #37b7e6;
+  border-radius: 100px;
+}
+
+input[type="range"]::before {
+  position: absolute;
+  content: "";
+  top: 7px;
+  left: 0;
+  width: var(--seek-before-width);
+  height: 5px;
+  background-color: dimgrey;
+  cursor: pointer;
+  border-radius: 100px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  position: relative;
+  -webkit-appearance: none;
+  box-sizing: content-box;
+  height: 15px;
+  width: 15px;
+  background-color: #dd3e77;
+  cursor: pointer;
+  margin: -5px 0 0 0;
+  transform: rotate(45deg);
+}
+
+input[type="range"]:active::-webkit-slider-thumb {
+  transform: rotate(45deg) scale(1.2);
+  background: #dd3e77;
+}
+
+.columns {
+  display: flex;
+  flex-direction: row;
+}
+.columns img {
+  height: auto;
+  margin-bottom: 1.1em;
+}
+.columns > * {
+  align-self: start;
+  padding: 15px;
+  flex-basis: 0;
+  flex-grow: 1;
+}
+
+.lead {
+  font-size: 1.3em;
+}
+
+/* Fix: Desktop-specific styles to constrain content width */
+@media (min-width: 768px) {
+  /* Fix: Prevent horizontal scrollbar on desktop */
+  body {
+    overflow-x: hidden;
+  }
+  /* Fix: Desktop image constraints */
+  img {
+    max-width: 80%;
+    max-height: 30vh;
+    height: auto;
+    width: auto;
+    display: block;
+  }
+  intro-section img {
+    max-width: 80%;
+    max-height: 300px;
+    width: auto;
+    height: auto;
+  }
+  video-section video-content img {
+    max-width: 80%;
+    max-height: 80vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+  }
+  content-section {
+    position: relative;
+    overflow-x: hidden; /* Fix: Hide horizontal overflow, use JS for sliding */
+  }
+  content-section[pagination="true"] {
+    position: relative;
+  }
+  content-section[color="black"] {
+    overflow-x: visible;
+  }
+  content-section[color="black"] content,
+  content-section[color="black"] slide {
+    margin: 3% auto;
+    max-width: 90%;
+    padding: 5%;
+    max-height: 90vh;
+  }
+  content-section content,
+  content-section slide {
+    max-width: 100vw; /* Fix: Full width to show single slide */
+    flex: 0 0 100vw; /* Fix: Force single slide display */
+    max-height: 80vh; /* Fix: Prevent vertical overflow */
+    margin: 5vh auto; /* Fix: Center content horizontally and add vertical margin */
+    padding: 3% 5%; /* Fix: Reduce padding to fit content */
+    overflow-y: auto; /* Fix: Allow scrolling if content is too tall */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  content-section content img,
+  content-section slide img {
+    max-width: 60%; /* Fix: Smaller images on desktop */
+    max-height: 30vh; /* Fix: Constrain image height */
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    margin: 0 auto 20px auto;
+  }
+  content-section content p,
+  content-section slide p {
+    max-width: 100%;
+    margin: 10px 0;
+  }
+  content-section #prevBtn,
+  content-section #nextBtn {
+    bottom: 120px;
+    transform: none;
+    border-radius: 25px;
+    background-color: red;
+    font-size: 1.2em;
+    font-weight: 900;
+    color: white;
+    text-align: center;
+    padding: 5px 40px;
+    position: absolute;
+    height: auto;
+    line-height: 1.2;
+    max-height: 40px;
+    min-height: 40px;
+    min-width: 120px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+  }
+  content-section #prevBtn {
+    left: calc(50% - 100px);
+  }
+  content-section #prevBtn:after {
+    padding-left: 5px;
+    content: "PREV";
+  }
+  content-section #nextBtn {
+    right: calc(50% - 100px);
+  }
+  content-section #nextBtn:before {
+    padding-right: 5px;
+    content: "NEXT";
+  }
+  /* Fix: Desktop modal constraints */
+  know-more modal {
+    max-width: 500px;
+    max-height: 300px;
+    overflow-y: auto;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    transform: translate(-50%, -50%);
+  }
+  know-more item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  know-more item img {
+    margin: 0 auto;
+  }
+  /* Fix: Desktop modal constraints */
+  know-more modal[color="blue"] {
+    top: 50%;
+    left: 50%;
+    right: auto;
+    transform: translate(-50%, -50%);
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  modal {
+    max-width: 90vw;
+    max-height: 90vh;
+    min-height: 20vw; /* Fix: Remove min-height constraint from card class */
+    overflow-y: auto;
+  }
+  /* Fix: Desktop container and slider overflow */
+  .container,
+  intro-section,
+  video-section,
+  audio-section,
+  noor-section,
+  content-section,
+  info-section,
+  what-we-learned-section,
+  next-lesson-section,
+  index-section,
+  chapter-section,
+  definition-section,
+  activity-time-section {
+    overflow-x: hidden;
+  }
+  #slider-container {
+    overflow-x: hidden;
+  }
+  .container[pagination="true"] .pagination,
+  intro-section[pagination="true"] .pagination,
+  video-section[pagination="true"] .pagination,
+  audio-section[pagination="true"] .pagination,
+  noor-section[pagination="true"] .pagination,
+  content-section[pagination="true"] .pagination,
+  info-section[pagination="true"] .pagination,
+  what-we-learned-section[pagination="true"] .pagination,
+  next-lesson-section[pagination="true"] .pagination,
+  index-section[pagination="true"] .pagination,
+  chapter-section[pagination="true"] .pagination,
+  definition-section[pagination="true"] .pagination,
+  activity-time-section[pagination="true"] .pagination {
+    position: absolute;
+    top: 20px;
+    z-index: 1000;
+  }
+  content-section[pagination="true"] .pagination {
+    position: absolute;
+    top: 20px;
+    z-index: 1000;
+  }
+  .slide {
+    position: relative;
+  }
+  /* Fix: Desktop navigation buttons */
+  #prevBtn,
+  #nextBtn {
+    position: absolute;
+    z-index: 1000;
+    user-select: none;
+    transition:
+      transform 0.2s,
+      opacity 0.2s;
+  }
+  content-section[pagination="true"] #prevBtn,
+  content-section[pagination="true"] #nextBtn {
+    position: absolute;
+    z-index: 1000;
+  }
+  #prevBtn:hover,
+  #nextBtn:hover {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+  #prevBtn {
+    left: 2%;
+  }
+  #nextBtn {
+    right: 2%;
+  }
+  /* Fix: Desktop background positioning for video-section */
+  video-section {
+    background-position:
+      top 10% right -50px,
+      top 5% right -150px,
+      bottom 10% left -50px,
+      bottom 5% left -150px;
+  }
+  /* Fix: Desktop background positioning for audio-section slides */
+  audio-section slide {
+    background-position:
+      top -50px left -150px,
+      bottom -150px right -150px;
+  }
+  audio-section slide:nth-of-type(even) {
+    background-position:
+      top -50px left calc(100% - 150px),
+      bottom -150px right calc(100% - 150px);
+  }
+  /* Fix: Desktop background positioning for noor-section slides */
+  noor-section {
+    position: relative;
+  }
+  noor-section slide {
+    position: relative;
+    background-position:
+      top -25px right -50px,
+      bottom -150px left -150px;
+  }
+  noor-section slide:nth-of-type(even) {
+    background-position:
+      top -25px right calc(100% - 50px),
+      bottom -150px left calc(100% - 150px);
+  }
+  noor-section #prevBtn,
+  noor-section #nextBtn {
+    position: absolute;
+    z-index: 1000;
+  }
+  noor-section #prevBtn {
+    left: 2%;
+  }
+  noor-section #nextBtn {
+    right: 2%;
+  }
+  /* Fix: Desktop positioning for info-section */
+  info-section {
+    position: relative;
+  }
+  info-section content,
+  info-section slide {
+    position: relative;
+  }
+  /* Fix: Desktop background positioning for index-section */
+  index-section {
+    background-position:
+      top -25px right -25px,
+      bottom -150px left -150px;
+  }
+  /* Fix: Desktop background positioning for definition-section */
+  definition-section {
+    background-position:
+      top -150px right -150px,
+      bottom -150px left -150px;
+  }
+  /* Fix: Desktop card sizing - reduce from 65vw to smaller dimensions */
+  card,
+  know-more modal {
+    width: 30vw;
+    min-height: 30vw;
+    left: 30%;
+    right: 30%;
+  }
+  card content img,
+  know-more modal content img,
+  card card-content img,
+  know-more modal card-content img {
+    max-height: 300px !important;
+  }
+}
+
+/*# sourceMappingURL=style.css.map */
