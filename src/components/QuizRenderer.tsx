@@ -82,19 +82,64 @@ function replaceFeedbackTitle(html: string, type: FeedbackType): string {
  *  When showfeedback=1, these trivial messages don't warrant a popup. */
 function isTrivialFeedbackHtml(html: string): boolean {
   if (!html || typeof html !== "string") return true;
-  const div =
-    typeof document !== "undefined" ? document.createElement("div") : null;
-  if (!div) return false;
-  div.innerHTML = html;
-  const text = (div.textContent || div.innerText || "").trim().toLowerCase();
-  if (!text) return true;
-  const trivialMessages = [
-    "Your answer is correct.",
-    "your answer is incorrect.",
-  ];
-  return trivialMessages.includes(text);
-}
 
+  const root =
+    typeof document !== "undefined" ? document.createElement("div") : null;
+  if (!root) return false;
+  root.innerHTML = html;
+
+  // Remove non-user-facing content first
+  root.querySelectorAll("style,script,noscript,template").forEach((el) => {
+    el.remove();
+  });
+
+  const normalize = (s: string) =>
+    s
+      .toLowerCase()
+      .replace(/\u00a0/g, " ")
+      .replace(/\u200b/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+
+  const trivialMessages = new Set([
+    "your answer is correct.",
+    "your answer is incorrect.",
+    "your answer is partially correct.",
+  ]);
+
+  // Prefer explicit feedback node if present
+  const feedbackNode = root.querySelector(".quiz-feedback-inline");
+  const feedbackText = normalize(feedbackNode?.textContent || "");
+  if (feedbackText && trivialMessages.has(feedbackText)) {
+    console.log("[QUIZ_TRIVIAL_DEBUG] matched via .quiz-feedback-inline", {
+      feedbackText,
+    });
+    return true;
+  }
+
+  // Otherwise inspect only short visible leaf text nodes (ignore long CSS/JS-like blobs)
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  const candidates: string[] = [];
+  let n: Node | null = walker.nextNode();
+  while (n) {
+    const text = normalize(n.textContent || "");
+    // Keep only short, meaningful lines likely to be feedback text
+    if (text && text.length <= 120) {
+      candidates.push(text);
+    }
+    n = walker.nextNode();
+  }
+
+  const matched = candidates.some((c) => trivialMessages.has(c));
+
+  console.log("[QUIZ_TRIVIAL_DEBUG] candidate scan", {
+    candidateCount: candidates.length,
+    sampleCandidates: candidates.slice(0, 20),
+    matched,
+  });
+
+  return matched;
+}
 /** Styled h1 for inline feedback fallback (green/red/orange/gray, center-aligned). */
 function getFeedbackTitleH1(type: FeedbackType): string {
   const title = getFeedbackTitle(type);
