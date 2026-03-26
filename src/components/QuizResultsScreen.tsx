@@ -613,12 +613,6 @@ export default function QuizResultsScreen({
                             </span>
                           </div>
                         )}
-                      {/* Feedback HTML when available (showfeedback=1 fetches HTML) */}
-                      {question.feedbackHtml && (
-                        <div className="mt-3">
-                          <FeedbackIframe srcDoc={question.feedbackHtml} />
-                        </div>
-                      )}
                     </div>
                     {!isEssay && (
                       <div className="shrink-0">

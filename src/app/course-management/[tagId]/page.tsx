@@ -31,6 +31,7 @@ import {
 import { clearLastVisitedActivity } from "@/utils/lastActivityStorage";
 import { getCourseFromIDB } from "@/utils/courseStorageIDB";
 import { clearCachedActivityTracking } from "@/utils/offlineStorageIDB";
+import { logCourseDownloadError } from "@/utils/courseDownloadErrorLogger";
 
 interface CourseWithDownloadStatus extends Course {
   isDownloaded: boolean;
@@ -195,7 +196,38 @@ export default function TagCoursesPage() {
         });
         setShowToast(true);
       }
-    } catch (error) {}
+    } catch (error) {
+      await logCourseDownloadError({
+        user: user
+          ? {
+              id: user.id,
+              username: user.username,
+            }
+          : null,
+        course: {
+          id: courseData.id,
+          shortname: courseData.shortname,
+          version: courseData.version,
+          downloadUrl: courseData.url,
+        },
+        tagId,
+        tagName,
+        error,
+      });
+
+      setCardStatuses((prev) => ({
+        ...prev,
+        [String(courseData.id)]: "Download failed",
+      }));
+
+      setTimeout(() => {
+        setCardStatuses((prev) => {
+          const next = { ...prev };
+          delete next[String(courseData.id)];
+          return next;
+        });
+      }, 5000);
+    }
   };
 
   const handlePointsEarned = (points: number, title: string) => {

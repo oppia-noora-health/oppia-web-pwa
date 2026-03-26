@@ -79,7 +79,7 @@ export function useCourseDownload(): UseCourseDownloadResult {
         const errorMessage =
           err instanceof Error ? err.message : "Failed to download course";
         setError(errorMessage);
-        return null;
+        throw err instanceof Error ? err : new Error(errorMessage);
       } finally {
         setDownloading(false);
       }

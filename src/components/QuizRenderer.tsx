@@ -89,7 +89,7 @@ function isTrivialFeedbackHtml(html: string): boolean {
   const text = (div.textContent || div.innerText || "").trim().toLowerCase();
   if (!text) return true;
   const trivialMessages = [
-    "your answer is correct.",
+    "Your answer is correct.",
     "your answer is incorrect.",
   ];
   return trivialMessages.includes(text);
