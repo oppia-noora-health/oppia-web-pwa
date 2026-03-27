@@ -85,7 +85,7 @@ export default function CourseManagementPage() {
 
         // Sort tags alphabetically by name
         const sortedTags = response.tags.sort((a, b) =>
-          a.name.localeCompare(b.name)
+          a.name.localeCompare(b.name),
         );
 
         setTags(sortedTags);
@@ -117,7 +117,7 @@ export default function CourseManagementPage() {
         // Provide more specific error messages
         if (error.code === "ECONNABORTED") {
           setError(
-            "Request timed out. Please check your internet connection and try again."
+            "Request timed out. Please check your internet connection and try again.",
           );
         } else if (error.response?.status === 404) {
           setError("Course categories not found. Please contact support.");
@@ -138,7 +138,7 @@ export default function CourseManagementPage() {
     if (isNavigating) return;
     setIsNavigating(true);
     router.push(
-      `/course-management/${tag.id}?name=${encodeURIComponent(tag.name)}`
+      `/course-management/${tag.id}?name=${encodeURIComponent(tag.name)}`,
     );
     // reset navigating flag if navigation doesn't happen within 1.5s
     setTimeout(() => setIsNavigating(false), 1500);
@@ -178,7 +178,7 @@ export default function CourseManagementPage() {
         className="p-4 md:p-6 max-w-7xl mx-auto">
         {loading ? (
           // Loading Skeleton
-          (<div className="space-y-3 md:space-y-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-4">
+          <div className="space-y-3 md:space-y-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-4">
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <Card key={i}>
                 <CardHeader>
@@ -187,32 +187,32 @@ export default function CourseManagementPage() {
                 </CardHeader>
               </Card>
             ))}
-          </div>)
+          </div>
         ) : error ? (
           // Error State
-          (<div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
             <p className="text-red-600 font-medium">{error}</p>
             <Button
               onClick={() => window.location.reload()}
               className="mt-4 bg-red-500 hover:bg-red-600">
               Retry
             </Button>
-          </div>)
+          </div>
         ) : tags.length === 0 ? (
           // Empty State
-          (<div className="bg-white rounded-lg p-8 text-center shadow-sm">
+          <div className="bg-white rounded-lg p-8 text-center shadow-sm">
             <p className="text-gray-600 text-lg mb-2">
               No categories available
             </p>
             <p className="text-gray-500 text-sm">
               There are no course categories available at the moment.
             </p>
-          </div>)
+          </div>
         ) : isNavigating ? (
           <PageLoading text={t("common.loading")} />
         ) : (
           // Tags Grid
-          (<div className="space-y-6">
+          <div className="space-y-6">
             {" "}
             {/* Info Card */}
             <Card className="bg-cyan-50 border-cyan-200">
@@ -249,7 +249,7 @@ export default function CourseManagementPage() {
                           <FolderOpen className="w-6 h-6 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="text-base font-semibold text-gray-900 mb-1 truncate">
+                          <h3 className="text-base font-semibold text-gray-900 mb-1 truncate text-wrap">
                             {tag.name}
                           </h3>
                           <p className="text-sm text-gray-600">
@@ -266,7 +266,7 @@ export default function CourseManagementPage() {
                 </Card>
               ))}
             </div>
-          </div>)
+          </div>
         )}
       </div>
     </div>

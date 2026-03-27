@@ -633,7 +633,7 @@ async function submitTrackersInternal(
 
       const apiUrl = `${API_BASE_URL}/tracker/`;
 
-      console.log("[trackerSubmission] PATCH /tracker/ body", requestData);
+      // console.log("[trackerSubmission] PATCH /tracker/ body", requestData);
 
       // Send API request
       const response = await fetch(apiUrl, {
@@ -660,10 +660,10 @@ async function submitTrackersInternal(
         );
       }
 
-      console.log(`[trackerSubmission] ✅ PATCH /tracker/ OK`, {
-        status: response.status,
-        batchSize: batch.length,
-      });
+      // console.log(`[trackerSubmission] ✅ PATCH /tracker/ OK`, {
+      //   status: response.status,
+      //   batchSize: batch.length,
+      // });
 
       // Parse response
       let result: TrackerSubmissionResponse;
@@ -725,21 +725,6 @@ async function submitQuizAttemptsInternal(
       const jsonData = await quizAttemptToJSON(attempt, userId);
       const apiUrl = `${API_BASE_URL}/quizattempt/`;
       const bodyStr = JSON.stringify(jsonData);
-
-      console.log(`[trackerSubmission] POST /quizattempt/ body:`, jsonData);
-      console.log(`[trackerSubmission] Raw attempt from IDB:`, {
-        id: attempt.id,
-        quizDigest: attempt.quizDigest,
-        quizId: attempt.quizId,
-        instanceId: attempt.instanceId,
-        score: attempt.score,
-        maxScore: attempt.maxScore,
-        timetaken: attempt.timetaken,
-        passed: attempt.passed,
-        submittedDate: attempt.submittedDate,
-        responsesCount: attempt.responses?.length ?? 0,
-        courseShortname: attempt.courseShortname,
-      });
 
       // Send API request
       const response = await fetch(apiUrl, {

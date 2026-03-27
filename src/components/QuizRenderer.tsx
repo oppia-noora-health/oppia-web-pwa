@@ -3,13 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { BackButton } from "@/components/ui/back-button";
-import {
-  CheckCircle2,
-  XCircle,
-  ChevronRight,
-  PlayCircle,
-  Check,
-} from "lucide-react";
+import { XCircle, ChevronRight, PlayCircle, Check } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useTranslation } from "@/hooks/useTranslation";
