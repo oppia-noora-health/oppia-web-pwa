@@ -355,18 +355,10 @@ export default function TagCoursesPage() {
       const newCompletionMap =
         activityTrackingService.createCompletionMap(trackingData);
 
-      console.log(
-        `[UPDATE_ACTIVITY] Updating Zustand for course ${courseIdStr} with ${newCompletionMap.size} completed activities`,
-        Array.from(newCompletionMap.entries()).slice(0, 5),
-      );
-
       setCompletionData(courseIdStr, newCompletionMap);
 
       // Verify it was stored
       const verifyStored = getCompletionData(courseIdStr);
-      console.log(
-        `[UPDATE_ACTIVITY] Verification: Zustand now has ${verifyStored?.size || 0} activities for course ${courseIdStr}`,
-      );
 
       localStorage.removeItem(`course_reset_${courseIdStr}`);
 

@@ -76,27 +76,16 @@ export function markPreTestAttempted(
   quizId: string | number,
 ): void {
   if (typeof window === "undefined") {
-    console.log(
-      `[PreTest] ⚠️ markPreTestAttempted called on server-side, skipping`,
-    );
     return;
   }
 
-  console.log(
-    `[PreTest] 📝 markPreTestAttempted called — courseId: ${courseId}, quizId: ${quizId}`,
-  );
   const attempts = getAllPreTestAttempts();
-  console.log(`[PreTest] Retrieved attempts array, length: ${attempts.length}`);
 
   // Check if already exists
   const existingIndex = attempts.findIndex(
     (attempt) =>
       attempt.courseId === courseId &&
       String(attempt.quizId) === String(quizId),
-  );
-
-  console.log(
-    `[PreTest] Existing index: ${existingIndex}, creating ${existingIndex >= 0 ? "update" : "new"} entry`,
   );
 
   if (existingIndex >= 0) {
@@ -113,19 +102,12 @@ export function markPreTestAttempted(
     });
   }
 
-  console.log(
-    `[PreTest] Saving attempts array with length: ${attempts.length}`,
-  );
   saveAllPreTestAttempts(attempts);
-  console.log(`[PreTest] Saved to localStorage key: ${PRETEST_STORAGE_KEY}`);
 
   // Force a synchronous read to verify it was saved
   const verifySaved = getAllPreTestAttempts();
   const verifyFound = verifySaved.find(
     (a) => a.courseId === courseId && a.quizId === String(quizId),
-  );
-  console.log(
-    `[PreTest] ✅ Verification — found: ${!!verifyFound}, total entries: ${verifySaved.length}`,
   );
 }
 
@@ -266,9 +248,6 @@ export function isPreTestCompleted(
     const attempted = hasAttemptedPreTest(courseId, quizId);
 
     const result = resultsShown || attempted;
-    console.log(
-      `[PreTest] isPreTestCompleted — courseId: ${courseId}, quizId: ${quizId}, resultsShown: ${resultsShown}, attempted: ${attempted}, result: ${result}`,
-    );
 
     // Pre-test is completed if EITHER results were shown OR it's marked as attempted
     // Using OR logic so offline users aren't blocked when one flag is missing

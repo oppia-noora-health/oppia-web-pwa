@@ -105,9 +105,6 @@ function isTrivialFeedbackHtml(html: string): boolean {
   const feedbackNode = root.querySelector(".quiz-feedback-inline");
   const feedbackText = normalize(feedbackNode?.textContent || "");
   if (feedbackText && trivialMessages.has(feedbackText)) {
-    console.log("[QUIZ_TRIVIAL_DEBUG] matched via .quiz-feedback-inline", {
-      feedbackText,
-    });
     return true;
   }
 
@@ -125,12 +122,6 @@ function isTrivialFeedbackHtml(html: string): boolean {
   }
 
   const matched = candidates.some((c) => trivialMessages.has(c));
-
-  console.log("[QUIZ_TRIVIAL_DEBUG] candidate scan", {
-    candidateCount: candidates.length,
-    sampleCandidates: candidates.slice(0, 20),
-    matched,
-  });
 
   return matched;
 }
@@ -222,11 +213,6 @@ export default function QuizRenderer({
 }: QuizRendererProps) {
   const { t } = useTranslation();
   const user = useAuthStore((state) => state.user);
-
-  // Log component mount/props
-  console.log(
-    `[QuizRenderer] 🚀 Mounted — isPreTest: ${isPreTest}, quizId: ${quizData.id}, onPreTestComplete: ${!!onPreTestComplete}, courseId: ${courseId}`,
-  );
 
   // LocalStorage key for persisting pre-test completion/results visibility
   const preTestResultsKey =
@@ -535,9 +521,7 @@ export default function QuizRenderer({
         respFile ?? typeSpecificFile ?? anyFile ?? null;
       const shortname = quizData.courseShortname;
       const server = serverUrl?.replace(/\/+$/, "") ?? "";
-      console.log(
-        `[QUIZ_FB_DEBUG] Q${idx} | type=${type} | respFile=${respFile} | typeSpecificFile=${typeSpecificFile} | anyFile=${anyFile} | resolvedFile=${fileName} | server=${!!server} | shortname=${shortname} | courseId=${courseId}`,
-      );
+
       const baseUrl =
         server && shortname
           ? `${server.replace(/\/$/, "")}/media/courses/${shortname}/`
@@ -556,21 +540,13 @@ export default function QuizRenderer({
           }</div>`,
         );
       } else if (server && shortname && fileName) {
-        console.log(
-          `[QUIZ_FB_DEBUG] Q${idx} | ONLINE fetch: ${server}/media/courses/${shortname}/${fileName}`,
-        );
         try {
           html = await fetchHtmlContent(server, shortname, fileName);
-          console.log(
-            `[QUIZ_FB_DEBUG] Q${idx} | ONLINE fetch OK, html length=${html?.length}`,
-          );
+
           html = replaceFeedbackTitle(html, type);
         } catch (err) {
-          console.log(`[QUIZ_FB_DEBUG] Q${idx} | ONLINE fetch FAILED:`, err);
           const inline = getInlineFeedbackText(q, type);
-          console.log(
-            `[QUIZ_FB_DEBUG] Q${idx} | fallback inline text: "${inline}"`,
-          );
+
           html = wrapAsHtmlDocument(
             `${getFeedbackTitleH1(type)}<div class="quiz-feedback-inline">${
               baseUrl
@@ -582,14 +558,9 @@ export default function QuizRenderer({
           );
         }
       } else if (!server && courseId && fileName) {
-        console.log(
-          `[QUIZ_FB_DEBUG] Q${idx} | OFFLINE load: courseId=${courseId}, file=${fileName}`,
-        );
         try {
           const offlineHtml = await loadFileFromCourse(courseId, fileName);
-          console.log(
-            `[QUIZ_FB_DEBUG] Q${idx} | OFFLINE loadFileFromCourse result: ${offlineHtml ? `found (${offlineHtml.length} chars)` : "NULL/empty"}`,
-          );
+
           if (offlineHtml) {
             const processed = await processHtmlForOfflineMedia(
               offlineHtml,
@@ -598,9 +569,7 @@ export default function QuizRenderer({
             html = replaceFeedbackTitle(processed, type);
           } else {
             const inline = getInlineFeedbackText(q, type);
-            console.log(
-              `[QUIZ_FB_DEBUG] Q${idx} | OFFLINE file empty, fallback inline: "${inline}"`,
-            );
+
             html = wrapAsHtmlDocument(
               `${getFeedbackTitleH1(type)}<div class="quiz-feedback-inline">${inline.replace(
                 /@@PLUGINFILE@@\/?/g,
@@ -609,7 +578,6 @@ export default function QuizRenderer({
             );
           }
         } catch (err) {
-          console.log(`[QUIZ_FB_DEBUG] Q${idx} | OFFLINE load FAILED:`, err);
           const inline = getInlineFeedbackText(q, type);
           html = wrapAsHtmlDocument(
             `${getFeedbackTitleH1(type)}<div class="quiz-feedback-inline">${inline.replace(
@@ -619,11 +587,8 @@ export default function QuizRenderer({
           );
         }
       } else {
-        console.log(
-          `[QUIZ_FB_DEBUG] Q${idx} | NO file found & no server/courseId match — using inline fallback`,
-        );
         const inline = getInlineFeedbackText(q, type);
-        console.log(`[QUIZ_FB_DEBUG] Q${idx} | inline text: "${inline}"`);
+
         html = wrapAsHtmlDocument(
           `${getFeedbackTitleH1(type)}<div class="quiz-feedback-inline">${
             baseUrl
@@ -634,9 +599,7 @@ export default function QuizRenderer({
           }</div>`,
         );
       }
-      console.log(
-        `[QUIZ_FB_DEBUG] Q${idx} | FINAL html length=${html?.length}, isTrivial=${isTrivialFeedbackHtml(html)}, preview="${html?.substring(0, 200)}"`,
-      );
+
       return html;
     },
     [quizData.questions, quizData.courseShortname, serverUrl, courseId],
@@ -849,25 +812,15 @@ export default function QuizRenderer({
     if (isShowFeedbackPerQuestion) {
       // Pre-load feedback HTML before deciding whether to show popup
       setQuestionFeedbackLoading(true);
-      console.log(
-        `[QUIZ_FB_DEBUG] handleNextOrShowFeedback: showfeedback=1, loading feedback for Q${currentIdx}`,
-      );
+
       loadSingleQuestionFeedbackHtml(currentIdx).then((html) => {
         const trivial = isTrivialFeedbackHtml(html);
-        console.log(
-          `[QUIZ_FB_DEBUG] handleNextOrShowFeedback: Q${currentIdx} | isTrivial=${trivial} | html length=${html?.length}`,
-        );
+
         // If the content is just a trivial default message, skip the popup entirely
         if (trivial) {
-          console.log(
-            `[QUIZ_FB_DEBUG] handleNextOrShowFeedback: Q${currentIdx} | SKIPPING popup (trivial content)`,
-          );
           setQuestionFeedbackLoading(false);
           handleNextQuestion();
         } else {
-          console.log(
-            `[QUIZ_FB_DEBUG] handleNextOrShowFeedback: Q${currentIdx} | SHOWING popup`,
-          );
           // Real feedback content — show the popup with pre-loaded HTML
           setQuestionFeedbackHtml(html);
           setQuestionFeedbackLoading(false);
@@ -1036,9 +989,7 @@ export default function QuizRenderer({
 
       // CRITICAL: Persist pre-test completion IMMEDIATELY and SYNCHRONOUSLY
       // This must happen BEFORE setShowResults to prevent any race conditions
-      console.log(
-        `[QuizRenderer] 🎯 Pre-test completion check — isPreTest: ${isPreTest}, preTestResultsKey: ${preTestResultsKey}, onPreTestComplete: ${!!onPreTestComplete}`,
-      );
+
       if (isPreTest && preTestResultsKey) {
         try {
           // Update ref FIRST (synchronous, no delay)
@@ -1046,22 +997,12 @@ export default function QuizRenderer({
 
           // Update localStorage IMMEDIATELY (synchronous) - marks results as shown
           window.localStorage.setItem(preTestResultsKey, "true");
-          console.log(
-            `[QuizRenderer] ✅ Pre-test localStorage flag set — key: ${preTestResultsKey}`,
-          );
 
           // CRITICAL: Mark pre-test as attempted ONLY when results are shown
           // This ensures user can't bypass by submitting and going back
           if (onPreTestComplete) {
-            console.log(`[QuizRenderer] 📞 Calling onPreTestComplete callback`);
             onPreTestComplete();
-            console.log(
-              `[QuizRenderer] ✅ onPreTestComplete callback completed`,
-            );
           } else {
-            console.log(
-              `[QuizRenderer] ⚠️ onPreTestComplete callback is NOT defined!`,
-            );
           }
         } catch (error) {
           console.error(
@@ -1069,10 +1010,6 @@ export default function QuizRenderer({
             error,
           );
         }
-      } else {
-        if (!isPreTest) console.log(`[QuizRenderer] ⚠️ isPreTest is false`);
-        if (!preTestResultsKey)
-          console.log(`[QuizRenderer] ⚠️ preTestResultsKey is falsy`);
       }
 
       // Clear retaking flag when quiz is actually submitted and results are shown
@@ -1888,9 +1825,6 @@ export default function QuizRenderer({
     // If this is a pre-test, notify parent to mark as attempted
     // This should already be done on submit, but call it again as backup
     if (isPreTest && onPreTestComplete) {
-      console.log(
-        `[QuizRenderer] 🔄 Continue from results — calling onPreTestComplete as backup`,
-      );
       onPreTestComplete();
     }
 

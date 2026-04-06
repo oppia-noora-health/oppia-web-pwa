@@ -325,10 +325,6 @@ export default function CourseViewerPage() {
   const _rawUrl = typeof window !== "undefined" ? window.location.href : "SSR";
   const _rawSearch =
     typeof window !== "undefined" ? window.location.search : "SSR";
-  console.log(`[FLOW-1] 🔍 Viewer mount — rawURL: ${_rawUrl}`);
-  console.log(
-    `[FLOW-2] 🔍 Viewer searchParams — page: "${initialPage}", mode: "${mode}", shortname: "${shortnameParam}", pretestDone: "${pretestDoneParam}", rawSearch: "${_rawSearch}"`,
-  );
 
   // Determine if we should use streaming mode
   const [useStreaming, setUseStreaming] = useState(false);
@@ -343,11 +339,7 @@ export default function CourseViewerPage() {
   // Check if course is downloaded (to determine mode)
   useEffect(() => {
     async function determineMode() {
-      console.log(
-        `[FLOW-3] 🔍 determineMode start — mode: "${mode}", shortnameParam: "${shortnameParam}", online: ${navigator.onLine}`,
-      );
       if (mode === "streaming" && shortnameParam) {
-        console.log(`[FLOW-3a] ➡️ determineMode → streaming mode`);
         setStreamingShortname(shortnameParam);
         setUseStreaming(true);
         setCheckingMode(false);
@@ -364,9 +356,6 @@ export default function CourseViewerPage() {
         const idbCourse = await loadCourseFromIDB(courseId);
 
         if (idbCourse) {
-          console.log(
-            `[FLOW-3b] ➡️ determineMode → IDB mode (downloaded course found)`,
-          );
           setUseStreaming(false);
           setCheckingMode(false);
         } else {
@@ -377,7 +366,6 @@ export default function CourseViewerPage() {
           } else {
             // CRITICAL: Check if offline BEFORE trying API
             if (typeof navigator !== "undefined" && !navigator.onLine) {
-              console.log("[CourseViewer] Offline - checking cache only");
               const cachedCourse = useCourseCacheStore
                 .getState()
                 .getCachedCourse(courseId);
@@ -509,9 +497,6 @@ export default function CourseViewerPage() {
     skipDownload: useStreaming,
     disabled: checkingMode,
   });
-  console.log(
-    `[FLOW-5] 📦 useCourseData returned — downloadedPageIndex: ${downloadedPageIndex}, downloadedLoading: ${downloadedLoading}, courseSource: "${courseSource}", checkingMode: ${checkingMode}, useStreaming: ${useStreaming}`,
-  );
 
   const {
     loading: streamingLoading,
@@ -592,16 +577,10 @@ export default function CourseViewerPage() {
             : DEFAULT_GAMIFICATION_CONFIG.PAGE_COMPLETED_WPM;
         if (wordCount > 0) {
           const requiredTime = Math.ceil((wordCount * 60) / safeWpm);
-          console.log(
-            `[⏱️ TIME-THRESHOLD] METHOD=WPM words=${wordCount}, required=${requiredTime}s, wpm=${safeWpm}, activityTime=${section?.activityTime}, baseTime=${baseTime}`,
-          );
           return requiredTime;
         }
       }
 
-      console.log(
-        `[⏱️ TIME-THRESHOLD] METHOD=TIME_SPENT words=${wordCount}, required=${baseTime}s, activityTime=${section?.activityTime}, baseTime=${baseTime}`,
-      );
       return baseTime;
     },
     [gamificationConfig],
@@ -611,9 +590,6 @@ export default function CourseViewerPage() {
   useEffect(() => {
     if (!loading && currentContent) {
       const section = rawCourseData?.sections?.[currentPageIndex];
-      console.log(
-        `[FLOW-6] 📄 FINAL RENDER — currentPageIndex: ${currentPageIndex}, initialPage: "${initialPage}", useStreaming: ${useStreaming}, sectionTitle: "${section?.title || section?.sectionTitle || "unknown"}", sectionType: "${section?.type}", totalSections: ${rawCourseData?.sections?.length}`,
-      );
     } else if (!loading && !currentContent) {
     } else {
     }
@@ -960,9 +936,6 @@ export default function CourseViewerPage() {
             // Check if pre-test has already been attempted
             const hasAttempted = hasAttemptedPreTest(courseId, quizId);
 
-            console.log(
-              `[FLOW-7] 🔍 Pretest DETECTED — index: ${i}, quizId: ${quizId}, quizTitle: "${quizTitle}", hasAttempted: ${hasAttempted}, currentPageIndex: ${currentPageIndex}, initialPage: "${initialPage}"`,
-            );
 
             // Always set pre-test info (needed for marking as attempted)
             // But don't prevent navigation - user can always continue
@@ -980,24 +953,12 @@ export default function CourseViewerPage() {
 
   // Handle pre-test completion (called when results are shown)
   const handlePreTestComplete = useCallback(() => {
-    console.log(
-      `[PreTest] 🔔 handlePreTestComplete called — courseId: ${courseId}, preTestQuizId: ${preTestQuizId}`,
-    );
     if (preTestQuizId) {
-      console.log(
-        `[PreTest] ✏️ Calling markPreTestAttempted with courseId: ${courseId}, quizId: ${preTestQuizId}`,
-      );
       markPreTestAttempted(courseId, preTestQuizId);
 
       // Verify it was saved
       const verifyAttempted = hasAttemptedPreTest(courseId, preTestQuizId);
-      console.log(
-        `[PreTest] 🔍 handlePreTestComplete verification — verifyAttempted: ${verifyAttempted}`,
-      );
     } else {
-      console.log(
-        `[PreTest] ⚠️ handlePreTestComplete — preTestQuizId is not set!`,
-      );
     }
   }, [courseId, preTestQuizId]);
 
@@ -1031,12 +992,8 @@ export default function CourseViewerPage() {
             tracker.digest === pretestDigest && tracker.type === "quiz",
         );
 
-        console.log(
-          `[PreTest] 🌐 Viewer API — trackers: ${response.trackers.length}, hasAnyAttempt: ${hasAnyAttempt}, online: ${navigator.onLine}`,
-        );
 
         if (hasAnyAttempt) {
-          console.log(`[PreTest] ✅ Viewer API — attempt found on server`);
           setPretestCompletedFromActivity(true);
         } else {
           // API returned empty trackers (server 503 / offline / no cache).
@@ -1049,23 +1006,16 @@ export default function CourseViewerPage() {
           const completionMap = getCompletionData(courseId);
           const attemptedInZustand = completionMap?.get(pretestDigest) || false;
 
-          console.log(
-            `[PreTest] 🔄 Viewer API fallback — attemptedLocally: ${attemptedLocally}, attemptedInZustand: ${attemptedInZustand}, digest: ${pretestDigest}, online: ${navigator.onLine}`,
-          );
 
           if (attemptedLocally || attemptedInZustand) {
             setPretestCompletedFromActivity(true);
           } else {
-            console.log(
-              `[PreTest] ❌ Viewer API — no attempt found in any source`,
-            );
             setPretestCompletedFromActivity(false);
           }
         }
       })
       .catch((err) => {
         if (!cancelled) {
-          console.log(`[PreTest] ⚠️ Viewer API error:`, err);
           // Check THREE fallbacks regardless of online status:
           // 1. Local pre-test storage flags
           // 2. Zustand completion store
@@ -1078,14 +1028,10 @@ export default function CourseViewerPage() {
             ? completionMap?.get(pretestDigest) || false
             : false;
 
-          console.log(
-            `[PreTest] 🔄 Viewer catch fallback — attemptedLocally: ${attemptedLocally}, attemptedInZustand: ${attemptedInZustand}, digest: ${pretestDigest}, online: ${navigator.onLine}`,
-          );
 
           if (attemptedLocally || attemptedInZustand) {
             setPretestCompletedFromActivity(true);
           } else {
-            console.log(`[PreTest] ❌ Viewer catch — no attempt in any source`);
             setPretestCompletedFromActivity(false);
           }
         }
@@ -1118,9 +1064,6 @@ export default function CourseViewerPage() {
     _zustandCompleted ||
     _paramCompleted;
 
-  console.log(
-    `[PreTest] 🔎 Resolved — local: ${_localCompleted}, api: ${_apiCompleted}, attempted: ${_localAttempted}, zustand: ${_zustandCompleted}, param: ${_paramCompleted}, RESOLVED: ${isPreTestCompletedResolved}, online: ${typeof navigator !== "undefined" ? navigator.onLine : "N/A"}`,
-  );
 
   // CRITICAL: Check if pre-test has any attempt before allowing course viewing
   // Redirect to course detail page if pre-test exists but user hasn't attempted it yet
@@ -1143,9 +1086,6 @@ export default function CourseViewerPage() {
       if (!isZustandRehydrated) return;
 
       const completed = isPreTestCompletedResolved;
-      console.log(
-        `[PreTest] 🚦 Redirect check — completed: ${completed}, pageIndex: ${currentPageIndex}, preTestIndex: ${preTestIndex}, online: ${navigator.onLine}`,
-      );
 
       if (!completed) {
         // EDGE CASE FIX: When offline, don't redirect away from the viewer
@@ -1153,9 +1093,6 @@ export default function CourseViewerPage() {
         // tracking API is unreachable and cached data may not exist. Let the
         // user continue viewing; the pre-test check will re-run when online.
         if (!navigator.onLine) {
-          console.log(
-            "[CourseViewer] 📴 Offline — skipping pre-test redirect (cannot verify)",
-          );
           return;
         }
 
@@ -1725,15 +1662,6 @@ export default function CourseViewerPage() {
       const section = courseData.sections[currentPageIndex];
       if (!section || !section.digest) return;
 
-      console.log(
-        `[🎬 MEDIA-100%] ${mediaType} "${decodedFilename}" finished playing — immediate tracking`,
-        {
-          filename: decodedFilename,
-          timeWatched: Math.round(timeWatched),
-          duration: Math.round(duration),
-          digest: section.digest?.slice(0, 8),
-        },
-      );
 
       // Mark this specific media as played (≥80% threshold met trivially at 100%)
       mediaPlayedSetRef.current.add(decodedFilename);
@@ -1788,9 +1716,6 @@ export default function CourseViewerPage() {
       pendingMediaMapRef.current.delete(decodedFilename);
 
       const allPlayed = isAllMediaPlayed(section);
-      console.log(
-        `[🎬 MEDIA-100%] "${decodedFilename}" tracked. All media played: ${allPlayed}. Activity tracking deferred to Next click.`,
-      );
     },
     [
       courseData,
@@ -1939,20 +1864,6 @@ export default function CourseViewerPage() {
         completionMap,
         section.digest || "",
       );
-      console.log("[🎯 COMPLETION_CHECK] Activity Navigation Away", {
-        courseId,
-        digest: section.digest || "",
-        todayKey,
-        dailyKey,
-        completedToday,
-        canAwardPointsToday,
-        timeSpent,
-        requiredTime,
-        "timeSpent >= requiredTime": timeSpent >= requiredTime,
-        hasMediaContent,
-        hasPdfButNotOpened,
-        type: section.type,
-      });
 
       // Always send tracker even with 0 points (engine handles dedup).
       // Removed canAwardPointsToday gate — tracker is always created.
@@ -1966,30 +1877,8 @@ export default function CourseViewerPage() {
         !hasPdfButNotOpened &&
         !!section.digest;
 
-      console.log(
-        `[⏱️ TIME-SPENT-CHECK] Expected: ${requiredTime}s, Actual: ${timeSpent}s, Meets Threshold: ${timeSpent >= requiredTime}`,
-        {
-          canAwardPointsToday,
-          timeSpentValid: timeSpent >= requiredTime,
-          isNotQuizOrFeedback:
-            section.type !== "quiz" && section.type !== "feedback",
-          noMediaContent: !hasMediaContent,
-          pdfOpened: !hasPdfButNotOpened,
-          hasDigest: !!section.digest,
-          shouldTrack,
-        },
-      );
 
       if (shouldTrack) {
-        console.log(
-          `[🟢 COMPLETION-TRIGGERED] Activity will be tracked and marked as complete`,
-          {
-            activity: section.digest?.slice(0, 8) || "",
-            activityTitle: section.title,
-            timeSpent,
-            requiredTime,
-          },
-        );
 
         const activityTitle = section.title || "Activity";
         const course = {
@@ -2025,22 +1914,8 @@ export default function CourseViewerPage() {
             section.digest || "",
           );
 
-          console.log(`[✅ POINTS-AWARDED] Activity completion successful`, {
-            activity: section.digest?.slice(0, 8) || "",
-            pointsAwarded: result.points,
-            pointsMessage: result.message,
-            completedActivitiesBefore: previousCompletedCount,
-            completedActivitiesAfter: previousCompletedCount + 1,
-            note:
-              result.points === 0
-                ? "⚠️ 0 points: Activity already completed on server"
-                : "✅ Points awarded",
-          });
 
           if (section.digest) {
-            console.log(
-              `[OFFLINE_TRACKER] Activity completed - Course: ${courseId}, Activity: ${section.digest}, Total: ${updatedCompletionMap.size}`,
-            );
 
             // Use retry logic for persistence
             raceDetector.logCall("setCompletionData");
@@ -2080,31 +1955,12 @@ export default function CourseViewerPage() {
           // CRITICAL: ALWAYS show the activity toast when points are awarded, regardless of previous toast state
           // This ensures users see points when navigating backward after spending required time
           if (result.points > 0) {
-            console.log(
-              `[🎉 TOAST-TRIGGER] Showing activity completion toast`,
-              {
-                activity: section.title,
-                pointsToShow: result.points,
-                course: courseData?.title,
-              },
-            );
             triggerToast(
               activityTitle,
               result.points,
               courseData?.title || "Course",
             );
           } else {
-            console.log(
-              `[⏭️ TOAST-SKIPPED] NO TOAST shown because points = ${result.points}`,
-              {
-                activity: section.title,
-                reason:
-                  result.points === 0
-                    ? "Already completed (0 points)"
-                    : "Unknown",
-                resultMessage: result.message,
-              },
-            );
           }
           const totalActivities = courseData.sections?.length || 0;
           const newCompletedCount = previousCompletedCount + 1;
@@ -2147,13 +2003,6 @@ export default function CourseViewerPage() {
         if (hasPdfButNotOpened) reasons.push("PDF content not opened");
         if (!section.digest) reasons.push("No digest available");
 
-        console.log(`[⚠️ COMPLETION-SKIPPED] Activity tracking not triggered`, {
-          activity: section.digest?.slice(0, 8) || "",
-          activityTitle: section.title,
-          reasons: reasons.length > 0 ? reasons : "Unknown reason",
-          timeSpent,
-          requiredTime,
-        });
       }
       return mediaToastShown;
     }, [
@@ -2273,18 +2122,6 @@ export default function CourseViewerPage() {
         completionMap,
         currentSectionForTracking?.digest || "",
       );
-      console.log("[POINTS_CHECK_NEXT] activity", {
-        courseId,
-        digest: currentSectionForTracking?.digest || "",
-        todayKey,
-        dailyKey,
-        completedToday,
-        canAwardPointsToday,
-        timeSpent,
-        requiredTimeForCurrent,
-        hasMediaContent,
-        type: currentSectionForTracking?.type,
-      });
       if (
         canAwardPointsToday &&
         timeSpent >= requiredTimeForCurrent &&
@@ -2408,19 +2245,6 @@ export default function CourseViewerPage() {
               bgCompletionMap,
               currentSectionForTracking?.digest || "",
             );
-            console.log("[POINTS_CHECK_BG] activity", {
-              courseId,
-              digest: currentSectionForTracking?.digest || "",
-              todayKey,
-              dailyKey,
-              completedToday,
-              canAwardPointsTodayBg,
-              timeSpent,
-              requiredTime,
-              hasMediaContent,
-              hasPdfButNotOpenedBg,
-              type: currentSectionForTracking?.type,
-            });
 
             // Always send tracker even with 0 points (engine handles dedup).
             // Activity completes only when ALL media in the section have been played ≥80%.
@@ -3203,19 +3027,8 @@ export default function CourseViewerPage() {
         error?.includes("connection") ||
         (error && !navigator.onLine));
 
-    console.log("[CourseViewer] 🔍 Error state check:", {
-      hasError: !!error,
-      hasCourseData: !!courseData,
-      isOnline: navigator.onLine,
-      loading: loading,
-      error: error,
-      isOfflineError: isOfflineError,
-      courseId: courseId,
-      courseSource: courseSource,
-    });
 
     if (isOfflineError) {
-      console.log("[CourseViewer] ❌ Showing OfflineError component");
       return (
         <div className="min-h-screen w-full">
           <OfflineError
@@ -3230,7 +3043,6 @@ export default function CourseViewerPage() {
       );
     }
 
-    console.log("[CourseViewer] ❌ Showing generic error");
     // Generic error
     return (
       <div className="min-h-screen w-full flex items-center justify-center">
@@ -3427,9 +3239,6 @@ export default function CourseViewerPage() {
                 preTestDetected && currentPageIndex === preTestIndex;
               const quizDataObj =
                 currentSection.quizData || (currentSection as any).content;
-              console.log(
-                `[CourseViewer] 🎮 Rendering QuizRenderer — isPreTest: ${isPreTest}, quizId: ${quizDataObj?.id}, preTestQuizId: ${preTestQuizId}, currentPageIndex: ${currentPageIndex}, preTestIndex: ${preTestIndex}, passing onPreTestComplete: ${!!handlePreTestComplete}`,
-              );
               return (
                 <QuizRenderer
                   key={`quiz-${currentPageIndex}-${currentSection.digest}`}
@@ -3614,3 +3423,4 @@ export default function CourseViewerPage() {
     </div>
   );
 }
+

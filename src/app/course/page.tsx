@@ -272,19 +272,11 @@ export default function CoursePage() {
       const newCompletionMap =
         activityTrackingService.createCompletionMap(trackingData);
 
-      console.log(
-        `[UPDATE_ACTIVITY] Updating Zustand for course ${selectedCourse.courseId} with ${newCompletionMap.size} completed activities`,
-        Array.from(newCompletionMap.entries()).slice(0, 5),
-      );
-
       // Update Zustand store
       setCompletionData(selectedCourse.courseId, newCompletionMap);
 
       // Verify it was stored
       const verifyStored = getCompletionData(selectedCourse.courseId);
-      console.log(
-        `[UPDATE_ACTIVITY] Verification: Zustand now has ${verifyStored?.size || 0} activities for course ${selectedCourse.courseId}`,
-      );
 
       // Clear the course-reset flag so the gamification engine resumes
       // checking the /activity API for double-award prevention

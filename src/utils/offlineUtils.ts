@@ -78,7 +78,6 @@ export async function waitForServiceWorkerControl(
 
   // If already controlling, great!
   if (navigator.serviceWorker.controller) {
-    console.log("[SW Control] Already has controller");
     return true;
   }
 
@@ -97,7 +96,7 @@ export async function waitForServiceWorkerControl(
     const handler = () => {
       clearTimeout(timeoutId);
       window.removeEventListener("controllerchange", handler);
-      console.log("[SW Control] Got controller!");
+
       resolve(true);
     };
 
@@ -109,7 +108,7 @@ export async function waitForServiceWorkerControl(
         clearTimeout(timeoutId);
         clearInterval(checkInterval);
         window.removeEventListener("controllerchange", handler);
-        console.log("[SW Control] Got controller (via interval check)!");
+
         resolve(true);
       }
     }, 500);

@@ -269,17 +269,6 @@ export async function processActivityCompleted(
   let pointsEarned: number = GAMIFICATION_EVENTS.ACTIVITY_COMPLETED.points; // 10
   const eventType = GAMIFICATION_EVENTS.ACTIVITY_COMPLETED.event;
 
-  console.log(
-    `[\ud83c\udfaf POINTS-PROCESSOR] Starting activity completion tracking`,
-    {
-      userId,
-      courseId,
-      activityDigest: activityDigest.slice(0, 8),
-      initialPoints: pointsEarned,
-      timetaken,
-    },
-  );
-
   // Check local IDB: only award once per day per activity
   // ⚠️ IDB is the source of truth for daily completion
   const isFirstToday = await isActivityFirstAttemptToday(
@@ -287,17 +276,7 @@ export async function processActivityCompleted(
     activityDigest,
   );
 
-  console.log(`[🎯 FIRST-ATTEMPT-CHECK] IDB daily check (SOURCE OF TRUTH)`, {
-    activityDigest: activityDigest.slice(0, 8),
-    isFirstAttemptToday: isFirstToday,
-    pointsBeforeCheck: pointsEarned,
-    note: "IDB trumps all other checks - if first today, award 10 points",
-  });
-
   if (!isFirstToday) {
-    console.log(
-      `[🔴 DUPLICATE-AWARD-BLOCKED] Activity already completed today in IDB, NO POINTS awarded`,
-    );
     pointsEarned = 0;
   }
 
@@ -316,15 +295,6 @@ export async function processActivityCompleted(
 
   if (!shouldSkipApiCheck && courseShortname && !isResetCourse) {
     try {
-      console.log(
-        `[🎯 API-VERIFICATION] Checking API submitted date for same-day completion`,
-        {
-          courseShortname,
-          activityDigest: activityDigest.slice(0, 8),
-          note: "Checking submitteddate to see if completed TODAY or earlier",
-        },
-      );
-
       const response =
         await activityTrackingService.getCourseActivityTracking(
           courseShortname,
@@ -346,51 +316,10 @@ export async function processActivityCompleted(
 
         const isCompletedToday = submittedDateStr === todayDateStr;
 
-        console.log(
-          `[🎯 API-SUBMITTED-DATE] Activity tracker found on server`,
-          {
-            activityDigest: activityDigest.slice(0, 8),
-            submitteddate: activityTracker.submitteddate,
-            submittedDateFormatted: submittedDateStr,
-            todayFormatted: todayDateStr,
-            isCompletedToday,
-            pointsEarned,
-            note: isCompletedToday
-              ? "Completed TODAY on server - don't award again"
-              : "Completed on PREVIOUS day - award points for today",
-          },
-        );
-
         if (isCompletedToday) {
-          console.log(
-            `[🔴 SAME-DAY-DUPLICATE-BLOCKED] Activity completed today on server, NO POINTS awarded`,
-            {
-              reason:
-                "submitteddate shows completion happened today - prevent same-day double-award",
-            },
-          );
           pointsEarned = 0;
-        } else {
-          console.log(
-            `[🟢 NEW-DAY-APPROVED] Activity completed on PREVIOUS day, AWARD POINTS`,
-            {
-              reason:
-                "submitteddate is from a different day - today is a new award opportunity",
-              previousCompletionDate: submittedDateStr,
-              todayDate: todayDateStr,
-            },
-          );
-          // Keep pointsEarned = 10 (award points for today)
         }
       } else {
-        console.log(
-          `[ℹ️ API-NO-TRACKER] Activity not found in server completion history`,
-          {
-            activityDigest: activityDigest.slice(0, 8),
-            pointsEarned,
-            note: "First time ever completing - award 10 points",
-          },
-        );
         // Keep pointsEarned = 10 (first completion ever)
       }
     } catch (error) {
@@ -405,15 +334,6 @@ export async function processActivityCompleted(
       // Keep pointsEarned = 10 (IDB already checked and approved)
     }
   }
-
-  console.log(`[\ud83c\udfaf FINAL-DECISION] Activity completion result`, {
-    activityDigest: activityDigest.slice(0, 8),
-    pointsEarned,
-    willAwardPoints: pointsEarned > 0,
-    willShowToast: pointsEarned > 0 ? "YES" : "NO (0 points = no toast)",
-    eventType,
-    timetaken,
-  });
 
   const tracker: Tracker = {
     id: uuidv4(),
@@ -433,11 +353,6 @@ export async function processActivityCompleted(
 
   await saveTracker(tracker);
   await updateUserPoints(userId, pointsEarned);
-
-  console.log(`[\u2705 TRACKER-SAVED] Activity tracker saved to IndexedDB`, {
-    activityDigest: activityDigest.slice(0, 8),
-    pointsEarned,
-  });
 
   return tracker;
 }
@@ -528,10 +443,6 @@ export async function processMediaPlayback(
             : GAMIFICATION_EVENTS.MEDIA_STARTED.event;
       }
     }
-
-    console.log(
-      `[MEDIA-INTERVAL] digest=${mediaDigest.slice(0, 8)}, timeViewed=${Math.round(timeViewed)}s, intervalDuration=${intervalDuration}s, totalIntervals=${totalIntervals}, previousIntervals=${previousIntervals}, newIntervals=${newIntervals}, startPts=${startPoints}, intervalPts=${intervalPoints}, startedToday=${startedToday}, capped=${pointsEarned}, existing=${existingTracker?.points ?? 0}, max=${maxMediaPoints}`,
-    );
   } else {
     // ── Threshold Mode (default) ──
     if (percentageWatched >= thresholdPct) {
@@ -541,10 +452,6 @@ export async function processMediaPlayback(
         eventType = GAMIFICATION_EVENTS.MEDIA_PLAYED.event; // "media_played"
       }
     }
-
-    console.log(
-      `[MEDIA-THRESHOLD] digest=${mediaDigest.slice(0, 8)}, timeViewed=${Math.round(timeViewed)}s, duration=${Math.round(duration)}s, pct=${Math.round(percentageWatched)}%, threshold=${thresholdPct}%, points=${pointsEarned}`,
-    );
   }
 
   if (pointsEarned === 0) {
@@ -585,15 +492,6 @@ export async function processMediaPlayback(
       synced: false,
     };
     await saveTracker(zeroPointTracker);
-
-    console.log(
-      `[✅ MEDIA-TRACKER-0PT] Saved 0-point media tracker to IndexedDB`,
-      {
-        mediaDigest: mediaDigest.slice(0, 8),
-        mediaType,
-        timeViewed: Math.round(timeViewed),
-      },
-    );
 
     return zeroPointTracker;
   }

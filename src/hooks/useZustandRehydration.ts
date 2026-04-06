@@ -15,36 +15,43 @@ import { useActivityCompletionStore } from "@/store/useStore";
  * const completionData = getCompletionData(...); // Now safe
  */
 export function useZustandRehydration(): boolean {
+  const persistApi = (useActivityCompletionStore as any).persist;
+  const hasPersistApi =
+    persistApi &&
+    typeof persistApi.hasHydrated === "function" &&
+    typeof persistApi.onHydrate === "function" &&
+    typeof persistApi.onFinishHydration === "function";
+
   const [hasRehydrated, setHasRehydrated] = useState(
-    useActivityCompletionStore.persist.hasHydrated(),
+    hasPersistApi ? persistApi.hasHydrated() : true,
   );
 
   useEffect(() => {
+    if (!hasPersistApi) {
+      // Fallback for runtimes where Zustand persist API is not attached.
+      setHasRehydrated(true);
+      return;
+    }
+
     // Zustand persist exposes hydration lifecycle hooks; this is the reliable way
     // to know when persisted state is ready.
-    setHasRehydrated(useActivityCompletionStore.persist.hasHydrated());
+    setHasRehydrated(persistApi.hasHydrated());
 
-    const unsubscribeHydrate = useActivityCompletionStore.persist.onHydrate(
-      () => {
-        setHasRehydrated(false);
-      },
-    );
+    const unsubscribeHydrate = persistApi.onHydrate(() => {
+      setHasRehydrated(false);
+    });
 
-    const unsubscribeFinish =
-      useActivityCompletionStore.persist.onFinishHydration(() => {
-        if (typeof window !== "undefined") {
-          console.log(
-            "[OFFLINE_TRACKER] Zustand rehydration detected - completion data loaded",
-          );
-        }
-        setHasRehydrated(true);
-      });
+    const unsubscribeFinish = persistApi.onFinishHydration(() => {
+      if (typeof window !== "undefined") {
+      }
+      setHasRehydrated(true);
+    });
 
     return () => {
       unsubscribeHydrate();
       unsubscribeFinish();
     };
-  }, []);
+  }, [hasPersistApi, persistApi]);
 
   return hasRehydrated;
 }
@@ -69,9 +76,6 @@ export function useCompletionDataWithRehydration(courseId: string | number) {
 
       if (typeof window !== "undefined") {
         const count = data?.size || 0;
-        console.log(
-          `[OFFLINE_TRACKER] Rehydration complete - Retrieved completion data. Course: ${courseId}, Completed: ${count}`,
-        );
       }
 
       setCompletionData(data);

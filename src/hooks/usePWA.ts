@@ -35,7 +35,6 @@ export function usePWA() {
 
     // Listen for SW update available (from ServiceWorkerRegistration)
     const handleUpdateAvailable = (event: Event) => {
-      console.log("[usePWA] Update available");
       setStatus((prev) => ({ ...prev, isUpdateAvailable: true }));
     };
 

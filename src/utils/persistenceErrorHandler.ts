@@ -32,12 +32,6 @@ export async function executeWithRetry(
     try {
       operation();
 
-      if (attempt > 1 && typeof window !== "undefined") {
-        console.log(
-          `[OFFLINE_TRACKER] ${operationName} succeeded after ${attempt - 1} retries`,
-        );
-      }
-
       return {
         success: true,
         retries: attempt - 1,

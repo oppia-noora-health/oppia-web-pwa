@@ -343,9 +343,6 @@ export async function loadAndPopulateTrackerData(
     }
 
     if (!trackerXml) {
-      console.log(
-        `[loadAndPopulateTrackerData] ⚠️ tracker.xml not found for course ${courseId}`,
-      );
       return;
     }
 
@@ -373,17 +370,10 @@ export async function loadAndPopulateTrackerData(
     const existingMap = store.getCompletionData(courseId);
 
     if (existingMap !== null) {
-      console.log(
-        `[loadAndPopulateTrackerData] ⏭️ Zustand already has data for course ${courseId} (${existingMap.size} entries) — skipping tracker.xml`,
-      );
       return;
     }
 
     store.setCompletionData(courseId, trackerCompletionMap);
-
-    console.log(
-      `[loadAndPopulateTrackerData] ✅ Populated completion data for course ${courseId} from tracker.xml: ${trackerCompletionMap.size} entries`,
-    );
   } catch (error) {
     console.error(
       `[loadAndPopulateTrackerData] ❌ Error loading tracker data:`,

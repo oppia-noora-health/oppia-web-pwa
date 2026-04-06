@@ -40,7 +40,6 @@ export class OfflineErrorBoundary extends React.Component<
     }
 
     this.errorResetTimer = setTimeout(() => {
-      console.log("[OfflineErrorBoundary] Auto-resetting error state");
       this.setState({ hasError: false, errorCount: 0 });
     }, 5000);
   }

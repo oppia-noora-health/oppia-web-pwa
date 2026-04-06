@@ -335,16 +335,7 @@ export async function deleteCourseFromIDB(courseId: string): Promise<void> {
       try {
         const courseCacheName = `noora-courses-${courseId}`;
         const deleted = await caches.delete(courseCacheName);
-        if (deleted) {
-          console.log(
-            `[courseStorageIDB] ✅ Deleted page cache: ${courseCacheName}`,
-          );
-        }
       } catch (cacheError) {
-        console.warn(
-          "[courseStorageIDB] Failed to delete course page cache:",
-          cacheError,
-        );
         // Non-fatal - continue with other cleanup
       }
     }

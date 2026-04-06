@@ -64,12 +64,6 @@ export class URLChangeMonitor {
 
   private log(message: string, data?: any) {
     if (!this.config.enabled) return;
-
-    if (data) {
-      console.log(`[URL Monitor] ${message}`, data);
-    } else {
-      console.log(`[URL Monitor] ${message}`);
-    }
   }
 
   private warn(message: string, data?: any) {
@@ -312,19 +306,7 @@ export class URLChangeMonitor {
     passed: boolean;
     issues: string[];
   }> {
-    console.log("\n" + "=".repeat(50));
-    console.log("🔍 Running Manual URL Change Verification");
-    console.log("=".repeat(50) + "\n");
-
     const issues = await this.verifyDataCleanup();
-
-    console.log("\n" + "=".repeat(50));
-    if (issues.length === 0) {
-      console.log("✅ All checks passed!");
-    } else {
-      console.log(`❌ ${issues.length} issue(s) found`);
-    }
-    console.log("=".repeat(50) + "\n");
 
     return {
       passed: issues.length === 0,

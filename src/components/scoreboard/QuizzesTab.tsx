@@ -9,7 +9,7 @@ interface QuizzesTabProps {
   modules: CourseProgress[];
   loading: boolean;
   getLocalizedTitle: (
-    titleObj: Record<string, string | null> | string | null | undefined
+    titleObj: Record<string, string | null> | string | null | undefined,
   ) => string;
   onCourseClick: (courseId: number) => void;
   allActivitiesData?: Map<string, ActivityTracker[]>;
@@ -35,10 +35,9 @@ export const QuizzesTab: React.FC<QuizzesTabProps> = ({
         if (tracker.type === "quiz" && tracker.quiz) {
           // Filter out pretest quizzes by comparing digest
           if (pretestDigests && pretestDigests.has(tracker.digest)) {
-            console.log(`[QuizzesTab] REMOVED pretest quiz — digest: ${tracker.digest}, event: "${tracker.event}", course: ${shortname}`);
             return;
           }
-          console.log(`[QuizzesTab] KEPT quiz — digest: ${tracker.digest}, event: "${tracker.event}", course: ${shortname}`);
+
           quizAttempts.push({
             quizAttempt: tracker,
             courseShortname: shortname,
@@ -64,8 +63,6 @@ export const QuizzesTab: React.FC<QuizzesTabProps> = ({
       </div>
     );
   }
-
- 
 
   if (quizAttempts.length === 0) {
     return (

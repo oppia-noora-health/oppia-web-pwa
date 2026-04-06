@@ -46,8 +46,6 @@ export function ServiceWorkerRegistration() {
       navigator.serviceWorker.addEventListener("message", (event) => {
         // Update available notification from SW
         if (event.data.type === "UPDATE_AVAILABLE") {
-          console.log("[SW Message] Update available:", event.data.version);
-
           // Store update info
           if (typeof window !== "undefined") {
             (window as any).swUpdateInfo = {

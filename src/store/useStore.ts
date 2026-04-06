@@ -351,15 +351,6 @@ export const useActivityCompletionStore = create<ActivityCompletionStore>()(
         set((state) => {
           // Convert Map to plain object for persistence
           const completionObject = Object.fromEntries(completionMap);
-          const completedCount =
-            Object.values(completionObject).filter(Boolean).length;
-
-          if (typeof window !== "undefined") {
-            console.log(
-              `[OFFLINE_TRACKER] setCompletionData - Course: ${courseId}, Completed: ${completedCount}/${completionMap.size}`,
-              completionObject,
-            );
-          }
 
           return {
             completionData: {
@@ -377,13 +368,6 @@ export const useActivityCompletionStore = create<ActivityCompletionStore>()(
           ? Object.values(courseData).filter(Boolean).length
           : 0;
         const totalCount = courseData ? Object.keys(courseData).length : 0;
-
-        if (typeof window !== "undefined" && courseData) {
-          console.log(
-            `[OFFLINE_TRACKER] getCompletionData - Course: ${courseId}, Completed: ${completedCount}/${totalCount}`,
-            courseData,
-          );
-        }
 
         // Convert plain object back to Map
         return courseData ? new Map(Object.entries(courseData)) : null;

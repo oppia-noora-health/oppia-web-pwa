@@ -59,10 +59,6 @@ export const useCourseModules = (
   useEffect(() => {
     if (!courseData || !zustandCompletionData) return;
 
-    console.log(
-      `[OFFLINE_TRACKER] Completion data updated - Course: ${courseId}, Completed: ${zustandCompletionData.size}`,
-    );
-
     // Update local state and re-parse lessons when Zustand data changes
     setCompletionMap(zustandCompletionData);
     const parsedLessons = parseLessonsFromCourse(
@@ -84,18 +80,11 @@ export const useCourseModules = (
       // remain marked incomplete until the user explicitly clicks "Update Activity".
       const cached = getCompletionData(courseId);
       if (cached !== null) {
-        console.log(
-          `[COMPLETION] fetchActivityTracking — using Zustand cache (${cached.size} entries) for course ${courseId}`,
-        );
         setCompletionMap(cached);
         const parsedLessons = parseLessonsFromCourse(courseStructure, cached);
         setLessons(parsedLessons);
         return;
       }
-
-      console.log(
-        `[COMPLETION] fetchActivityTracking — no cache, fetching API for course ${courseId}`,
-      );
 
       // Fetch from API
       const trackingData =
@@ -119,10 +108,6 @@ export const useCourseModules = (
           if (value) newCompletionMap.set(key, true);
         });
       }
-
-      console.log(
-        `[COMPLETION] fetchActivityTracking — API returned ${trackingData.trackers.length} trackers, merged map has ${newCompletionMap.size} entries`,
-      );
 
       // Store in state and Zustand
       setCompletionMap(newCompletionMap);

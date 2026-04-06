@@ -146,18 +146,8 @@ export function useGamification() {
     ) => {
       const userId = getUserId();
       if (userId === null) {
-        console.log(`[👻 USER-NOT-INIT] Cannot track activity without user`);
         return { points: 0, message: "User not initialized" };
       }
-
-      console.log(`[🏃 ACTIVITY-TRACKING-HOOK] Starting activity completion`, {
-        userId,
-        courseId: course.id,
-        courseShortname: course.shortname,
-        activityDigest: activity.digest.slice(0, 8),
-        activityTitle: activity.title,
-        timeTaken,
-      });
 
       try {
         // Process activity - this saves tracker and updates points
@@ -169,12 +159,6 @@ export function useGamification() {
           course.version || 1,
           timeTaken,
         );
-
-        console.log(`[✅ ACTIVITY-TRACKED] Activity completion result`, {
-          activityDigest: activity.digest.slice(0, 8),
-          pointsAwarded: result.points,
-          willRefresh: true,
-        });
 
         // Refresh local points state
         await refreshPointsAfterAction(userId);

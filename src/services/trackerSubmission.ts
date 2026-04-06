@@ -751,11 +751,6 @@ async function submitQuizAttemptsInternal(
         );
       }
 
-      console.log(`[trackerSubmission] ✅ POST /quizattempt/ OK`, {
-        status: response.status,
-        responseBody: responseText,
-      });
-
       // Parse response
       let result: { badges?: number; points?: number };
       try {

@@ -1195,8 +1195,8 @@ export default function HtmlContentRenderer({
                       const fallbackShortname = courseData.shortname;
                       const customUrl = getSetting("custom_api_url", userId);
                       const baseUrl =
-                        (customUrl?.replace(/\/api\/v2\/?$/, "") ||
-                          getApiUrl().replace(/\/api\/v2\/?$/, "")) ||
+                        customUrl?.replace(/\/api\/v2\/?$/, "") ||
+                        getApiUrl().replace(/\/api\/v2\/?$/, "") ||
                         "https://academy-indonesia.noorahealth.org";
 
                       let pdfUrl;
@@ -1500,11 +1500,8 @@ export default function HtmlContentRenderer({
 
     // Fix navigation buttons to work on desktop (add click handlers in addition to touchstart)
     const fixNavigationButtons = () => {
-      console.log("[ap] ===== fixNavigationButtons CALLED =====");
-
       const wrapper = getContentWrapper();
       if (!wrapper) {
-        console.log("[ap] no content wrapper found");
         // No wrapper means no content, report false if we haven't already
         if (callbackRef.current && lastReportedStateRef.current !== false) {
           lastReportedStateRef.current = false;
@@ -1560,15 +1557,6 @@ export default function HtmlContentRenderer({
         new Set<HTMLElement>([...parentSections, ...knownSections]),
       );
 
-      console.log("[ap] slide detection results", {
-        hasSlidesTag,
-        allSlidesCount: allSlides.length,
-        parentSectionsCount: parentSections.length,
-        knownSectionsCount: knownSections.length,
-        finalSectionsCount: sections.length,
-        sectionTagNames: sections.map((s) => s.tagName),
-      });
-
       // Check if any section has slides with navigation buttons
       let hasSlidesWithNavigation = hasSlidesTag || allSlides.length > 1;
       // Track slide positions for all sections
@@ -1589,14 +1577,6 @@ export default function HtmlContentRenderer({
           directSlides.length > 0
             ? directSlides
             : section.querySelectorAll(":scope > slide, :scope > content");
-
-        console.log("[ap] processing section", {
-          sectionTagName: section.tagName,
-          directSlidesCount: directSlides.length,
-          totalSlidesCount: slides.length,
-          hasPagination: section.hasAttribute("pagination"),
-          paginationValue: section.getAttribute("pagination"),
-        });
 
         if (slides.length > 1) {
           // Multiple slides means this section has internal navigation
@@ -1662,15 +1642,8 @@ export default function HtmlContentRenderer({
 
         // Function to update slide position and notify parent
         const updateSlidePosition = (newSlideIndex: number) => {
-          console.log("[ap] updateSlidePosition called", {
-            newSlideIndex,
-            currentSlide,
-            totalSlides: slides.length,
-          });
-
           // Safety check: ensure buttons exist before using them
           if (!prevBtn || !nextBtn) {
-            console.log("[ap] buttons not found, returning");
             return;
           }
 
@@ -1694,19 +1667,10 @@ export default function HtmlContentRenderer({
           const paginationContainer = section.querySelector(
             ":scope > .pagination",
           );
-          console.log("[ap] pagination sync", {
-            hasPaginationContainer: !!paginationContainer,
-            currentSlide,
-            sectionTagName: section.tagName,
-          });
 
           if (paginationContainer) {
             const paginationItems =
               paginationContainer.querySelectorAll(".pagination-item");
-            console.log("[ap] pagination items in container", {
-              count: paginationItems.length,
-              expectedCount: slides.length,
-            });
 
             if (paginationItems.length > 0) {
               // Only toggle classes — the injected !important CSS handles colors.
@@ -1720,10 +1684,6 @@ export default function HtmlContentRenderer({
                 }
               });
             }
-          } else {
-            console.log(
-              "[ap] no .pagination container found as direct child of section",
-            );
           }
 
           // Check if we're on the last slide across all sections
@@ -1876,27 +1836,15 @@ export default function HtmlContentRenderer({
           (nextBtn as HTMLElement).style.visibility =
             slides.length > 1 ? "visible" : "hidden";
 
-          console.log("[ap] initializing pagination for section", {
-            sectionTagName: section.tagName,
-            totalSlides: slides.length,
-          });
-
           // Initialize pagination state for first slide.
           // Target ONLY the direct .pagination container child to avoid duplicates.
           const initialPaginationContainer = section.querySelector(
             ":scope > .pagination",
           );
-          console.log("[ap] initial pagination container", {
-            found: !!initialPaginationContainer,
-          });
 
           if (initialPaginationContainer) {
             const initialPaginationItems =
               initialPaginationContainer.querySelectorAll(".pagination-item");
-            console.log("[ap] initial pagination items found", {
-              count: initialPaginationItems.length,
-              expectedCount: slides.length,
-            });
 
             if (initialPaginationItems.length > 0) {
               // Only toggle classes — the injected !important CSS handles colors.
@@ -1910,10 +1858,6 @@ export default function HtmlContentRenderer({
                 }
               });
             }
-          } else {
-            console.log(
-              "[ap] WARNING: no .pagination container found as direct child during initialization",
-            );
           }
         }
       });

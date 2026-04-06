@@ -6,8 +6,6 @@
  */
 
 (async function URLChangeTestSuite() {
-  console.log("🧪 Starting URL Change Test Suite...\n");
-
   // Test utilities
   const logger = {
     pass: (test, message) => console.log(`✅ ${test}: ${message || "PASSED"}`),

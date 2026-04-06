@@ -37,9 +37,7 @@ export const wasCompletedToday = (
   if (!completionMap || !digest) return false;
   const dailyKey = getDailyCompletionKey(digest);
   const result = completionMap.get(dailyKey) === true;
-  console.log(
-    `[DAILY_CHECK] digest=${digest?.slice(0, 8)}, dailyKey=${dailyKey}, wasCompletedToday=${result}`,
-  );
+
   return result;
 };
 
@@ -69,10 +67,6 @@ export const shouldAwardPoints = (
   digest: string,
 ): boolean => {
   if (!completionMap || !digest) {
-    console.log(
-      `[COMPLETION_CHECK] 🟢 shouldAwardPoints: No data, awarding points`,
-      { digest },
-    );
     return true; // Award if no data
   }
 
@@ -81,25 +75,10 @@ export const shouldAwardPoints = (
   const completedEverResult = wasCompletedEver(completionMap, digest);
   const dailyKey = getDailyCompletionKey(digest);
 
-  console.log(`[COMPLETION_CHECK] Activity: ${digest?.slice(0, 8)}...`, {
-    completedToday: completedTodayResult,
-    completedEver: completedEverResult,
-    dailyKey,
-    mapSize: completionMap.size,
-    shouldAward: !completedTodayResult,
-  });
-
   if (completedTodayResult) {
-    console.log(
-      `[COMPLETION_CHECK] 🔴 Already completed today - NO POINTS will be awarded`,
-    );
     return false;
   }
 
-  // Award points on first completion or first completion of the day
-  console.log(
-    `[COMPLETION_CHECK] 🟢 First completion or new day - POINTS will be awarded`,
-  );
   return true;
 };
 

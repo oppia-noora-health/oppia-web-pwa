@@ -229,9 +229,7 @@ export function useCourseData(
         const cached = getCachedProcessedHtml(courseId, section.htmlFile);
         if (cached) {
           setCurrentContent(cached);
-          console.log(
-            `[perf] loadPageContentFromIDB page=${pageIndex} CACHE HIT ${(performance.now() - t0).toFixed(1)}ms`,
-          );
+
           // Prefetch upcoming pages in background
           prefetchPages(pageIndex, structure);
           return;
@@ -251,12 +249,7 @@ export function useCourseData(
           // Cache the processed result for instant re-access
           setCachedProcessedHtml(courseId, section.htmlFile, processedContent);
           setCurrentContent(processedContent);
-          console.log(
-            `[perf] loadPageContentFromIDB page=${pageIndex} ` +
-              `IDB=${(t2 - t1).toFixed(1)}ms ` +
-              `HTML-process=${(t3 - t2).toFixed(1)}ms ` +
-              `total=${(t3 - t0).toFixed(1)}ms`,
-          );
+
           // Prefetch upcoming pages in background
           prefetchPages(pageIndex, structure);
         } else {
@@ -283,25 +276,13 @@ export function useCourseData(
     let isCancelled = false;
 
     const fetchCourse = async () => {
-      console.log(
-        `[FLOW-4] 🚀 useCourseData effect — initialPage: "${initialPage}", disabled: ${disabled}, skipDownload: ${skipDownload}, courseId: ${courseId}, loadedFromIDB: ${loadedFromIDBRef.current}`,
-      );
       // Don't run if disabled (still determining mode)
       if (disabled) {
-        console.log("[useCourseData] ⏸️ Disabled - skipping fetch", {
-          courseId,
-        });
         return;
       }
 
       // CRITICAL: If skipDownload is true, immediately return - don't do anything
       if (skipDownload) {
-        console.log(
-          "[useCourseData] ⏭️ skipDownload=true - clearing and returning",
-          {
-            courseId,
-          },
-        );
         setLoading(false);
         setCourseData(null); // Clear any previous data
         setCourseSource(null);
@@ -320,18 +301,8 @@ export function useCourseData(
       // re-run just because Zustand hydrated and changed `api`. The IDB
       // data is authoritative for downloaded courses and doesn't need auth.
       if (loadedFromIDBRef.current) {
-        console.log(
-          "[useCourseData] ⏭️ Already loaded from IDB — skipping re-fetch",
-        );
         return;
       }
-
-      console.log("[useCourseData] 🚀 Starting course fetch:", {
-        courseId,
-        initialPage,
-        isOnline: navigator.onLine,
-        isAuthenticated: api.isAuthenticated,
-      });
 
       setLoading(true);
       setError(null);
@@ -340,14 +311,10 @@ export function useCourseData(
         // CRITICAL FIX: Check IndexedDB FIRST, BEFORE auth check.
         // IndexedDB is local storage — no authentication needed.
         // This ensures offline access works even during Zustand hydration delay.
-        console.log("[useCourseData] 📂 Step 1: Checking IndexedDB...");
+
         const idbCourse = await loadCourseFromIDB(courseId);
 
         if (idbCourse && idbCourse.structure) {
-          console.log("[useCourseData] ✅ Course found in IndexedDB!", {
-            courseId,
-            sections: idbCourse.structure.sections?.length,
-          });
           setCourseData(idbCourse.structure);
           setCourseSource("indexeddb");
 
@@ -372,24 +339,16 @@ export function useCourseData(
             }
           }
           const sectionAtPage = idbCourse.structure.sections[pageToLoad];
-          console.log(
-            `[FLOW-4a] 📌 IDB pageToLoad — initialPage: "${initialPage}", pageToLoad: ${pageToLoad}, sectionTitle: "${sectionAtPage?.title || sectionAtPage?.sectionTitle || "N/A"}", sectionType: "${sectionAtPage?.type || "N/A"}", totalSections: ${idbCourse.structure.sections?.length}`,
-          );
+
           await loadPageContentFromIDB(pageToLoad, idbCourse.structure);
           loadedFromIDBRef.current = true; // Prevent re-fetch on hydration
           setLoading(false);
           return;
         }
-        console.log(
-          "[useCourseData] ℹ️ Course not in IndexedDB - continuing...",
-        );
 
         const cachedCourse = getCachedCourse(courseId);
 
         if (cachedCourse && cachedCourse.structure) {
-          console.log(
-            "[useCourseData] 💾 Step 2: Found course in Zustand cache",
-          );
           // CRITICAL: Verify that files actually exist before using cached structure
           // If files don't exist, this is a streamed course structure and we should skip it
           const testSection = cachedCourse.structure.sections?.find(
@@ -405,11 +364,7 @@ export function useCourseData(
             );
 
             if (!testContent) {
-              console.log(
-                "[useCourseData] ❌ Cache found but files don't exist - skipping",
-              );
             } else {
-              console.log("[useCourseData] ✅ Using cached course with files!");
               setCourseData(cachedCourse.structure);
               setCourseSource("cache");
               let pageToLoad = 0;
@@ -428,15 +383,12 @@ export function useCourseData(
               return;
             }
           } else {
-            console.log("[useCourseData] ℹ️ Cached course has no HTML files");
           }
         }
 
-        console.log("[useCourseData] 🔍 Step 3: Checking getCourse service...");
         const downloadedCourse = getCourse(parseInt(courseId));
 
         if (downloadedCourse) {
-          console.log("[useCourseData] ✅ Found in getCourse service!");
           setCourseData(downloadedCourse.structure);
           setCourseSource("cache");
           let pageToLoad = 0;
@@ -467,13 +419,6 @@ export function useCourseData(
         // Auth check moved here: only API calls need authentication,
         // local storage (IDB, cache, memory) checks above don't.
         if (!api.isAuthenticated) {
-          console.log(
-            "[useCourseData] 🔐 Not authenticated - cannot call API",
-            {
-              courseId,
-              isOnline: navigator.onLine,
-            },
-          );
           setError(
             "You are offline and this course is not downloaded. Please connect to the internet to access this course.",
           );
@@ -483,9 +428,6 @@ export function useCourseData(
 
         // CRITICAL: Double-check skipDownload here to prevent race conditions
         if (skipDownload) {
-          console.log(
-            "[useCourseData] ⏭️ skipDownload still true - returning before API",
-          );
           setLoading(false);
           return;
         }
@@ -494,16 +436,6 @@ export function useCourseData(
         // If offline and no course found yet, don't try API (will fail anyway)
         // This prevents timeout delays and unnecessary API attempts when offline
         if (typeof navigator !== "undefined" && !navigator.onLine) {
-          console.error(
-            "[useCourseData] 📴 OFFLINE - Course not in any cache!",
-          );
-          console.log("[useCourseData] Course loading sequence failed:", {
-            courseId,
-            foundInIDB: false,
-            foundInCache: false,
-            foundInService: false,
-            isOnline: navigator.onLine,
-          });
           setError(
             "You are offline and this course is not downloaded. Please connect to the internet to access this course.",
           );
@@ -514,11 +446,9 @@ export function useCourseData(
         // SAFETY: If the effect was re-triggered (e.g. dep changed during
         // navigation) bail out before making a network request.
         if (isCancelled) {
-          console.log("[useCourseData] ⏹️ Cancelled before API call");
           return;
         }
 
-        console.log("[useCourseData] 🌐 Step 5: Fetching from API...");
         try {
           // CRITICAL: Add timeout to prevent hanging on flaky networks
           const { fetchWithTimeout } = await import("@/utils/offlineUtils");
@@ -545,19 +475,8 @@ export function useCourseData(
             return;
           }
 
-          console.log(
-            "[useCourseData] ✅ Got course from API, starting download...",
-            {
-              courseId,
-              shortname: courseResponse.shortname,
-            },
-          );
-
           // CRITICAL: Check skipDownload again before downloading
           if (skipDownload || skipDownloadRef.current) {
-            console.log(
-              "[useCourseData] ⏭️ skipDownload triggered during API fetch",
-            );
             setLoading(false);
             return;
           }
@@ -570,15 +489,8 @@ export function useCourseData(
             false, // isDownloaded: false for temporary viewing
           );
 
-          console.log(
-            "[useCourseData] ✅ Download completed, got coursePackage",
-          );
-
           // CRITICAL: Check skipDownload after download completes
           if (skipDownload || skipDownloadRef.current) {
-            console.log(
-              "[useCourseData] ⏭️ skipDownload triggered after download",
-            );
             setLoading(false);
             setCourseData(null);
             setCourseSource(null);
@@ -586,13 +498,6 @@ export function useCourseData(
           }
 
           if (coursePackage) {
-            console.log(
-              "[useCourseData] ✅ Setting courseData from API download",
-              {
-                courseId,
-                sections: coursePackage.structure.sections?.length,
-              },
-            );
             setCourseData(coursePackage.structure);
             setCourseSource("api");
             let pageToLoad = 0;
@@ -634,7 +539,6 @@ export function useCourseData(
             apiError?.response?.status === 503 ||
             apiError?.message?.includes("offline")
           ) {
-            console.log("[useCourseData] ❌ Setting offline error");
             setError(
               "You are offline and this course is not downloaded. Please connect to the internet to access this course.",
             );
@@ -669,7 +573,6 @@ export function useCourseData(
           error,
         );
         if (!navigator.onLine) {
-          console.log("[useCourseData] 📴 Error occurred while offline");
           setError(
             "You are offline. Please download courses for offline access or connect to the internet.",
           );
@@ -678,12 +581,6 @@ export function useCourseData(
           setError("Failed to load course. Please try again.");
         }
       } finally {
-        console.log("[useCourseData] ✅ Course loading completed", {
-          courseId,
-          hasData: !!courseData,
-          hasError: !!error,
-          source: courseSource,
-        });
         setLoading(false);
       }
     };
@@ -726,9 +623,6 @@ export function useCourseData(
         parsedPage < (courseData.sections?.length || 0) &&
         parsedPage !== currentPageIndex
       ) {
-        console.log(
-          `[FLOW-4b] 🔄 SAFETY FIX — correcting page! initialPage: "${initialPage}", currentPageIndex: ${currentPageIndex}, correcting to: ${parsedPage}`,
-        );
         correctedPageRef.current = initialPage;
         if (courseSource === "indexeddb") {
           loadPageContentFromIDB(parsedPage, courseData);

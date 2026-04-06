@@ -159,16 +159,8 @@ export default function CourseModulesPage() {
 
   useEffect(() => {
     if (!isRehydrated) {
-      console.log(
-        `[OFFLINE_TRACKER] Waiting for Zustand rehydration - Course: ${courseId}`,
-      );
       return;
     }
-
-    console.log(
-      `[OFFLINE_TRACKER] Course detail page - Course: ${courseId}, Completed activities: ${completionCount}, Rehydrated: ${isRehydrated}`,
-      completionData,
-    );
   }, [courseId, completionCount, completionData, isRehydrated]);
 
   // Check if course is downloaded (from IndexedDB or localStorage)
@@ -549,10 +541,6 @@ export default function CourseModulesPage() {
 
             // Check /activity API first: if ANY pretest attempt exists on server, don't show modal
             const checkAndShowModal = async () => {
-              console.log(
-                `[PreTest] 📋 Detail page check — courseId: ${courseId}, quizId: ${quizId}, digest: ${pretestDigest}, shortname: ${shortnameToUse}, online: ${navigator.onLine}`,
-              );
-
               if (pretestDigest && shortnameToUse) {
                 try {
                   const response =
@@ -567,19 +555,10 @@ export default function CourseModulesPage() {
                       tracker.type === "quiz",
                   );
 
-                  console.log(
-                    `[PreTest] 🌐 Activity API — trackers: ${response.trackers.length}, hasAnyAttempt: ${hasAnyAttempt}`,
-                  );
-
                   if (hasAnyAttempt) {
-                    console.log(
-                      `[PreTest] ✅ Skipping modal — API has attempt`,
-                    );
                     return; // Don't show modal if any attempt exists
                   }
-                } catch (e) {
-                  console.log(`[PreTest] ⚠️ Activity API error:`, e);
-                }
+                } catch (e) {}
               }
 
               // Check THREE fallbacks before showing modal:
@@ -592,27 +571,16 @@ export default function CourseModulesPage() {
                 ? completionMap?.get(pretestDigest) || false
                 : false;
 
-              console.log(
-                `[PreTest] 🔍 Fallback checks — attemptedLocal: ${attemptedLocal}, isCompletedLocal: ${isCompletedLocal}, attemptedInZustand: ${attemptedInZustand}, online: ${navigator.onLine}`,
-              );
-
               if (attemptedLocal || isCompletedLocal || attemptedInZustand) {
-                console.log(
-                  `[PreTest] ✅ Skipping modal — fallback check passed (local: ${attemptedLocal}, completed: ${isCompletedLocal}, zustand: ${attemptedInZustand})`,
-                );
                 return;
               }
 
               // CRITICAL OFFLINE FIX: When offline and API is unreachable, don't force pretest modal
               // User will see pretest in the viewer page if needed, but don't block detail page access
               if (!navigator.onLine) {
-                console.log(
-                  `[PreTest] 📴 Offline — skipping modal (cannot verify from API)`,
-                );
                 return;
               }
 
-              console.log(`[PreTest] ❌ SHOWING MODAL — no completion found`);
               setPreTestQuizId(quizId);
               setPreTestIndex(i);
               setShowPreTestModal(true);
@@ -718,9 +686,7 @@ export default function CourseModulesPage() {
       }
 
       const url = `/course/${courseId}/view?${params.join("&")}`;
-      console.log(
-        `[DetailPage] 🖱️ handleActivityClick — activityId: ${activityId}, activityIndex: ${activityIndex}, sectionTitle: ${targetSection?.title || targetSection?.sectionTitle}, url: ${url}, isDownloaded: ${isDownloadedCheck}, shouldUseStreaming: ${shouldUseStreaming}, online: ${navigator.onLine}`,
-      );
+
       const baseViewUrl = `/course/${courseId}/view?${params.filter((p) => p.startsWith("page=") || p.startsWith("mode=") || p.startsWith("shortname=")).join("&")}`;
 
       // Set navigating state so user sees feedback immediately (works offline too)

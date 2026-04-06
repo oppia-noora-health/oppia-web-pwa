@@ -102,8 +102,6 @@ self.addEventListener("install", (event) => {
 
 // Activate event - clean old caches and take control
 self.addEventListener("activate", (event) => {
-  console.log("[SW v8.1] Activating...");
-
   event.waitUntil(
     caches
       .keys()
@@ -114,7 +112,6 @@ self.addEventListener("activate", (event) => {
           .map((name) => {
             // Special logging for course-specific caches
             if (name.startsWith("noora-courses-")) {
-              console.log("[SW v8.1] Removing redundant course cache:", name);
             }
             return caches.delete(name);
           });
@@ -139,9 +136,6 @@ self.addEventListener("activate", (event) => {
 
           await Promise.all(pageCleanupPromises);
           if (pageCleanupPromises.length > 0) {
-            console.log(
-              `[SW v8.1] Cleaned up ${pageCleanupPromises.length} redundant page variations`,
-            );
           }
         } catch (err) {
           console.warn("[SW v8.1] Error cleaning up page variations:", err);
@@ -150,7 +144,6 @@ self.addEventListener("activate", (event) => {
         return Promise.resolve();
       })
       .then(() => {
-        console.log("[SW v8.1] Taking control of all pages");
         return self.clients.claim();
       }),
   );
@@ -281,14 +274,8 @@ async function cacheFirstCourse(request, cacheName) {
     // Always check cache first for course pages
     const cached = await caches.match(request);
     if (cached) {
-      console.log("[SW] CacheFirstCourse HIT:", request.url);
       return cached;
     }
-
-    console.log(
-      "[SW] CacheFirstCourse MISS (attempting network):",
-      request.url,
-    );
 
     // Try network if course page not cached (shouldn't happen for downloaded courses)
     const response = await fetch(request);
@@ -296,22 +283,15 @@ async function cacheFirstCourse(request, cacheName) {
       const cache = await caches.open(cacheName);
       try {
         cache.put(request, response.clone());
-        console.log("[SW] CacheFirstCourse cached new version:", request.url);
       } catch (e) {
         // Ignore cache.put errors
       }
     }
     return response;
   } catch (error) {
-    console.log(
-      "[SW] CacheFirstCourse network failed, serving offline page:",
-      request.url,
-    );
-
     // Network failed - try to serve any cached version
     const cached = await caches.match(request);
     if (cached) {
-      console.log("[SW] CacheFirstCourse serving stale cache:", request.url);
       return cached;
     }
 
@@ -423,9 +403,6 @@ async function networkFirst(request, cacheName, timeout = 3000) {
       const baseRequest = new Request(baseUrl);
       cached = await caches.match(baseRequest);
       if (cached) {
-        console.log(
-          `[SW v8.1] Serving ${url.pathname} with params from base cache`,
-        );
         return cached;
       }
     }
@@ -466,10 +443,6 @@ async function networkFirst(request, cacheName, timeout = 3000) {
         const baseViewUrl = `${url.origin}/course/${courseViewMatch[1]}/view`;
         const baseViewCached = await dynamicCache.match(baseViewUrl);
         if (baseViewCached) {
-          console.log(
-            "[SW v8.1] Serving course view from base URL cache:",
-            baseViewUrl,
-          );
           return baseViewCached;
         }
 
@@ -477,10 +450,6 @@ async function networkFirst(request, cacheName, timeout = 3000) {
         const detailUrl = `${url.origin}/course/${courseViewMatch[1]}`;
         const detailCached = await dynamicCache.match(detailUrl);
         if (detailCached) {
-          console.log(
-            "[SW v8.1] Serving course detail page as fallback for view:",
-            detailUrl,
-          );
           return detailCached;
         }
 
@@ -493,10 +462,6 @@ async function networkFirst(request, cacheName, timeout = 3000) {
         if (anyCourseView) {
           const anyCourseViewResponse = await dynamicCache.match(anyCourseView);
           if (anyCourseViewResponse) {
-            console.log(
-              "[SW v8.1] Serving another course view page as shell:",
-              anyCourseView.url,
-            );
             return anyCourseViewResponse;
           }
         }

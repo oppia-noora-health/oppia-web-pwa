@@ -65,10 +65,6 @@ async function cacheCoursePages(
 
     // Create the cache so it's ready for the Service Worker to use
     await caches.open(cacheName);
-    console.log(`[cacheCoursePages] ✅ Cache '${cacheName}' created and ready`);
-    console.log(
-      `[cacheCoursePages] Pages will be cached when user visits them`,
-    );
   } catch (error) {
     console.error("[cacheCoursePages] Error creating cache:", error);
     // Non-fatal - Service Worker will create it when needed

@@ -107,8 +107,6 @@ self.addEventListener("install", (event) => {
 
 // Activate event - clean up old caches and notify clients of updates
 self.addEventListener("activate", (event) => {
-  console.log(`[SW] Activating new version: ${CACHE_VERSION}`);
-
   event.waitUntil(
     caches
       .keys()
@@ -123,7 +121,6 @@ self.addEventListener("activate", (event) => {
               name !== DYNAMIC_CACHE;
 
             if (isOldNoora) {
-              console.log(`[SW] Deleting old cache: ${name}`);
             }
             return isOldNoora;
           })
@@ -144,15 +141,11 @@ self.addEventListener("activate", (event) => {
               return url.pathname.match(/\/api\/v2\/course\/\d+\/download\//);
             })
             .map((request) => {
-              console.log(`[SW] Removing cached course ZIP: ${request.url}`);
               return apiCache.delete(request);
             });
 
           await Promise.all(cleanupPromises);
           if (cleanupPromises.length > 0) {
-            console.log(
-              `[SW] Cleaned up ${cleanupPromises.length} cached course ZIP files`,
-            );
           }
         } catch (err) {
           console.warn("[SW] Error cleaning up cached ZIPs:", err);
@@ -180,9 +173,6 @@ self.addEventListener("activate", (event) => {
 
           await Promise.all(pageCleanupPromises);
           if (pageCleanupPromises.length > 0) {
-            console.log(
-              `[SW] Cleaned up ${pageCleanupPromises.length} redundant cached page variations`,
-            );
           }
         } catch (err) {
           console.warn("[SW] Error cleaning up page variations:", err);
@@ -308,7 +298,6 @@ self.addEventListener("fetch", (event) => {
   // Pattern: /api/v2/course/{id}/download/
   // This prevents duplicate storage and cache size bloat (ZIPs are 10-50MB each)
   if (url.pathname.match(/\/api\/v2\/course\/\d+\/download\//)) {
-    console.log("[SW] Skipping cache for course download:", url.pathname);
     return;
   }
 
@@ -350,18 +339,12 @@ self.addEventListener("fetch", (event) => {
             // Try dynamic cache with base URL
             cachedResponse = await dynamicCache.match(baseRequest);
             if (cachedResponse) {
-              console.log(
-                `[SW] Serving ${url.pathname} with query params from base cache`,
-              );
               return cachedResponse;
             }
 
             // Try main cache with base URL
             cachedResponse = await caches.match(baseRequest);
             if (cachedResponse) {
-              console.log(
-                `[SW] Serving ${url.pathname} with query params from base cache`,
-              );
               return cachedResponse;
             }
           }

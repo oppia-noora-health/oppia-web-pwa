@@ -217,7 +217,6 @@ export default function CourseDownloadButton({
             pagesToCache.map(async (url) => {
               try {
                 await cachePageWithDependencies(url);
-                console.log(`[CourseDownload] ✅ Pre-cached: ${url}`);
               } catch (err) {
                 console.warn(
                   `[CourseDownload] ⚠️ Pre-cache failed for ${url}:`,
