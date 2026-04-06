@@ -60,10 +60,10 @@ export interface LoginResponse {
  */
 export const fetchUserData = async (
   username: string,
-  apiKey: string
+  apiKey: string,
 ): Promise<LoginResponse> => {
   try {
-    const response = await axios.post(API_PATHS.LOGIN, {
+    const response = await axios.post(API_PATHS.LOGIN(), {
       username,
       api_key: apiKey,
     });
@@ -101,10 +101,10 @@ export interface ExternalProfileResponse {
 export const checkExternalProfile = async (
   phoneNumber: string,
   country: string,
-  language: string
+  language: string,
 ): Promise<ExternalProfileResponse> => {
   try {
-    const response = await axios.post(API_PATHS.EXTERNALPROFILE, {
+    const response = await axios.post(API_PATHS.EXTERNALPROFILE(), {
       phone_number: phoneNumber,
       country,
       language,
@@ -128,10 +128,10 @@ export const sendOTP = async (
   phoneNumber: string,
   channel: "sms" | "whatsapp" = "sms",
   country?: string,
-  language?: string
+  language?: string,
 ): Promise<void> => {
   try {
-    const response = await axios.post(API_PATHS.SEND_OTP, {
+    const response = await axios.post(API_PATHS.SEND_OTP(), {
       phone_number: phoneNumber,
       channel,
       country,
@@ -153,17 +153,17 @@ export const sendOTP = async (
  * Fetch available channels for resending OTP
  */
 export const fetchChannels = async (
-  phoneNumber: string
+  phoneNumber: string,
 ): Promise<ChannelResponse> => {
   try {
-    const response = await axios.post<ChannelResponse>(API_PATHS.CHANNEL, {
+    const response = await axios.post<ChannelResponse>(API_PATHS.CHANNEL(), {
       phone_number: phoneNumber,
     });
 
     return response.data;
   } catch (error: any) {
     throw new Error(
-      error.response?.data?.message || "Failed to fetch channels"
+      error.response?.data?.message || "Failed to fetch channels",
     );
   }
 };
@@ -173,10 +173,10 @@ export const fetchChannels = async (
  */
 export const verifyOTP = async (
   phoneNumber: string,
-  otpCode: string
+  otpCode: string,
 ): Promise<LoginResponse> => {
   try {
-    const response = await axios.post<LoginResponse>(API_PATHS.LOGIN, {
+    const response = await axios.post<LoginResponse>(API_PATHS.LOGIN(), {
       phone_number: phoneNumber,
       code: otpCode,
     });
@@ -185,9 +185,8 @@ export const verifyOTP = async (
     if (response.data.api_key) {
       localStorage.setItem("apiKey", response.data.api_key);
       // Set default authorization header for future requests
-      axios.defaults.headers.common[
-        "Authorization"
-      ] = `ApiKey ${response.data.username}:${response.data.api_key}`;
+      axios.defaults.headers.common["Authorization"] =
+        `ApiKey ${response.data.username}:${response.data.api_key}`;
     }
 
     return response.data;

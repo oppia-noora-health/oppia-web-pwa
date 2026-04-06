@@ -97,7 +97,7 @@ npm run pwa:check         # Lighthouse PWA audit
 
 ### API Configuration
 
-- Base URL: `https://staging.academy.noorahealth.org/api/v2/`
+- Base URL: `https://academy-indonesia.noorahealth.org/api/v2/`
 - All `/api/*` requests rewrite to staging via `next.config.js`
 - Auth: username + api_key (stored in Zustand + encrypted localStorage)
 - Use `src/utils/apiClient.ts` for authenticated requests

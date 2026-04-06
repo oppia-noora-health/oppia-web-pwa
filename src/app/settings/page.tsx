@@ -56,6 +56,17 @@ function isValidApiUrl(url: string): boolean {
   );
 }
 
+function setApiEnvCookie(url: string): void {
+  if (typeof document === "undefined") return;
+
+  const normalized = normalizeUrl(url);
+  const env = normalized.includes("staging.academy.noorahealth.org")
+    ? "staging"
+    : "production";
+
+  document.cookie = `api_env=${env}; Path=/; SameSite=Lax`;
+}
+
 export default function SettingsPage() {
   const { t } = useTranslation();
   const router = useRouter();
@@ -93,6 +104,7 @@ export default function SettingsPage() {
       const displayUrl = savedUrl.replace(/\/api\/v2\/?$/, "");
       setApiUrl(displayUrl);
       setPreviousApiUrl(displayUrl);
+      setApiEnvCookie(displayUrl);
 
       const savedTextSize =
         (getSetting("text_size", userId) as TextSize) || "normal";
@@ -156,6 +168,7 @@ export default function SettingsPage() {
         }
         // Add trailing slash and api/v2/ path
         const fullUrl = `${urlToSave}/api/v2/`;
+        setApiEnvCookie(urlToSave);
 
         // Logout if API URL changed and user is logged in
         if (apiUrlChanged && user) {
@@ -236,6 +249,7 @@ export default function SettingsPage() {
       const fullUrl = `${resetUrlClean}/api/v2/`;
       setSetting("custom_api_url", fullUrl, userId);
       setSetting("custom_api_url", fullUrl, undefined);
+      setApiEnvCookie(resetUrlClean);
 
       // Logout and redirect
       await logout();
@@ -244,6 +258,7 @@ export default function SettingsPage() {
       // Save the reset URL
       const fullUrl = `${resetUrlClean}/api/v2/`;
       setSetting("custom_api_url", fullUrl, userId);
+      setApiEnvCookie(resetUrlClean);
       setSaveMessage(t("settings.saveSuccess"));
     }
   };

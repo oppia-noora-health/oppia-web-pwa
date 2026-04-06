@@ -3031,22 +3031,27 @@ export default function CourseViewerPage() {
         },
       );
 
-      // Only mark quiz as complete in the completion map when it passed the threshold
-      // And only award points if not already completed today (daily limit)
+      // Mark quiz as completed whenever it passes, even if points are 0
+      // (e.g. pass on second attempt on the same day).
+      // Keep daily completion marker tied to points-award behavior.
       if (result.passed && activity.digest) {
         const currentCompletionMap = getCompletionData(courseId) || new Map();
-        // Check if already completed today - only award if not
+
+        let updatedCompletionMap = new Map(currentCompletionMap);
+        updatedCompletionMap.set(activity.digest, true); // Lifetime completion
+
+        // Add today's completion key only when this attempt is points-eligible.
         if (
           result.points > 0 &&
           !wasCompletedToday(currentCompletionMap, activity.digest)
         ) {
-          // Mark as completed for today
-          const updatedCompletionMap = markCompletedToday(
+          updatedCompletionMap = markCompletedToday(
             currentCompletionMap,
             activity.digest,
           );
-          setCompletionData(courseId, updatedCompletionMap);
         }
+
+        setCompletionData(courseId, updatedCompletionMap);
       }
 
       // Refresh points in sidebar
@@ -3190,16 +3195,7 @@ export default function CourseViewerPage() {
     return <PageLoading />;
   }
 
-  // CRITICAL: Wait for loading to complete before showing any error
-  // This prevents flash of error screen while data is still being loaded/processed
-  // Error state - only show when loading is complete AND there's actually an error
   if (!loading && (error || !courseData)) {
-    // Check if it's an offline error
-    // CRITICAL: Only show offline error if there's an ACTUAL ERROR related to offline/network
-    // Don't show offline error just because navigator.onLine is false - course might still load from IndexedDB
-    // Only trigger offline error when:
-    // 1. There's an explicit offline/network error message, OR
-    // 2. There's no course data AND we're offline (loading already checked above)
     const isOfflineError =
       !courseData &&
       (error?.includes("offline") ||

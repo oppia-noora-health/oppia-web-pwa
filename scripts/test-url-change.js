@@ -189,20 +189,20 @@
 
   const urlTests = [
     {
-      input: "staging.academy.noorahealth.org",
-      expected: "staging.academy.noorahealth.org",
+      input: "academy.noorahealth.org",
+      expected: "academy.noorahealth.org",
     },
     {
-      input: "staging.academy.noorahealth.org/",
-      expected: "staging.academy.noorahealth.org",
+      input: "academy.noorahealth.org/",
+      expected: "academy.noorahealth.org",
     },
     {
-      input: "https://staging.academy.noorahealth.org",
-      expected: "staging.academy.noorahealth.org",
+      input: "https://academy.noorahealth.org",
+      expected: "academy.noorahealth.org",
     },
     {
-      input: "HTTPS://Staging.Academy.NooraHealth.org///",
-      expected: "staging.academy.noorahealth.org",
+      input: "HTTPS://academy.noorahealth.org///",
+      expected: "academy.noorahealth.org",
     },
   ];
 
@@ -257,7 +257,7 @@
   logger.section("TEST 5: URL Validation Tests");
   const SUPPORTED_API_URLS = [
     "https://academy-indonesia.noorahealth.org",
-    "https://staging.academy.noorahealth.org",
+    "https://academy.noorahealth.org",
   ];
 
   const isValidApiUrl = (url) => {
@@ -269,7 +269,7 @@
 
   const validationTests = [
     {
-      url: "staging.academy.noorahealth.org",
+      url: "academy.noorahealth.org",
       shouldBeValid: true,
     },
     {

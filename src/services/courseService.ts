@@ -31,7 +31,7 @@ export const getAllCourses = async (): Promise<CoursesResponse> => {
       // Online action
       async () => {
         const data = await authenticatedGet<CoursesResponse>(
-          API_PATHS.SERVER_COURSES
+          API_PATHS.SERVER_COURSES(),
         );
         // Cache the response for offline access
         await cacheCoursesList("all", data.courses || []);
@@ -44,7 +44,7 @@ export const getAllCourses = async (): Promise<CoursesResponse> => {
           throw new Error("No cached courses available offline");
         }
         return { courses: cachedCourses } as CoursesResponse;
-      }
+      },
     );
 
     return result.data;
@@ -57,7 +57,7 @@ export const getAllCourses = async (): Promise<CoursesResponse> => {
 export const getCourseInfo = async (courseId: string): Promise<Course> => {
   try {
     const data = await authenticatedGet<Course>(
-      API_PATHS.COURSE_INFO(courseId)
+      API_PATHS.COURSE_INFO(courseId),
     );
     return data; // Return course data
   } catch (error) {
@@ -67,11 +67,11 @@ export const getCourseInfo = async (courseId: string): Promise<Course> => {
 
 // Function to get course activity
 export const getCourseActivity = async (
-  courseId: string
+  courseId: string,
 ): Promise<CourseActivity[]> => {
   try {
     const data = await authenticatedGet<CourseActivity[]>(
-      API_PATHS.COURSE_ACTIVITY(courseId)
+      API_PATHS.COURSE_ACTIVITY(courseId),
     );
     return data; // Return course activity data
   } catch (error) {

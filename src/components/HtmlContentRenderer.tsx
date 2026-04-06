@@ -9,6 +9,8 @@ import { getMediaFromCache } from "@/utils/mediaCacheStorage";
 import { getApiUrl } from "@/config/constants";
 import VideoModal from "@/components/modals/VideoModal";
 import { useLanguageStore } from "@/store/useLanguageStore";
+import { useAuthStore } from "@/store/useStore";
+import { getSetting } from "@/utils/settingsStorage";
 import { translations } from "@/locales";
 
 // Media file info for streaming mode
@@ -82,6 +84,8 @@ export default function HtmlContentRenderer({
   const containerRef = useRef<HTMLDivElement>(null);
   const { language } = useLanguageStore();
   const t = translations[language as keyof typeof translations];
+  const { user } = useAuthStore();
+  const userId = user?.id?.toString();
   // Track the HTML we've already processed to avoid re-checking
   const processedHtmlRef = useRef<string>("");
   // Track the last reported state to avoid unnecessary callbacks
@@ -1189,9 +1193,11 @@ export default function HtmlContentRenderer({
                     const courseData = await getCourseFromIDB(courseId);
                     if (courseData?.shortname) {
                       const fallbackShortname = courseData.shortname;
+                      const customUrl = getSetting("custom_api_url", userId);
                       const baseUrl =
-                        getApiUrl().replace(/\/api\/v2\/?$/, "") ||
-                        "https://staging.academy.noorahealth.org";
+                        (customUrl?.replace(/\/api\/v2\/?$/, "") ||
+                          getApiUrl().replace(/\/api\/v2\/?$/, "")) ||
+                        "https://academy-indonesia.noorahealth.org";
 
                       let pdfUrl;
                       if (originalHref.startsWith("/media/courses/")) {

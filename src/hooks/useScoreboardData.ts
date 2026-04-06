@@ -157,11 +157,9 @@ export const useScoreboardData = () => {
                     section.digest &&
                     isPreTestTitle(section.title)
                   ) {
-                    console.log(`[Pretest] Found pretest digest: ${section.digest}, title: "${section.title}", course: ${course.shortname}`);
                     collectedPretestDigests.add(section.digest);
                   }
                 });
-                console.log(`[Pretest] Total pretest digests collected so far:`, Array.from(collectedPretestDigests));
 
                 // Filter sections the same way as in the view page (remove empty quizzes/feedback and meta activities like pre-test)
                 const validSections = courseStructure.sections.filter(
@@ -262,7 +260,7 @@ export const useScoreboardData = () => {
 
       try {
         // Fetch points data
-        const pointsResponse = await api.get(API_PATHS.POINTS);
+        const pointsResponse = await api.get(API_PATHS.POINTS());
         if (pointsResponse && pointsResponse.objects) {
           pointsData = pointsResponse.objects;
           setApiPointsData(pointsData);
@@ -279,7 +277,7 @@ export const useScoreboardData = () => {
 
       try {
         // Fetch activity log
-        const activityResponse = await api.get(API_PATHS.ACTIVITYLOG);
+        const activityResponse = await api.get(API_PATHS.ACTIVITYLOG());
         if (activityResponse && activityResponse.objects) {
           activityLog = activityResponse.objects;
           setActivityLogData(activityLog);

@@ -171,7 +171,7 @@ export default function PointsPage() {
       setLoadingActivities(true);
 
       try {
-        const response = await api.get<PointsApiResponse>(API_PATHS.POINTS);
+        const response = await api.get<PointsApiResponse>(API_PATHS.POINTS());
 
         if (response && response.objects) {
           const visiblePoints = response.objects.filter(
@@ -342,7 +342,7 @@ export default function PointsPage() {
 
       // If no cohorts, fall back to regular leaderboard
       if (!userCohorts || userCohorts.length === 0) {
-        const regularLeaderboardPath = API_PATHS.LEADERBOARD;
+        const regularLeaderboardPath = API_PATHS.LEADERBOARD();
         try {
           const response = await api.get<LeaderboardApiResponse>(
             regularLeaderboardPath,
@@ -414,7 +414,7 @@ export default function PointsPage() {
 
       try {
         setLoadingBadges(true);
-        const response = await api.get<AwardsApiResponse>(API_PATHS.AWARDS);
+        const response = await api.get<AwardsApiResponse>(API_PATHS.AWARDS());
 
         if (response && response.objects) {
           setAwards(response.objects);

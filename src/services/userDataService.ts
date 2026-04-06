@@ -16,7 +16,7 @@ export interface UserDownloadData {
 export const getUserDownloadData = async (): Promise<UserDownloadData> => {
   try {
     const data = await authenticatedGet<UserDownloadData>(
-      API_PATHS.DOWNLOAD_ACCOUNT_DATA,
+      API_PATHS.DOWNLOAD_ACCOUNT_DATA(),
     );
     return data;
   } catch (error) {
@@ -29,7 +29,7 @@ export const getUserDownloadData = async (): Promise<UserDownloadData> => {
  * Useful for direct downloads or external links
  */
 export const getDownloadDataUrl = (): string => {
-  return buildAuthenticatedUrl(API_PATHS.DOWNLOAD_ACCOUNT_DATA);
+  return buildAuthenticatedUrl(API_PATHS.DOWNLOAD_ACCOUNT_DATA());
 };
 
 /**
@@ -40,7 +40,7 @@ export const getUserProfile = async (userId?: number) => {
     const result = await withOfflineFallback(
       // Online action
       async () => {
-        const profile = await authenticatedGet(API_PATHS.USER_PROFILE);
+        const profile = await authenticatedGet(API_PATHS.USER_PROFILE());
         // Cache the profile for offline access
         if (userId) {
           await cacheUserProfile(userId, profile);
@@ -71,7 +71,7 @@ export const getUserProfile = async (userId?: number) => {
  */
 export const getLeaderboard = async () => {
   try {
-    const leaderboard = await authenticatedGet(API_PATHS.LEADERBOARD);
+    const leaderboard = await authenticatedGet(API_PATHS.LEADERBOARD());
     return leaderboard;
   } catch (error) {
     throw error;
@@ -83,7 +83,7 @@ export const getLeaderboard = async () => {
  */
 export const getUserCohorts = async () => {
   try {
-    const cohorts = await authenticatedGet(API_PATHS.USER_COHORTS);
+    const cohorts = await authenticatedGet(API_PATHS.USER_COHORTS());
     return cohorts;
   } catch (error) {
     throw error;
@@ -95,7 +95,7 @@ export const getUserCohorts = async () => {
  */
 export const getServerInfo = async () => {
   try {
-    const info = await authenticatedGet(API_PATHS.SERVER_INFO);
+    const info = await authenticatedGet(API_PATHS.SERVER_INFO());
     return info;
   } catch (error) {
     throw error;

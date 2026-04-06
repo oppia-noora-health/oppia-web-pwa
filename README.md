@@ -358,8 +358,8 @@ Create a `.env.local` file in the project root:
 
 | Variable                      | Description              | Example                                           | Required |
 | ----------------------------- | ------------------------ | ------------------------------------------------- | -------- |
-| `NEXT_PUBLIC_API_URL`         | OppiaMobile API base URL | `https://staging.academy.noorahealth.org/api/v2/` | Yes      |
-| `NEXT_PUBLIC_MEDIA_URL`       | Media assets base URL    | `https://staging.academy.noorahealth.org/media/`  | No       |
+| `NEXT_PUBLIC_API_URL`         | OppiaMobile API base URL | `https://academy.noorahealth.org/api/v2/` | Yes      |
+| `NEXT_PUBLIC_MEDIA_URL`       | Media assets base URL    | `https://academy.noorahealth.org/media/`  | No       |
 | `NEXT_PUBLIC_COUNTLY_APP_KEY` | Countly analytics key    | `abc123...`                                       | No       |
 | `NEXT_PUBLIC_COUNTLY_URL`     | Countly server URL       | `https://analytics.example.com`                   | No       |
 | `NODE_ENV`                    | Environment mode         | `development` / `production`                      | Yes      |
@@ -604,7 +604,7 @@ All API requests proxy through Next.js rewrites to staging environment:
 
 ```
 Frontend: /api/course/123
-Backend:  https://staging.academy.noorahealth.org/api/v2/course/123
+Backend:  https://academy.noorahealth.org/api/v2/course/123
 ```
 
 Configured in `next.config.js`:
@@ -614,7 +614,7 @@ async rewrites() {
   return [
     {
       source: "/api/:path*",
-      destination: "https://staging.academy.noorahealth.org/api/v2/:path*",
+      destination: "https://academy.noorahealth.org/api/v2/:path*",
     },
   ];
 }
@@ -1889,7 +1889,7 @@ docker build -t noora-academy .
 
 # Run container
 docker run -p 3000:3000 \
-  -e NEXT_PUBLIC_API_URL=https://staging.academy.noorahealth.org/api/v2/ \
+  -e NEXT_PUBLIC_API_URL=https://academy.noorahealth.org/api/v2/ \
   noora-academy
 ```
 
