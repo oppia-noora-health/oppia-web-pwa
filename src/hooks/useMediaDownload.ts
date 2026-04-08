@@ -44,6 +44,7 @@ export function useMediaDownload(
     useState<MediaDownloadProgress | null>(null);
   const [mediaNotice, setMediaNotice] = useState<MediaNotice | null>(null);
   const controllerRef = useRef<AbortController | null>(null);
+  const downloadInFlightRef = useRef(false);
   const isDownloadedCourseSource =
     courseSource === "indexeddb" || courseSource === "cache";
 
@@ -111,6 +112,9 @@ export function useMediaDownload(
 
   const handleDownloadMedia = async () => {
     if (!courseId) return;
+    if (downloadInFlightRef.current || downloadingMedia) {
+      return;
+    }
 
     // Check if online before downloading
     if (!isOnline) {
@@ -126,6 +130,7 @@ export function useMediaDownload(
     }
 
     setDownloadingMedia(true);
+    downloadInFlightRef.current = true;
     setMediaGateStatus("downloading");
     setMediaGateError(null);
     setShowMediaPrompt(false);
@@ -193,6 +198,7 @@ export function useMediaDownload(
     } finally {
       controllerRef.current = null;
       setDownloadingMedia(false);
+      downloadInFlightRef.current = false;
     }
   };
 

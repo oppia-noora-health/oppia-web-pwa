@@ -3069,28 +3069,27 @@ export default function CourseViewerPage() {
       mediaGateStatus === "downloading" ||
       mediaGateStatus === "error");
 
+  if (mediaGateStatus === "checking") {
+    return <PageLoading />;
+  }
+
   if (isMediaGateBlocked) {
-    const isChecking = mediaGateStatus === "checking";
     const isDownloadingMedia = mediaGateStatus === "downloading";
     const missingCountLabel = `${missingMedia.length} media file${
       missingMedia.length > 1 ? "s" : ""
     }`;
 
-    const gateTitle = isChecking
-      ? t("media.gateCheckingTitle")
-      : isDownloadingMedia
-        ? t("media.gateDownloadingTitle")
-        : !isOnline
-          ? t("media.gateOfflineTitle")
-          : t("media.gateDownloadRequiredTitle");
+    const gateTitle = isDownloadingMedia
+      ? t("media.gateDownloadingTitle")
+      : !isOnline
+        ? t("media.gateOfflineTitle")
+        : t("media.gateDownloadRequiredTitle");
 
-    const gateDescription = isChecking
-      ? t("media.gateCheckingDesc")
-      : isDownloadingMedia
-        ? t("media.gateDownloadingDesc")
-        : !isOnline
-          ? t("media.gateOfflineDesc").replace("{count}", missingCountLabel)
-          : t("media.gateMissingDesc").replace("{count}", missingCountLabel);
+    const gateDescription = isDownloadingMedia
+      ? t("media.gateDownloadingDesc")
+      : !isOnline
+        ? t("media.gateOfflineDesc").replace("{count}", missingCountLabel)
+        : t("media.gateMissingDesc").replace("{count}", missingCountLabel);
 
     return (
       <div className="min-h-screen w-full flex items-center justify-center px-4">
@@ -3121,12 +3120,7 @@ export default function CourseViewerPage() {
           <div className="flex items-center justify-center gap-3">
             <button
               onClick={handleDownloadMedia}
-              disabled={
-                isChecking ||
-                isDownloadingMedia ||
-                downloadingMedia ||
-                !isOnline
-              }
+              disabled={isDownloadingMedia || downloadingMedia || !isOnline}
               className="inline-flex items-center justify-center rounded-md bg-cyan-600 text-white px-4 py-2 text-sm font-medium hover:bg-cyan-700 disabled:opacity-60 disabled:cursor-not-allowed">
               {!isOnline
                 ? t("media.gateReconnectToDownload")

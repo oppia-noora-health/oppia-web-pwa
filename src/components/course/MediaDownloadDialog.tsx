@@ -82,9 +82,12 @@ export default function MediaDownloadDialog({
             <AlertDialogCancel>{t("common.close")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={onDownload}
+              disabled={downloadingMedia}
               className="bg-cyan-500 hover:bg-cyan-600">
               <Download className="w-4 h-4 mr-2" />
-              {t("media.gateDownloadMedia")}
+              {downloadingMedia
+                ? t("media.gateDownloading")
+                : t("media.gateDownloadMedia")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

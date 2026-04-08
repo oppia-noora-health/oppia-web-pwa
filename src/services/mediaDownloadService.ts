@@ -277,19 +277,51 @@ export async function downloadAllMissingMedia(
 ): Promise<{ success: number; failed: number }> {
   const missingMedia = await getMissingMedia(courseId);
 
-  if (missingMedia.length === 0) {
+  // Some module.xml files can contain duplicate media references
+  // (e.g., encoded/decoded filename variants). Dedupe them per batch.
+  const normalizedKey = (media: Media) => {
+    let decoded = media.filename;
+    try {
+      decoded = decodeURIComponent(media.filename);
+    } catch {
+      decoded = media.filename;
+    }
+
+    return `${decoded.trim().toLowerCase()}|${media.downloadUrl}`;
+  };
+
+  const dedupedMissingMedia = missingMedia.filter((media, index, arr) => {
+    const key = normalizedKey(media);
+    return index === arr.findIndex((m) => normalizedKey(m) === key);
+  });
+
+  if (dedupedMissingMedia.length === 0) {
     return { success: 0, failed: 0 };
   }
 
   let success = 0;
   let failed = 0;
+  const attemptedKeys = new Set<string>();
 
   // Download one at a time to avoid overwhelming the connection
-  for (let i = 0; i < missingMedia.length; i++) {
+  for (let i = 0; i < dedupedMissingMedia.length; i++) {
     if (signal?.aborted) {
       break;
     }
-    const media = missingMedia[i];
+
+    const media = dedupedMissingMedia[i];
+    const key = normalizedKey(media);
+
+    if (attemptedKeys.has(key)) {
+      continue;
+    }
+    attemptedKeys.add(key);
+
+    // Re-check before download in case another path completed this media already.
+    const alreadyDownloaded = await isMediaDownloaded(courseId, media.filename);
+    if (alreadyDownloaded) {
+      continue;
+    }
 
     const result = await downloadMedia(courseId, media, onProgress, signal);
     if (result) {

@@ -2,7 +2,7 @@
 
 import { useAuthStore, useActivityCompletionStore } from "@/store/useStore";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   preCacheStaticPagesOnLogin,
@@ -83,6 +83,7 @@ export default function CoursePage() {
   const [mediaDownloadProgress, setMediaDownloadProgress] =
     useState<MediaDownloadProgress | null>(null);
   const [mediaNotice, setMediaNotice] = useState<MediaNotice | null>(null);
+  const mediaDownloadInFlightRef = useRef(false);
 
   // Hydration guard: prevents SSR/prerendering from reaching SidebarTrigger
   // (which requires SidebarProvider only available on the client).
@@ -157,6 +158,7 @@ export default function CoursePage() {
 
   const handleDownloadMissingMediaFromCoursePage = async () => {
     if (!mediaPromptCourseId) return;
+    if (mediaDownloadInFlightRef.current || downloadingMedia) return;
 
     if (!navigator.onLine) {
       setMediaNotice({
@@ -169,6 +171,7 @@ export default function CoursePage() {
     }
 
     setDownloadingMedia(true);
+    mediaDownloadInFlightRef.current = true;
     setMediaPromptOpen(false);
 
     try {
@@ -211,6 +214,7 @@ export default function CoursePage() {
     } finally {
       setDownloadingMedia(false);
       setMediaDownloadProgress(null);
+      mediaDownloadInFlightRef.current = false;
     }
   };
 

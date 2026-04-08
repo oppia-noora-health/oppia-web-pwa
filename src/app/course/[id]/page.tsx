@@ -224,7 +224,9 @@ export default function CourseModulesPage() {
       return true;
     }
 
-    setShowMediaPrompt(true);
+    if (mediaGateStatus === "blocked-missing") {
+      setShowMediaPrompt(true);
+    }
 
     return false;
   };
@@ -840,6 +842,10 @@ export default function CourseModulesPage() {
         </div>
       </div>
     );
+  }
+
+  if (isMediaBlockedForDownloadedCourse && mediaGateStatus === "checking") {
+    return <PageLoading />;
   }
 
   // Calculate total completion from all lessons
