@@ -44,10 +44,12 @@ export function useMediaDownload(
     useState<MediaDownloadProgress | null>(null);
   const [mediaNotice, setMediaNotice] = useState<MediaNotice | null>(null);
   const controllerRef = useRef<AbortController | null>(null);
+  const isDownloadedCourseSource =
+    courseSource === "indexeddb" || courseSource === "cache";
 
   const checkMissingMedia = useCallback(async () => {
-    // Only check if course is loaded from IndexedDB
-    if (!courseId || courseSource !== "indexeddb") {
+    // Only check for downloaded course sources (indexeddb/cache).
+    if (!courseId || !isDownloadedCourseSource) {
       setMissingMedia([]);
       setMediaGateError(null);
       setMediaGateStatus("ready-no-missing");
@@ -69,7 +71,7 @@ export function useMediaDownload(
       // Fail closed so user cannot open course when verification fails.
       setMediaGateStatus("error");
     }
-  }, [courseId, courseSource, mediaText.gateCouldNotVerify]);
+  }, [courseId, isDownloadedCourseSource, mediaText.gateCouldNotVerify]);
 
   useEffect(() => {
     checkMissingMedia();
@@ -78,7 +80,7 @@ export function useMediaDownload(
   useEffect(() => {
     const handleOnline = () => {
       setIsOnline(true);
-      if (courseId && courseSource === "indexeddb" && !downloadingMedia) {
+      if (courseId && isDownloadedCourseSource && !downloadingMedia) {
         void checkMissingMedia();
       }
     };
@@ -102,8 +104,8 @@ export function useMediaDownload(
   }, [
     checkMissingMedia,
     courseId,
-    courseSource,
     downloadingMedia,
+    isDownloadedCourseSource,
     mediaText.gateOfflineReconnectError,
   ]);
 

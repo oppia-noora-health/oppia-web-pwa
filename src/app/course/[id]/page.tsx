@@ -183,9 +183,12 @@ export default function CourseModulesPage() {
   // Check if course is downloaded (from IndexedDB or localStorage)
   const isDownloaded = courseSource === "indexeddb" || courseSource === "cache";
 
+  const isDownloadedCourseSource =
+    courseSource === "indexeddb" || courseSource === "cache";
+
   const isMediaBlockedForDownloadedCourse =
     !shouldUseStreaming &&
-    courseSource === "indexeddb" &&
+    isDownloadedCourseSource &&
     (mediaGateStatus === "checking" ||
       mediaGateStatus === "blocked-missing" ||
       mediaGateStatus === "downloading" ||
@@ -221,9 +224,7 @@ export default function CourseModulesPage() {
       return true;
     }
 
-    if (mediaGateStatus === "blocked-missing" || mediaGateStatus === "error") {
-      setShowMediaPrompt(true);
-    }
+    setShowMediaPrompt(true);
 
     return false;
   };

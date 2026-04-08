@@ -3058,9 +3058,12 @@ export default function CourseViewerPage() {
 
   // Hard gate: downloaded courses stay blocked until media verification completes,
   // and cannot be opened while missing media remains.
+  const isDownloadedCourseSource =
+    courseSource === "indexeddb" || courseSource === "cache";
+
   const isMediaGateBlocked =
     !useStreaming &&
-    courseSource === "indexeddb" &&
+    isDownloadedCourseSource &&
     (mediaGateStatus === "checking" ||
       mediaGateStatus === "blocked-missing" ||
       mediaGateStatus === "downloading" ||
