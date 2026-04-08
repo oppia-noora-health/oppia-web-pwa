@@ -172,9 +172,8 @@ export default function CoursePage() {
     setMediaPromptOpen(false);
 
     try {
-      await downloadAllMissingMedia(
-        mediaPromptCourseId,
-        (progress) => setMediaDownloadProgress(progress),
+      await downloadAllMissingMedia(mediaPromptCourseId, (progress) =>
+        setMediaDownloadProgress(progress),
       );
 
       const remaining = await getMissingMedia(mediaPromptCourseId);
