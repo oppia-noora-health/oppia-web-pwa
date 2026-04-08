@@ -528,7 +528,7 @@ export const en = {
       "Failed to download media files. Please try again.",
     dialogMissingTitle: "Required Media Files Missing",
     dialogMissingDesc:
-      "This course has required media files that must be downloaded before opening offline.",
+      "This course has required media files that must be downloaded before opening.",
   },
 
   // Tour
