@@ -14,6 +14,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 import { CourseCard } from "@/components/course/CourseCard";
 import { CourseContextMenu } from "@/components/course/CourseContextMenu";
+import MediaDownloadDialog from "@/components/course/MediaDownloadDialog";
 import { useContextMenu } from "@/hooks/useContextMenu";
 import { useCourseUpdateChecker } from "@/hooks/useCourseUpdateChecker";
 import { useTour } from "@/hooks/useTour";
@@ -33,6 +34,12 @@ import {
   type InstalledCourse,
 } from "@/hooks/useInstalledCourses";
 import { ActivityCompletionToast } from "@/components/course/ActivityCompletionToast";
+import {
+  getMissingMedia,
+  downloadAllMissingMedia,
+} from "@/services/mediaDownloadService";
+import type { Media, MediaDownloadProgress } from "@/types/media";
+import type { MediaNotice } from "@/hooks/useMediaDownload";
 import { Search, X } from "lucide-react";
 
 export default function CoursePage() {
@@ -67,6 +74,15 @@ export default function CoursePage() {
     pointsEarned: 0,
   });
   const [cardStatuses, setCardStatuses] = useState<Record<string, string>>({});
+  const [mediaPromptOpen, setMediaPromptOpen] = useState(false);
+  const [mediaPromptCourseId, setMediaPromptCourseId] = useState<string | null>(
+    null,
+  );
+  const [missingMedia, setMissingMedia] = useState<Media[]>([]);
+  const [downloadingMedia, setDownloadingMedia] = useState(false);
+  const [mediaDownloadProgress, setMediaDownloadProgress] =
+    useState<MediaDownloadProgress | null>(null);
+  const [mediaNotice, setMediaNotice] = useState<MediaNotice | null>(null);
 
   // Hydration guard: prevents SSR/prerendering from reaching SidebarTrigger
   // (which requires SidebarProvider only available on the client).
@@ -116,8 +132,20 @@ export default function CoursePage() {
     }
   }, [isAuthenticated, loading, hasCompletedTour, startTour]);
 
-  const handleCourseClick = (courseId: string) => {
+  const handleCourseClick = async (courseId: string) => {
     if (isNavigating) return; // Prevent double clicks
+
+    try {
+      const missing = await getMissingMedia(courseId);
+      if (missing.length > 0) {
+        setMediaPromptCourseId(courseId);
+        setMissingMedia(missing);
+        setMediaPromptOpen(true);
+        return;
+      }
+    } catch {
+      // If verification fails, continue to course page where a second guard exists.
+    }
 
     setIsNavigating(true);
 
@@ -125,6 +153,66 @@ export default function CoursePage() {
 
     // Reset after navigation attempt
     setTimeout(() => setIsNavigating(false), 1000);
+  };
+
+  const handleDownloadMissingMediaFromCoursePage = async () => {
+    if (!mediaPromptCourseId) return;
+
+    if (!navigator.onLine) {
+      setMediaNotice({
+        open: true,
+        title: t("media.gateOfflineTitle"),
+        message: t("media.gateOfflineDownloadAlert"),
+        tone: "warning",
+      });
+      return;
+    }
+
+    setDownloadingMedia(true);
+    setMediaPromptOpen(false);
+
+    try {
+      await downloadAllMissingMedia(
+        mediaPromptCourseId,
+        (progress) => setMediaDownloadProgress(progress),
+      );
+
+      const remaining = await getMissingMedia(mediaPromptCourseId);
+      setMissingMedia(remaining);
+
+      if (remaining.length > 0) {
+        setMediaPromptOpen(true);
+        setMediaNotice({
+          open: true,
+          title: t("media.gateDownloadRequiredTitle"),
+          message: t("media.gateMissingAfterDownload"),
+          tone: "warning",
+        });
+        return;
+      }
+
+      setMediaNotice({
+        open: true,
+        title: t("success.downloaded"),
+        message: t("media.gateReadyDesc"),
+        tone: "success",
+      });
+
+      setIsNavigating(true);
+      router.push(`/course/${mediaPromptCourseId}?from=course`);
+      setTimeout(() => setIsNavigating(false), 1000);
+    } catch {
+      setMediaNotice({
+        open: true,
+        title: t("error.downloadFailed"),
+        message: t("media.downloadFailedMediaAlert"),
+        tone: "error",
+      });
+      setMediaPromptOpen(true);
+    } finally {
+      setDownloadingMedia(false);
+      setMediaDownloadProgress(null);
+    }
   };
 
   const handleMenuClick = (e: React.MouseEvent, course: InstalledCourse) => {
@@ -587,6 +675,17 @@ export default function CoursePage() {
           }}
         />
       )}
+
+      <MediaDownloadDialog
+        open={mediaPromptOpen}
+        onOpenChange={setMediaPromptOpen}
+        missingMedia={missingMedia}
+        onDownload={handleDownloadMissingMediaFromCoursePage}
+        downloadingMedia={downloadingMedia}
+        downloadProgress={mediaDownloadProgress}
+        mediaNotice={mediaNotice}
+        onMediaNoticeClose={() => setMediaNotice(null)}
+      />
 
       {/* Delete Confirmation Dialog */}
       <ConfirmationDialog
