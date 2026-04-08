@@ -9,6 +9,7 @@ import { useAuthenticatedApi } from "@/hooks/useAuthenticatedApi";
 import { courseDownloadService } from "@/services/courseDownloadService";
 import { useLanguageStore } from "@/store/useLanguageStore";
 import { translations } from "@/locales";
+import { isOnline } from "@/utils/networkUtils";
 
 interface CourseCardProps {
   courseId: string;
@@ -88,6 +89,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({
   const [updateCompleted, setUpdateCompleted] = useState(false);
   const [busyDialogOpen, setBusyDialogOpen] = useState(false);
   const [busyMessage, setBusyMessage] = useState("");
+  const [online, setOnline] = useState(isOnline());
 
   // Detect busy states (updating or reset/update via statusMessage)
   const downloadProgress = useDownloadStore(
@@ -103,6 +105,43 @@ export const CourseCard: React.FC<CourseCardProps> = ({
     isDownloading ||
     (statusMessage != null && statusMessage.includes("..."));
 
+  const getBusyMessage = () => {
+    const downloadInProgress =
+      isDownloading ||
+      downloadProgress?.phase === "downloading" ||
+      downloadProgress?.phase === "installing";
+
+    if (!online && downloadInProgress) {
+      return "You are offline. Course download is paused. Reconnect to continue.";
+    }
+
+    if (statusMessage?.includes("Resetting")) {
+      return "Course is being reset. Please wait.";
+    }
+    if (statusMessage?.includes("Updating")) {
+      return "Activity is being updated. Please wait.";
+    }
+    if (downloadInProgress) {
+      return "Course is downloading. Please wait.";
+    }
+    if (isUpdating) {
+      return "Course is being updated. Please wait.";
+    }
+    return "Please wait until the current operation finishes.";
+  };
+
+  useEffect(() => {
+    const handleOnline = () => setOnline(true);
+    const handleOffline = () => setOnline(false);
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
+
   // Auto-close busy dialog when process finishes
   useEffect(() => {
     if (busyDialogOpen && !isBusy) {
@@ -115,15 +154,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({
 
     // Block navigation when card is busy
     if (isBusy) {
-      const msg = statusMessage?.includes("Resetting")
-        ? "Course is being reset. Please wait."
-        : statusMessage?.includes("Updating")
-          ? "Activity is being updated. Please wait."
-          : isDownloading
-            ? "Course is downloading. Please wait."
-            : isUpdating
-              ? "Course is being updated. Please wait."
-              : "Please wait until the current operation finishes.";
+      const msg = getBusyMessage();
       setBusyMessage(msg);
       setBusyDialogOpen(true);
       return;

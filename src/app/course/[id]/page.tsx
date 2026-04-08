@@ -8,6 +8,7 @@ import { PageLoading } from "@/components/Loading";
 import { CourseModuleHeader } from "@/components/course/CourseModuleHeader";
 import { CourseCompletionBadge } from "@/components/course/CourseCompletionBadge";
 import { LessonCard } from "@/components/course/LessonCard";
+import MediaDownloadDialog from "@/components/course/MediaDownloadDialog";
 import LockedActivityDialog from "@/components/course/LockedActivityDialog";
 import PreTestModal from "@/components/course/PreTestModal";
 import SectionPasswordDialog from "@/components/course/SectionPasswordDialog";
@@ -16,6 +17,7 @@ import {
   unlockSection,
 } from "@/utils/sectionPasswordStorage";
 import { useCourseModules } from "@/hooks/useCourseModules";
+import { useMediaDownload } from "@/hooks/useMediaDownload";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useTour } from "@/hooks/useTour";
 import { useCompletionDataWithRehydration } from "@/hooks/useZustandRehydration";
@@ -152,6 +154,21 @@ export default function CourseModulesPage() {
       forceRefresh: isReturningFromViewer, // Pass flag to force refresh
     });
 
+  const {
+    isOnline,
+    missingMedia,
+    mediaGateStatus,
+    mediaGateError,
+    showMediaPrompt,
+    setShowMediaPrompt,
+    downloadingMedia,
+    mediaDownloadProgress,
+    mediaNotice,
+    closeMediaNotice,
+    handleDownloadMedia,
+    refreshMissingMedia,
+  } = useMediaDownload(courseId, courseSource);
+
   // Log completion data on mount and when it changes
   // Use rehydration hook to ensure Zustand persist middleware has loaded data
   const { isRehydrated, completionData, completionCount } =
@@ -165,6 +182,14 @@ export default function CourseModulesPage() {
 
   // Check if course is downloaded (from IndexedDB or localStorage)
   const isDownloaded = courseSource === "indexeddb" || courseSource === "cache";
+
+  const isMediaBlockedForDownloadedCourse =
+    !shouldUseStreaming &&
+    courseSource === "indexeddb" &&
+    (mediaGateStatus === "checking" ||
+      mediaGateStatus === "blocked-missing" ||
+      mediaGateStatus === "downloading" ||
+      mediaGateStatus === "error");
 
   // Get shortname from courseData or URL params (for streaming mode)
   const shortname = courseData?.shortname || shortnameFromUrl;
@@ -190,6 +215,18 @@ export default function CourseModulesPage() {
     activityIndex: number;
   } | null>(null);
   const [isNavigating, setIsNavigating] = useState(false);
+
+  const ensureMediaGateBeforeViewerOpen = (): boolean => {
+    if (!isMediaBlockedForDownloadedCourse) {
+      return true;
+    }
+
+    if (mediaGateStatus === "blocked-missing" || mediaGateStatus === "error") {
+      setShowMediaPrompt(true);
+    }
+
+    return false;
+  };
 
   /**
    * Check if a target page index is locked based on sequencing type
@@ -404,6 +441,10 @@ export default function CourseModulesPage() {
   };
 
   const handlePreTestOpen = () => {
+    if (!ensureMediaGateBeforeViewerOpen()) {
+      return;
+    }
+
     setShowPreTestModal(false);
 
     // DO NOT mark as attempted here - only mark when quiz is submitted and results are shown
@@ -622,6 +663,10 @@ export default function CourseModulesPage() {
   };
 
   const handleActivityClick = async (activityId: string) => {
+    if (!ensureMediaGateBeforeViewerOpen()) {
+      return;
+    }
+
     if (!courseData) {
       return;
     }
@@ -728,6 +773,10 @@ export default function CourseModulesPage() {
   };
 
   const handleResume = () => {
+    if (!ensureMediaGateBeforeViewerOpen()) {
+      return;
+    }
+
     const lastActivity = getLastVisitedActivity(courseId);
     if (!lastActivity) return;
 
@@ -805,6 +854,17 @@ export default function CourseModulesPage() {
   return (
     <div className="min-h-screen w-full">
       {/* Locked Activity Dialog */}
+      <MediaDownloadDialog
+        open={showMediaPrompt}
+        onOpenChange={setShowMediaPrompt}
+        missingMedia={missingMedia}
+        onDownload={handleDownloadMedia}
+        downloadingMedia={downloadingMedia}
+        downloadProgress={mediaDownloadProgress}
+        mediaNotice={mediaNotice}
+        onMediaNoticeClose={closeMediaNotice}
+      />
+
       <LockedActivityDialog
         open={showLockedDialog}
         onOpenChange={setShowLockedDialog}
@@ -823,6 +883,10 @@ export default function CourseModulesPage() {
           sectionTitle={passwordProtectedSection.title}
           correctPassword={passwordProtectedSection.password}
           onUnlock={() => {
+            if (!ensureMediaGateBeforeViewerOpen()) {
+              return;
+            }
+
             // Unlock the section (this stores it in localStorage)
             unlockSection(courseId, passwordProtectedSection.title);
 
@@ -876,6 +940,52 @@ export default function CourseModulesPage() {
       </header>
       {/* Main Content */}
       <div id="course-info" className="max-w-4xl mx-auto px-4 py-6">
+        {isMediaBlockedForDownloadedCourse && (
+          <div className="mb-4 rounded-lg border border-amber-300 bg-amber-50 p-4">
+            <p className="text-sm text-amber-900 font-medium">
+              {mediaGateStatus === "checking"
+                ? t("media.gateCheckBeforeOpen")
+                : mediaGateStatus === "downloading"
+                  ? t("media.gateBannerDownloading")
+                  : !isOnline
+                    ? t("media.gateBannerOffline").replace(
+                        "{count}",
+                        String(missingMedia.length),
+                      )
+                    : t("media.gateBannerMissing").replace(
+                        "{count}",
+                        String(missingMedia.length),
+                      )}
+            </p>
+            {mediaGateError ? (
+              <p className="mt-2 text-xs text-red-700">{mediaGateError}</p>
+            ) : null}
+            <div className="mt-3 flex items-center gap-3">
+              <button
+                onClick={handleDownloadMedia}
+                disabled={
+                  mediaGateStatus === "checking" ||
+                  mediaGateStatus === "downloading" ||
+                  downloadingMedia ||
+                  !isOnline
+                }
+                className="inline-flex items-center justify-center rounded-md bg-cyan-600 text-white px-3 py-2 text-sm font-medium hover:bg-cyan-700 disabled:opacity-60 disabled:cursor-not-allowed">
+                {!isOnline
+                  ? t("media.gateReconnectToDownload")
+                  : mediaGateStatus === "downloading" || downloadingMedia
+                    ? t("media.gateDownloadingShort")
+                    : t("media.gateDownloadMissingMedia")}
+              </button>
+              <button
+                onClick={refreshMissingMedia}
+                disabled={mediaGateStatus === "downloading" || downloadingMedia}
+                className="inline-flex items-center justify-center rounded-md border border-amber-400 bg-white text-amber-900 px-3 py-2 text-sm font-medium hover:bg-amber-100 disabled:opacity-60 disabled:cursor-not-allowed">
+                {t("media.gateRecheck")}
+              </button>
+            </div>
+          </div>
+        )}
+
         <CourseModuleHeader
           title={courseData.title}
           totalActivities={courseData.totalPages}

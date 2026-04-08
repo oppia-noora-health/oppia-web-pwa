@@ -49,7 +49,7 @@ export const TagCourseCard: React.FC<TagCourseCardProps> = ({
   status,
   statusMessage,
 }) => {
-  const online = isOnline();
+  const [online, setOnline] = useState(isOnline());
   const { t } = useTranslation();
   const api = useAuthenticatedApi();
   const { setDownloadProgress, clearDownloadProgress } = useDownloadStore();
@@ -72,6 +72,43 @@ export const TagCourseCard: React.FC<TagCourseCardProps> = ({
     isUpdating ||
     isDownloading ||
     (statusMessage != null && statusMessage.includes("..."));
+
+  const getBusyMessage = () => {
+    const downloadInProgress =
+      isDownloading ||
+      downloadProgress?.phase === "downloading" ||
+      downloadProgress?.phase === "installing";
+
+    if (!online && downloadInProgress) {
+      return "You are offline. Course download is paused. Reconnect to continue.";
+    }
+
+    if (statusMessage?.includes("Resetting")) {
+      return "Course is being reset. Please wait.";
+    }
+    if (statusMessage?.includes("Updating")) {
+      return "Activity is being updated. Please wait.";
+    }
+    if (downloadInProgress) {
+      return "Course is downloading. Please wait.";
+    }
+    if (isUpdating) {
+      return "Course is being updated. Please wait.";
+    }
+    return "Please wait until the current operation finishes.";
+  };
+
+  useEffect(() => {
+    const handleOnline = () => setOnline(true);
+    const handleOffline = () => setOnline(false);
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
 
   // Auto-close busy dialog when process finishes
   useEffect(() => {
@@ -150,15 +187,7 @@ export const TagCourseCard: React.FC<TagCourseCardProps> = ({
 
     // Block navigation when card is busy
     if (isBusy) {
-      const msg = statusMessage?.includes("Resetting")
-        ? "Course is being reset. Please wait."
-        : statusMessage?.includes("Updating")
-          ? "Activity is being updated. Please wait."
-          : isDownloading
-            ? "Course is downloading. Please wait."
-            : isUpdating
-              ? "Course is being updated. Please wait."
-              : "Please wait until the current operation finishes.";
+      const msg = getBusyMessage();
       setBusyMessage(msg);
       setBusyDialogOpen(true);
       return;
@@ -236,15 +265,7 @@ export const TagCourseCard: React.FC<TagCourseCardProps> = ({
                 e.stopPropagation();
                 // Block if card is busy
                 if (isBusy) {
-                  const msg = statusMessage?.includes("Resetting")
-                    ? "Course is being reset. Please wait."
-                    : statusMessage?.includes("Updating")
-                      ? "Activity is being updated. Please wait."
-                      : isDownloading
-                        ? "Course is downloading. Please wait."
-                        : isUpdating
-                          ? "Course is being updated. Please wait."
-                          : "Please wait until the current operation finishes.";
+                  const msg = getBusyMessage();
                   setBusyMessage(msg);
                   setBusyDialogOpen(true);
                   return;

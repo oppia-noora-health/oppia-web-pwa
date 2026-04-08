@@ -41,11 +41,12 @@ async function ping(url: string, timeoutMs: number): Promise<boolean> {
 }
 
 export function useNetworkStatus(options: UseNetworkStatusOptions = {}) {
-  const { pingIntervalMs = 15000, pingTimeoutMs = 3000 } = options;
+  const { pingIntervalMs = 15000, pingTimeoutMs = 7000 } = options;
   const [isOnline, setIsOnline] = useState(() =>
-    typeof navigator !== "undefined" ? navigator.onLine : true
+    typeof navigator !== "undefined" ? navigator.onLine : true,
   );
   const pingBaseUrlRef = useRef<string>("");
+  const consecutiveFailuresRef = useRef(0);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -55,20 +56,36 @@ export function useNetworkStatus(options: UseNetworkStatusOptions = {}) {
 
     const checkStatus = async () => {
       if (!navigator.onLine) {
+        consecutiveFailuresRef.current = 0;
         if (isMounted) setIsOnline(false);
         return;
       }
 
       const ok = await ping(pingBaseUrlRef.current, pingTimeoutMs);
-      if (isMounted) setIsOnline(ok);
+      if (!isMounted) return;
+
+      if (ok) {
+        consecutiveFailuresRef.current = 0;
+        setIsOnline(true);
+        return;
+      }
+
+      // Treat a single failed ping as transient network jitter.
+      // Only mark offline after repeated failures.
+      consecutiveFailuresRef.current += 1;
+      if (consecutiveFailuresRef.current >= 2) {
+        setIsOnline(false);
+      }
     };
 
     const handleOnline = () => {
+      consecutiveFailuresRef.current = 0;
       if (isMounted) setIsOnline(true);
       checkStatus();
     };
 
     const handleOffline = () => {
+      consecutiveFailuresRef.current = 0;
       if (isMounted) setIsOnline(false);
     };
 

@@ -100,6 +100,10 @@ export default function HtmlContentRenderer({
   // Store callbacks in refs to avoid stale closures in event listeners
   const callbackRef = useRef(onHasSlidesChange);
   const pdfOpenCallbackRef = useRef(onPdfOpen);
+  const mediaFilesRef = useRef<StreamingMediaFile[] | undefined>(mediaFiles);
+  const allCourseMediaRef = useRef<StreamingMediaFile[] | undefined>(
+    allCourseMedia,
+  );
 
   // Update callback refs when they change (without triggering main effect)
   useEffect(() => {
@@ -109,6 +113,11 @@ export default function HtmlContentRenderer({
     }
     pdfOpenCallbackRef.current = onPdfOpen;
   }, [onHasSlidesChange, onPdfOpen]);
+
+  useEffect(() => {
+    mediaFilesRef.current = mediaFiles;
+    allCourseMediaRef.current = allCourseMedia;
+  }, [mediaFiles, allCourseMedia]);
   const [videoModal, setVideoModal] = useState<{
     isOpen: boolean;
     videoUrl: string;
@@ -166,39 +175,29 @@ export default function HtmlContentRenderer({
     setUnavailableMediaModal((prev) => ({ ...prev, retrying: true }));
 
     try {
-      // Try to fetch the media to verify it's accessible
-      const response = await fetch(unavailableMediaModal.downloadUrl, {
-        method: "HEAD",
-      });
-
-      if (response.ok) {
-        // Media is available, open it in video modal
-        if (unavailableMediaModal.mediaType === "video") {
-          setUnavailableMediaModal({
-            isOpen: false,
-            mediaName: "",
-            mediaType: "video",
-            retrying: false,
-          });
-          setVideoModal({
-            isOpen: true,
-            videoUrl: unavailableMediaModal.downloadUrl,
-            videoTitle: unavailableMediaModal.mediaName,
-            filename: unavailableMediaModal.mediaName,
-            digest: digest,
-          });
-        } else {
-          // For other media types, open in new tab
-          window.open(unavailableMediaModal.downloadUrl, "_blank");
-          setUnavailableMediaModal({
-            isOpen: false,
-            mediaName: "",
-            mediaType: "video",
-            retrying: false,
-          });
-        }
+      // Open media directly. HEAD checks can fail on some servers even when GET playback works.
+      if (unavailableMediaModal.mediaType === "video") {
+        setUnavailableMediaModal({
+          isOpen: false,
+          mediaName: "",
+          mediaType: "video",
+          retrying: false,
+        });
+        setVideoModal({
+          isOpen: true,
+          videoUrl: unavailableMediaModal.downloadUrl,
+          videoTitle: unavailableMediaModal.mediaName,
+          filename: unavailableMediaModal.mediaName,
+          digest: digest,
+        });
       } else {
-        throw new Error("Media still not accessible");
+        window.open(unavailableMediaModal.downloadUrl, "_blank");
+        setUnavailableMediaModal({
+          isOpen: false,
+          mediaName: "",
+          mediaType: "video",
+          retrying: false,
+        });
       }
     } catch (error) {
       setUnavailableMediaModal((prev) => ({ ...prev, retrying: false }));
@@ -964,13 +963,15 @@ export default function HtmlContentRenderer({
       // Decode the filename for comparison
       const decodedFilename = decodeURIComponent(filename);
       const normalizedSearchName = normalizeFilename(filename);
+      const latestMediaFiles = mediaFilesRef.current;
+      const latestAllCourseMedia = allCourseMediaRef.current;
 
       // For streaming mode, use direct download URLs to avoid proxy size limits
       // Videos are large files that shouldn't go through the application proxy
 
       // Check activity-specific media files first
-      if (mediaFiles && mediaFiles.length > 0) {
-        for (const media of mediaFiles) {
+      if (latestMediaFiles && latestMediaFiles.length > 0) {
+        for (const media of latestMediaFiles) {
           // Exact match
           if (
             media.filename === decodedFilename ||
@@ -986,8 +987,8 @@ export default function HtmlContentRenderer({
       }
 
       // Check all course media as fallback
-      if (allCourseMedia && allCourseMedia.length > 0) {
-        for (const media of allCourseMedia) {
+      if (latestAllCourseMedia && latestAllCourseMedia.length > 0) {
+        for (const media of latestAllCourseMedia) {
           // Exact match
           if (
             media.filename === decodedFilename ||

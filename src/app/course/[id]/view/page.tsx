@@ -320,6 +320,7 @@ export default function CourseViewerPage() {
   const tagName = searchParams?.get("tagName");
   const sourceFrom = searchParams?.get("from");
   const pretestDoneParam = searchParams?.get("pretestDone"); // "1" = done, "0" = not done, null = unknown
+  const { t } = useTranslation();
 
   // ── DIAGNOSTIC: raw URL vs parsed searchParams ──
   const _rawUrl = typeof window !== "undefined" ? window.location.href : "SSR";
@@ -633,12 +634,18 @@ export default function CourseViewerPage() {
   }, [rawCourseData]);
 
   const {
+    isOnline,
     missingMedia,
+    mediaGateStatus,
+    mediaGateError,
     showMediaPrompt,
     setShowMediaPrompt,
     downloadingMedia,
     mediaDownloadProgress,
+    mediaNotice,
+    closeMediaNotice,
     handleDownloadMedia,
+    refreshMissingMedia,
   } = useMediaDownload(courseId, courseSource);
 
   const {
@@ -936,7 +943,6 @@ export default function CourseViewerPage() {
             // Check if pre-test has already been attempted
             const hasAttempted = hasAttemptedPreTest(courseId, quizId);
 
-
             // Always set pre-test info (needed for marking as attempted)
             // But don't prevent navigation - user can always continue
             setPreTestDetected(true);
@@ -992,7 +998,6 @@ export default function CourseViewerPage() {
             tracker.digest === pretestDigest && tracker.type === "quiz",
         );
 
-
         if (hasAnyAttempt) {
           setPretestCompletedFromActivity(true);
         } else {
@@ -1005,7 +1010,6 @@ export default function CourseViewerPage() {
             : false;
           const completionMap = getCompletionData(courseId);
           const attemptedInZustand = completionMap?.get(pretestDigest) || false;
-
 
           if (attemptedLocally || attemptedInZustand) {
             setPretestCompletedFromActivity(true);
@@ -1027,7 +1031,6 @@ export default function CourseViewerPage() {
           const attemptedInZustand = pretestDigest
             ? completionMap?.get(pretestDigest) || false
             : false;
-
 
           if (attemptedLocally || attemptedInZustand) {
             setPretestCompletedFromActivity(true);
@@ -1063,7 +1066,6 @@ export default function CourseViewerPage() {
     _localAttempted ||
     _zustandCompleted ||
     _paramCompleted;
-
 
   // CRITICAL: Check if pre-test has any attempt before allowing course viewing
   // Redirect to course detail page if pre-test exists but user hasn't attempted it yet
@@ -1662,7 +1664,6 @@ export default function CourseViewerPage() {
       const section = courseData.sections[currentPageIndex];
       if (!section || !section.digest) return;
 
-
       // Mark this specific media as played (≥80% threshold met trivially at 100%)
       mediaPlayedSetRef.current.add(decodedFilename);
 
@@ -1877,9 +1878,7 @@ export default function CourseViewerPage() {
         !hasPdfButNotOpened &&
         !!section.digest;
 
-
       if (shouldTrack) {
-
         const activityTitle = section.title || "Activity";
         const course = {
           id: courseData.id || parseInt(courseId),
@@ -1914,9 +1913,7 @@ export default function CourseViewerPage() {
             section.digest || "",
           );
 
-
           if (section.digest) {
-
             // Use retry logic for persistence
             raceDetector.logCall("setCompletionData");
             const persistResult = await executeWithRetry(
@@ -2002,7 +1999,6 @@ export default function CourseViewerPage() {
         }
         if (hasPdfButNotOpened) reasons.push("PDF content not opened");
         if (!section.digest) reasons.push("No digest available");
-
       }
       return mediaToastShown;
     }, [
@@ -3027,7 +3023,6 @@ export default function CourseViewerPage() {
         error?.includes("connection") ||
         (error && !navigator.onLine));
 
-
     if (isOfflineError) {
       return (
         <div className="min-h-screen w-full">
@@ -3056,6 +3051,99 @@ export default function CourseViewerPage() {
             label="Back to Courses"
             iconSize="sm"
           />
+        </div>
+      </div>
+    );
+  }
+
+  // Hard gate: downloaded courses stay blocked until media verification completes,
+  // and cannot be opened while missing media remains.
+  const isMediaGateBlocked =
+    !useStreaming &&
+    courseSource === "indexeddb" &&
+    (mediaGateStatus === "checking" ||
+      mediaGateStatus === "blocked-missing" ||
+      mediaGateStatus === "downloading" ||
+      mediaGateStatus === "error");
+
+  if (isMediaGateBlocked) {
+    const isChecking = mediaGateStatus === "checking";
+    const isDownloadingMedia = mediaGateStatus === "downloading";
+    const missingCountLabel = `${missingMedia.length} media file${
+      missingMedia.length > 1 ? "s" : ""
+    }`;
+
+    const gateTitle = isChecking
+      ? t("media.gateCheckingTitle")
+      : isDownloadingMedia
+        ? t("media.gateDownloadingTitle")
+        : !isOnline
+          ? t("media.gateOfflineTitle")
+          : t("media.gateDownloadRequiredTitle");
+
+    const gateDescription = isChecking
+      ? t("media.gateCheckingDesc")
+      : isDownloadingMedia
+        ? t("media.gateDownloadingDesc")
+        : !isOnline
+          ? t("media.gateOfflineDesc").replace("{count}", missingCountLabel)
+          : t("media.gateMissingDesc").replace("{count}", missingCountLabel);
+
+    return (
+      <div className="min-h-screen w-full flex items-center justify-center px-4">
+        <div className="w-full max-w-md bg-white rounded-lg shadow-sm border p-6 text-center space-y-4">
+          <h2 className="text-lg font-semibold text-gray-900">{gateTitle}</h2>
+          <p className="text-sm text-gray-600">{gateDescription}</p>
+          {mediaGateStatus === "error" && mediaGateError ? (
+            <p className="text-xs text-red-600">{mediaGateError}</p>
+          ) : null}
+
+          {(isDownloadingMedia || downloadingMedia) && mediaDownloadProgress ? (
+            <div className="text-left space-y-2">
+              <p className="text-xs text-gray-500 truncate">
+                {mediaDownloadProgress.filename}
+              </p>
+              <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                <div
+                  className="bg-cyan-500 h-full transition-all duration-300 ease-out"
+                  style={{ width: `${mediaDownloadProgress.progress}%` }}
+                />
+              </div>
+              <p className="text-xs text-gray-600">
+                {mediaDownloadProgress.progress.toFixed(0)}%
+              </p>
+            </div>
+          ) : null}
+
+          <div className="flex items-center justify-center gap-3">
+            <button
+              onClick={handleDownloadMedia}
+              disabled={
+                isChecking ||
+                isDownloadingMedia ||
+                downloadingMedia ||
+                !isOnline
+              }
+              className="inline-flex items-center justify-center rounded-md bg-cyan-600 text-white px-4 py-2 text-sm font-medium hover:bg-cyan-700 disabled:opacity-60 disabled:cursor-not-allowed">
+              {!isOnline
+                ? t("media.gateReconnectToDownload")
+                : isDownloadingMedia || downloadingMedia
+                  ? t("media.gateDownloading")
+                  : t("media.gateDownloadMedia")}
+            </button>
+            <button
+              onClick={refreshMissingMedia}
+              disabled={isDownloadingMedia || downloadingMedia}
+              className="inline-flex items-center justify-center rounded-md border border-gray-300 text-gray-700 px-4 py-2 text-sm font-medium hover:bg-gray-50 disabled:opacity-60 disabled:cursor-not-allowed">
+              {t("media.gateRecheck")}
+            </button>
+            <BackButton
+              onClick={handleExit}
+              variant="outline"
+              label={t("common.back")}
+              iconSize="sm"
+            />
+          </div>
         </div>
       </div>
     );
@@ -3135,6 +3223,8 @@ export default function CourseViewerPage() {
         onDownload={handleDownloadMedia}
         downloadingMedia={downloadingMedia}
         downloadProgress={mediaDownloadProgress}
+        mediaNotice={mediaNotice}
+        onMediaNoticeClose={closeMediaNotice}
       />
       {/* Locked Activity Dialog */}
       <LockedActivityDialog
@@ -3423,4 +3513,3 @@ export default function CourseViewerPage() {
     </div>
   );
 }
-

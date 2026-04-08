@@ -487,6 +487,48 @@ export const en = {
       "You need an internet connection to download media files.",
     downloadFailedMediaAlert:
       "Failed to download media files. Please check your internet connection and try again.",
+    gateCheckingTitle: "Checking Required Media",
+    gateDownloadingTitle: "Downloading Required Media",
+    gateOfflineTitle: "You Are Offline",
+    gateDownloadRequiredTitle: "Media Download Required",
+    gateCheckingDesc: "Please wait while we verify downloaded media files.",
+    gateDownloadingDesc:
+      "Keep your internet connection on until required media finishes downloading.",
+    gateOfflineDesc:
+      "This course cannot open yet because {count} required media file(s) are still missing. Reconnect to continue downloading.",
+    gateMissingDesc:
+      "This course cannot open yet because {count} required media file(s) are still missing. Download all required media to continue.",
+    gateReconnectToDownload: "Reconnect To Download",
+    gateDownloadMedia: "Download Media",
+    gateDownloading: "Downloading media...",
+    gateRecheck: "Recheck",
+    gateCheckBeforeOpen:
+      "Checking required media files before opening this course...",
+    gateBannerDownloading:
+      "Downloading required media. Keep internet connection on.",
+    gateBannerOffline:
+      "You are offline. {count} required media file(s) are still missing.",
+    gateBannerMissing:
+      "Media download required. {count} required file(s) are still missing.",
+    gateDownloadMissingMedia: "Download Missing Media",
+    gateDownloadingShort: "Downloading...",
+    gateCouldNotVerify:
+      "Could not verify media files. Please retry once your connection is stable.",
+    gateOfflineReconnectError:
+      "You are offline. Reconnect to continue downloading required media.",
+    gateOfflineDownloadAlert:
+      "You are offline. Reconnect to the internet to download required media files.",
+    gateOfflineDownloadInline:
+      "You are offline. Reconnect to download required media files.",
+    gateMissingAfterDownload:
+      "Some media files are still missing. Keep internet on and tap Download Media again.",
+    gateConnectionLost:
+      "Connection lost while downloading media. Reconnect and try again.",
+    gateDownloadFailedGeneric:
+      "Failed to download media files. Please try again.",
+    dialogMissingTitle: "Required Media Files Missing",
+    dialogMissingDesc:
+      "This course has required media files that must be downloaded before opening offline.",
   },
 
   // Tour

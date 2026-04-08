@@ -12,6 +12,8 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import type { Media, MediaDownloadProgress } from "@/types/media";
+import { useTranslation } from "@/hooks/useTranslation";
+import type { MediaNotice } from "@/hooks/useMediaDownload";
 
 interface MediaDownloadDialogProps {
   open: boolean;
@@ -20,6 +22,8 @@ interface MediaDownloadDialogProps {
   onDownload: () => void;
   downloadingMedia: boolean;
   downloadProgress: MediaDownloadProgress | null;
+  mediaNotice?: MediaNotice | null;
+  onMediaNoticeClose?: () => void;
 }
 
 export default function MediaDownloadDialog({
@@ -29,7 +33,10 @@ export default function MediaDownloadDialog({
   onDownload,
   downloadingMedia,
   downloadProgress,
+  mediaNotice,
+  onMediaNoticeClose,
 }: MediaDownloadDialogProps) {
+  const { t } = useTranslation();
   const totalSize = missingMedia.reduce((sum, m) => sum + (m.fileSize || 0), 0);
 
   return (
@@ -40,14 +47,10 @@ export default function MediaDownloadDialog({
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2">
               <AlertCircle className="w-5 h-5 text-amber-500" />
-              Media Files Not Downloaded
+              {t("media.dialogMissingTitle")}
             </AlertDialogTitle>
             <AlertDialogDescription className="space-y-3">
-              <p>
-                This course contains {missingMedia.length} video file
-                {missingMedia.length > 1 ? "s" : ""} that need to be downloaded
-                for offline viewing.
-              </p>
+              <p>{t("media.dialogMissingDesc")}</p>
               {missingMedia.length > 0 && (
                 <div className="rounded-md p-3 max-h-40 overflow-y-auto">
                   <ul className="space-y-1 text-sm">
@@ -76,12 +79,46 @@ export default function MediaDownloadDialog({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Continue Without Media</AlertDialogCancel>
+            <AlertDialogCancel>{t("common.close")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={onDownload}
               className="bg-cyan-500 hover:bg-cyan-600">
               <Download className="w-4 h-4 mr-2" />
-              Download Now
+              {t("media.gateDownloadMedia")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Media download result/feedback popup */}
+      <AlertDialog
+        open={!!mediaNotice?.open}
+        onOpenChange={(open) => {
+          if (!open && onMediaNoticeClose) {
+            onMediaNoticeClose();
+          }
+        }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <AlertCircle
+                className={`w-5 h-5 ${
+                  mediaNotice?.tone === "success"
+                    ? "text-green-600"
+                    : mediaNotice?.tone === "error"
+                      ? "text-red-600"
+                      : "text-amber-500"
+                }`}
+              />
+              {mediaNotice?.title || "Notice"}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {mediaNotice?.message || ""}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={onMediaNoticeClose}>
+              {t("common.ok")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -94,7 +131,7 @@ export default function MediaDownloadDialog({
             <Loader2 className="w-5 h-5 text-cyan-500 animate-spin shrink-0 mt-0.5" />
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-gray-900 mb-1">
-                Downloading Media Files
+                {t("media.gateDownloadingTitle")}
               </p>
               <p className="text-xs text-gray-600 truncate mb-2">
                 {downloadProgress.filename}
