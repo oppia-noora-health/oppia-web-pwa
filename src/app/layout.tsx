@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
-
 import { DebugTools } from "@/components/DebugTools";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import { PWAStatus } from "@/components/PWAStatus";
@@ -19,8 +18,7 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: "Noora Academy",
-  description:
-    "Healthcare Learning Platform",
+  description: "Healthcare Learning Platform",
   applicationName: "Noora Academy",
   manifest: "/manifest.json",
   appleWebApp: {
@@ -44,14 +42,12 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "Noora Academy",
     title: "Noora Academy - Healthcare Learning Platform",
-    description:
-      "Healthcare Learning Platform",
+    description: "Healthcare Learning Platform",
   },
   twitter: {
     card: "summary",
     title: "Noora Academy - Healthcare Learning Platform",
-    description:
-      "Healthcare Learning Platform",
+    description: "Healthcare Learning Platform",
   },
 };
 
