@@ -256,9 +256,6 @@ HTML pages:                 Network-first (offline page fallback)
 
 ```
 noora-health/
-├── .github/
-│   └── copilot-instructions.md    # AI development guidelines
-├── amplify.yml                    # AWS Amplify deployment config
 ├── components.json                # shadcn/ui configuration
 ├── next.config.js                 # Next.js config + API rewrites
 ├── package.json                   # Dependencies and scripts
@@ -270,8 +267,6 @@ noora-health/
 │   ├── offline.html               # Offline fallback page
 │   └── [logo|audio|home|...]/     # Static assets
 │
-├── scripts/
-│   └── generate-icons.js          # PWA icon generator
 │
 └── src/
     ├── app/                       # Next.js App Router pages
@@ -356,13 +351,13 @@ noora-health/
 
 Create a `.env.local` file in the project root:
 
-| Variable                      | Description              | Example                                           | Required |
-| ----------------------------- | ------------------------ | ------------------------------------------------- | -------- |
+| Variable                      | Description              | Example                                   | Required |
+| ----------------------------- | ------------------------ | ----------------------------------------- | -------- |
 | `NEXT_PUBLIC_API_URL`         | OppiaMobile API base URL | `https://academy.noorahealth.org/api/v2/` | Yes      |
 | `NEXT_PUBLIC_MEDIA_URL`       | Media assets base URL    | `https://academy.noorahealth.org/media/`  | No       |
-| `NEXT_PUBLIC_COUNTLY_APP_KEY` | Countly analytics key    | `abc123...`                                       | No       |
-| `NEXT_PUBLIC_COUNTLY_URL`     | Countly server URL       | `https://analytics.example.com`                   | No       |
-| `NODE_ENV`                    | Environment mode         | `development` / `production`                      | Yes      |
+| `NEXT_PUBLIC_COUNTLY_APP_KEY` | Countly analytics key    | `abc123...`                               | No       |
+| `NEXT_PUBLIC_COUNTLY_URL`     | Countly server URL       | `https://analytics.example.com`           | No       |
+| `NODE_ENV`                    | Environment mode         | `development` / `production`              | Yes      |
 
 **Note**: API requests are proxied through Next.js rewrites (see `next.config.js`), so the frontend always calls `/api/*` relative paths.
 
