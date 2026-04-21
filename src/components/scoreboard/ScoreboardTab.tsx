@@ -16,7 +16,7 @@ interface ScoreboardTabProps {
   modules: CourseProgress[];
   loading: boolean;
   getLocalizedTitle: (
-    titleObj: Record<string, string | null> | string | null | undefined
+    titleObj: Record<string, string | null> | string | null | undefined,
   ) => string;
 }
 
@@ -71,13 +71,12 @@ export const ScoreboardTab: React.FC<ScoreboardTabProps> = ({
       </h2>
       <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
         {modules
-          .filter(
-            (module) => module.activitiesDone > 0
-          )
+          .filter((module) => module.activitiesDone > 0)
           .map((module, index) => (
             <ModuleProgressCard
               key={module.id}
               id={module.id}
+              shortName={module.shortname}
               title={getLocalizedTitle(module.title)}
               activitiesDone={module.activitiesDone}
               totalActivities={module.totalActivities}

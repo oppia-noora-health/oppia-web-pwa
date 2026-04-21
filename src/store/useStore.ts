@@ -8,25 +8,6 @@ import type {
   CustomFields,
 } from "@/services/authService";
 
-export interface User {
-  id?: string; // User ID from API
-  username: string;
-  firstName: string;
-  lastName: string;
-  phoneNumber: string;
-  email: string;
-  country: string;
-  language: string;
-  apiKey: string;
-  points: number;
-  badges: number;
-  coursePoints: CoursePoint[];
-  customFields: CustomFields;
-  cohorts: number[];
-  lastLogin: string;
-  resourceUri: string;
-}
-
 // Course cache for temporary storage (online viewing)
 export interface CachedCourse {
   id: string;

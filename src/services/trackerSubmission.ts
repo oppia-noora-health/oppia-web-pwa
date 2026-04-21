@@ -73,10 +73,6 @@ function formatISTDate(isoDate: string): string {
   return `${day}-${month}-${year}  ${hoursStr}:${minutes}:${seconds} ${ampm}`;
 }
 
-/**
- * Get client IP address (client-side, returns empty string or tries to fetch)
- * In production, IP should be obtained server-side from request headers
- */
 async function getClientIP(): Promise<string> {
   try {
     // Try to get IP from a public service (client-side only)

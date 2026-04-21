@@ -7,8 +7,8 @@ import {
   cachePageWithDependencies,
   markPageAsVisitCached,
 } from "@/utils/pageCaching";
-import { useEffect, useState, useCallback } from "react";
-import { Loading, PageLoading } from "@/components/Loading";
+import { useEffect, useState } from "react";
+import { PageLoading } from "@/components/Loading";
 import { PointsHistoryChart } from "@/components/points/PointsHistoryChart";
 import { RecentActivityList } from "@/components/points/RecentActivityList";
 import { API_PATHS } from "@/utils/apiPaths";
@@ -105,9 +105,6 @@ export default function PointsPage() {
   // Use scoreboard data for chart (activity tracking)
   const { loading: scoreboardLoading, allActivitiesData } = useScoreboardData();
   const [loading, setLoading] = useState(false);
-
-  // Calculate total points same as sidebar/navbar: user.points (from API) + gamificationPoints (local)
-  const totalPoints = (user?.points || 0) + (gamificationPoints || 0);
 
   // Tour setup - Points page specific tour
   const { startTour, hasCompletedTour } = useTour("points-page");
@@ -516,19 +513,6 @@ export default function PointsPage() {
         onTouchEnd={onTouchEnd}>
         {activeTab === "points" && (
           <>
-            {/* Total Points Card */}
-            {/* <div
-              id="total-points"
-              className="bg-[#37B7E6] rounded-3xl p-8 mb-6">
-              <p className="text-white text-sm font-light mb-2">
-                {t("gamification.totalPoints")}
-              </p>
-              <h1 className="text-white text-6xl  mb-3">{totalPoints}</h1>
-              <p className="text-white text-sm font-light">
-                {t("gamification.keepGoing")}
-              </p>
-            </div> */}
-
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Points History Chart */}
               <PointsHistoryChart

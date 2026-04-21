@@ -5,12 +5,7 @@ import {
   useCourseStore as useCourseCacheStore,
   useActivityCompletionStore,
 } from "@/store/useStore";
-import {
-  useRouter,
-  useParams,
-  useSearchParams,
-  usePathname,
-} from "next/navigation";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import { PageLoading } from "@/components/Loading";
 import QuizRenderer from "@/components/QuizRenderer";
@@ -48,10 +43,9 @@ import { saveLastVisitedActivity } from "@/utils/lastActivityStorage";
 import { getLocalizedText } from "@/utils/localization";
 import {
   executeWithRetry,
-  validatePersistence,
   raceDetector,
 } from "@/utils/persistenceErrorHandler";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+
 import {
   hasAttemptedPreTest,
   markPreTestAttempted,
@@ -69,32 +63,8 @@ import { activityTrackingService } from "@/services/activityTrackingService";
 import { DEFAULT_GAMIFICATION_CONFIG } from "@/types/gamification";
 import { getMediaTracker } from "@/utils/gamificationIDB";
 
-import {
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarHeader,
-  SidebarFooter,
-} from "@/components/ui/sidebar";
-import {
-  Home,
-  Trophy,
-  Star,
-  Download,
-  User,
-  Settings,
-  Lock,
-  Info,
-  LogOut,
-  RefreshCw,
-} from "lucide-react";
-import Image from "next/image";
 import { useTranslation } from "@/hooks/useTranslation";
-import { useSyncStatus } from "@/hooks/useSyncStatus";
+
 import { useZustandRehydration } from "@/hooks/useZustandRehydration";
 
 // Navigation sections structure
@@ -110,52 +80,6 @@ interface NavSection {
   items: NavItem[];
 }
 
-const getNavigationSections = (t: (key: string) => string): NavSection[] => [
-  {
-    label: t("navigation.home").toUpperCase(),
-    items: [
-      {
-        icon: Home,
-        label: t("navigation.home"),
-        route: "/course",
-        id: "home-nav",
-      },
-      {
-        icon: Trophy,
-        label: t("navigation.scoreboard"),
-        route: "/scoreboard",
-        id: "scorecard-nav",
-      },
-      {
-        icon: Star,
-        label: t("navigation.points"),
-        route: "/points",
-        id: "points-nav",
-      },
-    ],
-  },
-  {
-    label: t("course.courses").toUpperCase(),
-    items: [
-      {
-        icon: Download,
-        label: t("navigation.downloadCourses"),
-        route: "/course-management",
-        id: "download-courses-nav",
-      },
-    ],
-  },
-  {
-    label: "MORE",
-    items: [
-      { icon: User, label: t("navigation.profile"), route: "/profile" },
-      { icon: Settings, label: t("navigation.settings"), route: "/settings" },
-      { icon: Lock, label: t("navigation.privacy"), route: "/privacy-policy" },
-      { icon: Info, label: t("navigation.aboutHelp"), route: "/about-help" },
-    ],
-  },
-];
-
 const getWordCountFromHtml = (html: string): number => {
   if (typeof window === "undefined" || typeof DOMParser === "undefined") {
     return 0;
@@ -169,146 +93,11 @@ const getWordCountFromHtml = (html: string): number => {
   return normalized.split(" ").length;
 };
 
-// Sidebar component for course viewer page
-function CourseViewerSidebar({
-  open,
-  onOpenChange,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const { user, logout, updateUser } = useAuthStore();
-  const courseCacheStore = useCourseCacheStore(); // This is from useStore.ts (has getCachedCourse)
-  const { userPoints } = useGamification();
-  const { t } = useTranslation();
-  const { pendingCount } = useSyncStatus();
-
-  const navigationSections = getNavigationSections(t);
-
-  const handleNavClick = (route: string) => {
-    onOpenChange(false);
-    router.push(route);
-  };
-
-  const handleLogout = async () => {
-    onOpenChange(false);
-    // Logout function now handles all cleanup (cache, IndexedDB, localStorage, etc.)
-    await logout();
-    router.push("/login");
-  };
-
-  return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent
-        side="right"
-        className="w-74 p-0 overflow-y-auto bg-sidebar text-sidebar-foreground">
-        {/* Header with Logo and User Info */}
-        <SidebarHeader className="border-b p-6">
-          <div className="flex items-center gap-3 mb-6">
-            <Image
-              src="/logo/logo-icon.svg"
-              alt="Noora Academy Logo"
-              width={48}
-              height={48}
-              className="object-contain"
-            />
-            <div>
-              <h1 className="text-xl font-semibold text-black">Noora</h1>
-              <p className="text-gray-600">Learning Platform</p>
-            </div>
-          </div>
-
-          {/* User Info Card */}
-          <div className="bg-secondary-300 rounded-2xl p-4 flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-linear-to-br from-[#00D5BE] to-[#00B8DB] flex items-center justify-center text-2xl">
-              😊
-            </div>
-            <div className="flex-1">
-              <p className="text-black text-lg">{user?.firstName || "User"}</p>
-              <p className="text-sm text-gray-600">
-                {((userPoints || 0) + (user?.points || 0)).toLocaleString()}
-              </p>
-            </div>
-          </div>
-
-          {/* Sync Status Indicator */}
-          {pendingCount > 0 && (
-            <div className="mt-3 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 flex items-center gap-2 text-sm">
-              <RefreshCw className="w-4 h-4 text-amber-600" />
-              <span className="text-amber-700">
-                {pendingCount} {pendingCount === 1 ? "change" : "changes"}{" "}
-                pending sync
-              </span>
-            </div>
-          )}
-        </SidebarHeader>
-
-        {/* Navigation Content */}
-        <SidebarContent className="px-4 py-6">
-          {navigationSections.map((section, sectionIndex) => (
-            <SidebarGroup key={sectionIndex}>
-              <SidebarGroupLabel className="text-xs font-bold text-gray-500 mb-3 px-3">
-                {section.label}
-              </SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {section.items.map((item) => {
-                    const isActive = pathname === item.route;
-                    const Icon = item.icon;
-
-                    return (
-                      <SidebarMenuItem key={item.route}>
-                        <SidebarMenuButton
-                          id={item.id}
-                          onClick={() => handleNavClick(item.route)}
-                          className={`
-                            w-full h-12 cursor-pointer px-4 rounded-xl flex items-center gap-3
-                            transition-all duration-200
-                            ${
-                              isActive
-                                ? "bg-primary-500 text-white hover:bg-primary-500 hover:text-white"
-                                : "hover:bg-primary-500 hover:text-white"
-                            }
-                          `}>
-                          <Icon className="w-5 h-5" />
-                          <span>{item.label}</span>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    );
-                  })}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-          ))}
-        </SidebarContent>
-
-        {/* Footer with Logout */}
-        <SidebarFooter className="border-t p-4">
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                onClick={handleLogout}
-                className="w-full max-w-[200px] h-12 px-4 rounded-xl flex items-center gap-3 text-red-500 hover:bg-red-50 transition-all duration-200">
-                <LogOut className="w-5 h-5" />
-                <span className="text-base font-medium">
-                  {t("auth.logout")}
-                </span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarFooter>
-      </SheetContent>
-    </Sheet>
-  );
-}
-
 export default function CourseViewerPage() {
   const { user, isAuthenticated } = useAuthStore();
   const { getCompletionData, setCompletionData } = useActivityCompletionStore();
   const isZustandRehydrated = useZustandRehydration();
-  const courseCacheStore = useCourseCacheStore(); // Initialize cache store
+
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
@@ -321,11 +110,6 @@ export default function CourseViewerPage() {
   const sourceFrom = searchParams?.get("from");
   const pretestDoneParam = searchParams?.get("pretestDone"); // "1" = done, "0" = not done, null = unknown
   const { t } = useTranslation();
-
-  // ── DIAGNOSTIC: raw URL vs parsed searchParams ──
-  const _rawUrl = typeof window !== "undefined" ? window.location.href : "SSR";
-  const _rawSearch =
-    typeof window !== "undefined" ? window.location.search : "SSR";
 
   // Determine if we should use streaming mode
   const [useStreaming, setUseStreaming] = useState(false);
@@ -648,11 +432,8 @@ export default function CourseViewerPage() {
     refreshMissingMedia,
   } = useMediaDownload(courseId, courseSource);
 
-  const {
-    currentLessonActivities,
-    currentActivityIndexInLesson,
-    setCurrentActivityIndexInLesson,
-  } = useActivityNavigation(courseData, currentPageIndex);
+  const { currentLessonActivities, currentActivityIndexInLesson } =
+    useActivityNavigation(courseData, currentPageIndex);
 
   // Gamification hooks
   const {
@@ -860,13 +641,13 @@ export default function CourseViewerPage() {
   }, [courseData, currentPageIndex, courseId]);
 
   // Pre-test state
-  const [showPreTestModal, setShowPreTestModal] = useState(false);
+
   const [preTestDetected, setPreTestDetected] = useState(false);
   const [preTestQuizId, setPreTestQuizId] = useState<string | number | null>(
     null,
   );
   const [preTestIndex, setPreTestIndex] = useState<number | null>(null);
-  const [hasViewedPreTest, setHasViewedPreTest] = useState(false);
+
   // Pre-test completed according to /activity API (null = not fetched yet)
   const [pretestCompletedFromActivity, setPretestCompletedFromActivity] =
     useState<boolean | null>(null);
@@ -2791,11 +2572,6 @@ export default function CourseViewerPage() {
     if (!currentSection) {
       return;
     }
-
-    // Check if this is a pre-test
-    // NOTE: Do NOT mark as attempted here - only mark when results are shown
-    // This prevents users from bypassing pre-test by submitting and going back
-    const isPreTest = preTestDetected && currentPageIndex === preTestIndex;
 
     // Get completion count before this quiz is marked complete
     const previousCompletedCount = getCompletionCount();

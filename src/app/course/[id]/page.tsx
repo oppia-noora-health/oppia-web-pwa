@@ -25,21 +25,14 @@ import { getCourseDetailsTour } from "@/config/tourSteps";
 import { loadCourseFromIDB } from "@/utils/courseLoaderIDB";
 import { isCourseDownloaded } from "@/utils/courseStorageIDB";
 import { getLocalizedText } from "@/utils/localization";
-import {
-  preCacheCourseViewPage,
-  cachePageWithDependencies,
-} from "@/utils/pageCaching";
+import { preCacheCourseViewPage } from "@/utils/pageCaching";
 import {
   hasAttemptedPreTest,
-  markPreTestAttempted,
   isPreTestTitle,
   isPreTestCompleted,
 } from "@/utils/preTestStorage";
 import { activityTrackingService } from "@/services/activityTrackingService";
-import {
-  getLastVisitedActivity,
-  hasLastVisitedActivity,
-} from "@/utils/lastActivityStorage";
+import { getLastVisitedActivity } from "@/utils/lastActivityStorage";
 import type { SequencingType } from "@/services/courseDownloadService";
 import { Play } from "lucide-react";
 
@@ -896,12 +889,6 @@ export default function CourseModulesPage() {
 
             // Unlock the section (this stores it in localStorage)
             unlockSection(courseId, passwordProtectedSection.title);
-
-            // Verify it was stored
-            const verifyUnlocked = isSectionUnlocked(
-              courseId,
-              passwordProtectedSection.title,
-            );
 
             // Navigate to the activity
             const shortnameToUse = shortnameFromUrl || shortname;

@@ -2,9 +2,7 @@
 
 import { useCallback } from "react";
 import { driver } from "driver.js";
-import "driver.js/dist/driver.css";
-import "@/styles/tour.css"; // Modern custom tour styles
-import { DriveStep, Config } from "driver.js";
+import type { DriveStep, Config } from "driver.js";
 
 export function useTour(tourId: string) {
   // console.log("🎯 useTour - Hook initialized with tourId:", tourId);
@@ -75,7 +73,7 @@ export function useTour(tourId: string) {
           if (isFirstStep) {
             // Hide the back button on first step
             const prevBtn = popover.wrapper.querySelector(
-              ".driver-popover-prev-btn"
+              ".driver-popover-prev-btn",
             ) as HTMLElement;
             if (prevBtn) {
               prevBtn.style.display = "none";
@@ -109,7 +107,7 @@ export function useTour(tourId: string) {
 
       driverObj.drive();
     },
-    [markTourAsCompleted, markTourAsSkipped, markTourAsDisabled, tourId]
+    [markTourAsCompleted, markTourAsSkipped, markTourAsDisabled, tourId],
   );
 
   const hasCompletedTour = useCallback(() => {

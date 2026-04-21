@@ -6,6 +6,7 @@ import { useTranslation } from "@/hooks/useTranslation";
 interface ModuleProgressCardProps {
   id: number;
   title: string;
+  shortName?: string;
   activitiesDone: number;
   totalActivities: number;
   percentageComplete: number;
@@ -17,14 +18,14 @@ export function ModuleProgressCard({
   title,
   activitiesDone,
   totalActivities,
+  shortName,
   percentageComplete,
-  delay = 0,
 }: ModuleProgressCardProps) {
   const router = useRouter();
   const { t } = useTranslation();
 
   const handleClick = () => {
-    router.push(`/course/${id}`);
+    router.push(`/course/${id}?shortname=${shortName}`);
   };
 
   return (

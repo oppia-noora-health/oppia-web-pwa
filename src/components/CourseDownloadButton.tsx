@@ -17,7 +17,6 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
@@ -79,9 +78,6 @@ export default function CourseDownloadButton({
   // Cancel download state
   const controllerRef = useRef<AbortController | null>(null);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
-  const [cancelTarget, setCancelTarget] = useState<"course" | "media" | null>(
-    null,
-  );
 
   // Monitor online/offline status
   useEffect(() => {
@@ -515,7 +511,7 @@ export default function CourseDownloadButton({
                 size="sm"
                 onClick={() => {
                   // Open confirmation dialog instead of aborting immediately
-                  setCancelTarget("course");
+
                   setCancelDialogOpen(true);
                 }}
                 className="text-red-600 hover:bg-red-50">
@@ -663,7 +659,6 @@ export default function CourseDownloadButton({
             <AlertDialogCancel
               onClick={() => {
                 setCancelDialogOpen(false);
-                setCancelTarget(null);
               }}>
               {t.dialog?.keepDownload || "Keep Download"}
             </AlertDialogCancel>
@@ -687,7 +682,6 @@ export default function CourseDownloadButton({
                   controllerRef.current.abort();
                 }
                 setCancelDialogOpen(false);
-                setCancelTarget(null);
               }}>
               {t.dialog?.confirmCancel || "Yes, cancel"}
             </AlertDialogAction>
@@ -722,7 +716,7 @@ export default function CourseDownloadButton({
                 size="sm"
                 onClick={() => {
                   // Open confirmation dialog for media cancel
-                  setCancelTarget("media");
+
                   setCancelDialogOpen(true);
                 }}
                 className="text-red-600 hover:bg-red-50">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuthStore } from "@/store/useStore";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
   cachePageWithDependencies,
   markPageAsVisitCached,
@@ -24,7 +24,7 @@ import { getScoreboardTour } from "@/config/tourSteps";
 
 export default function ScoreboardPage() {
   const { user, isAuthenticated } = useAuthStore();
-  const router = useRouter();
+
   const pathname = usePathname();
   const [activeTab, setActiveTab] = useState<TabType>("overview");
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("week");
@@ -33,8 +33,13 @@ export default function ScoreboardPage() {
   >(null);
   const { t } = useTranslation();
 
-  const { loading, modules, activityLogData, allActivitiesData, pretestDigests } =
-    useScoreboardData();
+  const {
+    loading,
+    modules,
+    activityLogData,
+    allActivitiesData,
+    pretestDigests,
+  } = useScoreboardData();
 
   const tabs: TabType[] = ["overview", "activity", "quizzes"];
   const swipeHandlers = useSwipeNavigation(tabs, activeTab, setActiveTab);
@@ -52,9 +57,7 @@ export default function ScoreboardPage() {
         .then((ok) => {
           if (ok) markPageAsVisitCached(pathname);
         })
-        .catch((err) =>
-          void 0,
-        );
+        .catch((err) => void 0);
     }
   }, [isAuthenticated, pathname]);
 
@@ -70,12 +73,12 @@ export default function ScoreboardPage() {
   }, [isAuthenticated, loading, hasCompletedTour]);
 
   const getLocalizedTitle = (
-    titleObj: Record<string, string | null> | string | null | undefined
+    titleObj: Record<string, string | null> | string | null | undefined,
   ): string => {
     if (!titleObj) return "Unknown Course";
     if (typeof titleObj === "string") return titleObj;
 
-    const preferredLanguages = ["en", "hi", "kn", "tel", "bn"];
+    const preferredLanguages = ["en", "hi", "kn", "tel", "bn", "id", "ne"];
     for (const lang of preferredLanguages) {
       if (titleObj[lang]) return titleObj[lang] as string;
     }
@@ -96,7 +99,7 @@ export default function ScoreboardPage() {
     // Calculate quiz statistics from real data
     const quizActivities = courseActivities.filter((a) => a.type === "quiz");
     const passedQuizzes = quizActivities.filter(
-      (a) => a.quiz?.passed === "True"
+      (a) => a.quiz?.passed === "True",
     ).length;
     const attemptedQuizzes = quizActivities.length;
 
@@ -135,7 +138,7 @@ export default function ScoreboardPage() {
       return {
         title: typeLabels[key] || key.charAt(0).toUpperCase() + key.slice(1),
         subtitle: `${data.completed}/${data.total} ${t(
-          "scoreboard.completed"
+          "scoreboard.completed",
         )}`,
         progress,
       };

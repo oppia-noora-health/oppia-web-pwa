@@ -87,7 +87,7 @@ export async function fetchAllCoursesFromAPI(): Promise<CourseApiResponse[]> {
 function findCourseInApiResponse(
   courses: CourseApiResponse[],
   courseId: string,
-  shortname: string
+  shortname: string,
 ): CourseApiResponse | null {
   // First try to find by ID
   const byId = courses.find((c) => c.id.toString() === courseId);
@@ -103,7 +103,7 @@ function findCourseInApiResponse(
  */
 export async function fetchRemoteCourseVersion(
   courseId: string,
-  shortname: string
+  shortname: string,
 ): Promise<{ version: number | null; downloadUrl: string | null }> {
   try {
     const courses = await fetchAllCoursesFromAPI();
@@ -123,26 +123,13 @@ export async function fetchRemoteCourseVersion(
 }
 
 /**
- * Extract version ID from course structure JSON (legacy method, kept for backward compatibility)
- */
-function extractVersionFromStructure(structure: string): string | null {
-  try {
-    const structureData = JSON.parse(structure);
-    const versionId = structureData?.module?.meta?.versionid;
-    return versionId || null;
-  } catch (error) {
-    return null;
-  }
-}
-
-/**
  * Check if a single course has an update available
  * Uses /course/ API (maps to /api/v2/course/) to get version information
  */
 export async function checkCourseUpdate(
   courseId: string,
   shortname: string,
-  localVersion: string | number
+  localVersion: string | number,
 ): Promise<CourseVersionInfo> {
   const { version: remoteVersion, downloadUrl } =
     await fetchRemoteCourseVersion(courseId, shortname);
@@ -182,7 +169,7 @@ export async function checkAllCoursesForUpdates(): Promise<
 
     // Filter only actually downloaded courses (not just viewed)
     const actualDownloads = downloadedCourses.filter(
-      (course: any) => course.isDownloaded === true
+      (course: any) => course.isDownloaded === true,
     );
 
     // Check each course for updates in parallel
@@ -191,7 +178,7 @@ export async function checkAllCoursesForUpdates(): Promise<
         checkCourseUpdate(
           course.courseId,
           course.shortname,
-          course.version
+          course.version,
         ).catch((error) => {
           return {
             courseId: course.courseId,
@@ -200,13 +187,8 @@ export async function checkAllCoursesForUpdates(): Promise<
             remoteVersion: String(course.version),
             hasUpdate: false,
           };
-        })
-      )
-    );
-
-    // Filter courses that have updates
-    const coursesWithUpdates = updateChecks.filter(
-      (check: CourseVersionInfo) => check.hasUpdate
+        }),
+      ),
     );
 
     return updateChecks;
@@ -222,7 +204,7 @@ export async function checkAllCoursesForUpdates(): Promise<
 export async function getCourseUpdateStatus(
   courseId: string,
   shortname: string,
-  localVersion: string | number
+  localVersion: string | number,
 ): Promise<{
   hasUpdate: boolean;
   remoteVersion: number | null;

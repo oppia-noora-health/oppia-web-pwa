@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
+import "./globals.css";
+import "driver.js/dist/driver.css";
+import "@/styles/tour.css";
 import { DebugTools } from "@/components/DebugTools";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import { PWAStatus } from "@/components/PWAStatus";

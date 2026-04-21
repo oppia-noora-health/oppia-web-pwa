@@ -14,4 +14,5 @@ export {
   scopeInlineStyles,
   fixRelativeAssetUrls,
 } from "./responsiveStyles";
+
 export { fixNavigationButtons } from "./navigationButtonsFixer";

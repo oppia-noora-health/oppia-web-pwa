@@ -33,7 +33,7 @@ export const useLogin = () => {
   const { login } = useAuthStore();
 
   // State management
-  const [showOTPInput, setShowOTPInput] = useState(false);
+
   const [phoneNumber, setPhoneNumber] = useState("");
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [selectedCountry, setSelectedCountry] = useState(COUNTRIES[0]);
@@ -418,7 +418,7 @@ export const useLogin = () => {
 
   return {
     // State
-    showOTPInput,
+
     phoneNumber,
     otp,
     selectedCountry,

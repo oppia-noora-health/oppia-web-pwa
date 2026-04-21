@@ -203,7 +203,6 @@ interface QuizRendererProps {
 
 export default function QuizRenderer({
   quizData,
-  questionHtml,
   onComplete,
   onQuizSubmit,
   isPreTest = false,
@@ -1427,29 +1426,6 @@ export default function QuizRenderer({
     return null;
   };
 
-  /** Like getFeedbackHtmlFileNameAny but return the source key so callers can match by type */
-  const getFeedbackHtmlFileNameAnyWithKey = (
-    question: QuizQuestion,
-  ): { fileName: string; key: string } | null => {
-    const keys = [
-      "correctfeedbackhtmlfile",
-      "incorrectfeedbackhtmlfile",
-      "partiallycorrectfeedbackhtmlfile",
-    ] as const;
-    for (const key of keys) {
-      const raw = question?.question?.props?.[key];
-      if (!raw || typeof raw !== "string") continue;
-      try {
-        const parsed = JSON.parse(raw) as Record<string, string>;
-        const fileName = getLocalizedText(parsed, "") || null;
-        if (fileName) return { fileName, key };
-      } catch {
-        continue;
-      }
-    }
-    return null;
-  };
-
   /** For multichoice/multiselect: get the selected response's feedbackhtmlfile so Q2/Q3 etc. show per-option HTML (module.xml has feedbackhtmlfile on each response). */
   const getResponseFeedbackHtmlFileName = (
     question: QuizQuestion,
@@ -1667,27 +1643,6 @@ export default function QuizRenderer({
 
     // Fallback: return the original text trimmed
     return trimmedText;
-  };
-
-  // Extract feedback text (supports HTML with <p> or plain text / other HTML)
-  const extractFeedback = (
-    feedbackObj: { [key: string]: string } | undefined,
-  ): string => {
-    const feedbackHtml = getFirstLanguageValue(feedbackObj);
-    if (!feedbackHtml) return "";
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(feedbackHtml, "text/html");
-    const paragraphs = doc.querySelectorAll("p");
-    let feedbackText = "";
-    paragraphs.forEach((p) => {
-      const text = p.textContent?.trim();
-      if (text) feedbackText += text + " ";
-    });
-    feedbackText = feedbackText.trim();
-    if (!feedbackText && doc.body?.textContent) {
-      feedbackText = doc.body.textContent.trim();
-    }
-    return feedbackText;
   };
 
   // Parse matching question pairs

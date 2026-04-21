@@ -32,35 +32,6 @@ const highlightStyle = `
   }
 `;
 
-// Table of contents for Privacy Policy
-const privacyToc = [
-  { id: "consent", label: "Consent" },
-  { id: "external-links", label: "External Links" },
-  {
-    id: "collection-of-info",
-    label: "Collection of your personal information",
-  },
-  { id: "what-we-collect", label: "What we collect" },
-  { id: "what-we-do-not-collect", label: "What we do not collect" },
-  { id: "use-of-info", label: "Use of your personal information" },
-  {
-    id: "disclosure-of-info",
-    label: "Disclosure of your personal information",
-  },
-  {
-    id: "protection-of-info",
-    label: "Protection of your personal information",
-  },
-  { id: "legal-rights", label: "Your legal rights" },
-  {
-    id: "review-and-update",
-    label: "Review and updation of your personal information",
-  },
-  { id: "changes-to-policy", label: "Changes to our Privacy Policy" },
-  { id: "grievance-redressal", label: "Grievance Redressal | Contact Us" },
-  { id: "definitions", label: "Definitions used in this policy" },
-];
-
 // Table of contents for Terms of Service
 const termsToc = [
   { id: "eligibility", label: "1. Eligibility; Accounts" },

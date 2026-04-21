@@ -25,7 +25,6 @@ export default function VerifyOTPPage() {
     otpSentMessage,
     availableChannels,
     otpRefs,
-    hasStartedTimer,
 
     // Validation helpers
     isOTPComplete,

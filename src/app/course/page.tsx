@@ -16,7 +16,7 @@ import { CourseCard } from "@/components/course/CourseCard";
 import { CourseContextMenu } from "@/components/course/CourseContextMenu";
 import MediaDownloadDialog from "@/components/course/MediaDownloadDialog";
 import { useContextMenu } from "@/hooks/useContextMenu";
-import { useCourseUpdateChecker } from "@/hooks/useCourseUpdateChecker";
+
 import { useTour } from "@/hooks/useTour";
 import { getHomePageTour } from "@/config/tourSteps";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -43,12 +43,12 @@ import type { MediaNotice } from "@/hooks/useMediaDownload";
 import { Search, X } from "lucide-react";
 
 export default function CoursePage() {
-  const { user, isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuthStore();
   const { setCompletionData, getCompletionData } = useActivityCompletionStore();
   const router = useRouter();
   const { installedCourses, loading, removeCourse, refetch } =
     useInstalledCourses();
-  const { updates, isChecking } = useCourseUpdateChecker(); // Check for updates
+
   const { t } = useTranslation();
   const {
     contextMenu,
