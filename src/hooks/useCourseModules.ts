@@ -75,11 +75,11 @@ export const useCourseModules = (
   ) => {
     try {
       // Check cached completion data
-      // If key exists in Zustand (even if empty after a reset), use it and skip API.
-      // This ensures that after a reset, /activity is NOT called so all activities
-      // remain marked incomplete until the user explicitly clicks "Update Activity".
+      // For downloaded/offline courses, keep using cached completion data if present.
+      // For streaming mode, always fetch fresh tracking from the API so the UI
+      // reflects the server state on every open.
       const cached = getCompletionData(courseId);
-      if (cached !== null) {
+      if (!skipDownload && cached !== null) {
         setCompletionMap(cached);
         const parsedLessons = parseLessonsFromCourse(courseStructure, cached);
         setLessons(parsedLessons);

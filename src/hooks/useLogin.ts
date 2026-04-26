@@ -28,6 +28,9 @@ export const COUNTRIES = [
 
 export type OTPChannel = "sms" | "whatsapp";
 
+const MIN_PHONE_LENGTH = 10;
+const MAX_PHONE_LENGTH = 13;
+
 export const useLogin = () => {
   const router = useRouter();
   const { login } = useAuthStore();
@@ -64,12 +67,15 @@ export const useLogin = () => {
   // Format full phone number
   const getFullPhoneNumber = useCallback(() => {
     // Remove any non-numeric characters from the phone number
-    const cleanPhoneNumber = phoneNumber.replace(/\D/g, "");
+    const cleanPhoneNumber = phoneNumber
+      .replace(/\D/g, "")
+      .slice(0, MAX_PHONE_LENGTH);
 
-    // Format phone number by adding a space after the first 5 digits and then after the next 5 digits
-    const formattedPhoneNumber = `${
-      selectedCountry.dialCode
-    } ${cleanPhoneNumber.slice(0, 5)} ${cleanPhoneNumber.slice(5, 10)}`;
+    // Keep spacing every 5 digits while preserving all digits up to MAX_PHONE_LENGTH
+    const groupedPhoneNumber =
+      cleanPhoneNumber.match(/.{1,5}/g)?.join(" ") ?? "";
+    const formattedPhoneNumber =
+      `${selectedCountry.dialCode} ${groupedPhoneNumber}`.trim();
 
     return formattedPhoneNumber;
   }, [phoneNumber, selectedCountry.dialCode]);
@@ -100,7 +106,8 @@ export const useLogin = () => {
   // Validate phone number
   const isValidPhoneNumber = useCallback(() => {
     // Basic validation - adjust based on country-specific rules
-    return phoneNumber.length >= 10;
+    const digitCount = phoneNumber.replace(/\D/g, "").length;
+    return digitCount >= MIN_PHONE_LENGTH && digitCount <= MAX_PHONE_LENGTH;
   }, [phoneNumber]);
 
   // Check if all OTP fields are filled
@@ -146,7 +153,7 @@ export const useLogin = () => {
   const handlePhoneNumberChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value.replace(/\D/g, ""); // Only digits
-      setPhoneNumber(value);
+      setPhoneNumber(value.slice(0, MAX_PHONE_LENGTH));
       setError("");
     },
     [],

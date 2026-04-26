@@ -89,7 +89,7 @@ export function useGamification() {
       const userId = getUserId();
       if (userId === null) {
         // console.warn("⚠️ [useGamification] User not initialized");
-        return { points: 0, message: "" };
+        return { points: 0, passed: false, message: "" };
       }
 
       // console.log("\n🎯 [useGamification] Tracking quiz attempt");

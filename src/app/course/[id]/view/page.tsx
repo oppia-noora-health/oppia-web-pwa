@@ -2607,6 +2607,7 @@ export default function CourseViewerPage() {
         "80",
       10,
     );
+    const localPassed = score >= passThreshold;
 
     // Extract raw score (correctAnswers) from quizData
     // The 'score' parameter is actually scorePercentage, but we need raw score (correctAnswers)
@@ -2627,10 +2628,13 @@ export default function CourseViewerPage() {
         },
       );
 
+      const isPassed =
+        typeof result?.passed === "boolean" ? result.passed : localPassed;
+
       // Mark quiz as completed whenever it passes, even if points are 0
       // (e.g. pass on second attempt on the same day).
       // Keep daily completion marker tied to points-award behavior.
-      if (result.passed && activity.digest) {
+      if (isPassed && activity.digest) {
         const currentCompletionMap = getCompletionData(courseId) || new Map();
 
         let updatedCompletionMap = new Map(currentCompletionMap);
@@ -2664,7 +2668,7 @@ export default function CourseViewerPage() {
       }
 
       // Check for badge milestone only when quiz passed the threshold
-      if (result.passed) {
+      if (isPassed) {
         const newCompletedCount = getCompletionCount();
         const badgeAwarded = checkForBadgeMilestone(
           previousCompletedCount,
@@ -2680,7 +2684,15 @@ export default function CourseViewerPage() {
           }, 3500);
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("[handleQuizSubmit] Failed to persist quiz completion", {
+        courseId,
+        digest: activity.digest,
+        score,
+        passThreshold,
+        error,
+      });
+    }
   };
 
   // Handle feedback submission with gamification

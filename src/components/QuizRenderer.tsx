@@ -192,7 +192,11 @@ interface QuizRendererProps {
   quizData: QuizData;
   questionHtml: string;
   onComplete?: () => void;
-  onQuizSubmit?: (score: number, timeTaken: number, quizData: any) => void;
+  onQuizSubmit?: (
+    score: number,
+    timeTaken: number,
+    quizData: any,
+  ) => void | Promise<void>;
   isPreTest?: boolean; // Flag to indicate if this is a pre-test
   onPreTestComplete?: () => void; // Callback when pre-test is completed
   /** Server URL for fetching feedback HTML when showfeedback is 1 (e.g. https://staging.academy.noorahealth.org/) */
@@ -976,7 +980,9 @@ export default function QuizRenderer({
 
       // Notify parent component: rawScore = quiz userscore (sum capped by quiz maxscore)
       if (onQuizSubmit) {
-        onQuizSubmit(scorePercentage, timeTaken, {
+        // Await parent submit handling so completion state is persisted before
+        // we show results/allow continue navigation.
+        await onQuizSubmit(scorePercentage, timeTaken, {
           quizId: quizData.id,
           instanceId: quizData.id,
           rawScore: quizUserscore, // Quiz userscore (sum of question scores, capped)

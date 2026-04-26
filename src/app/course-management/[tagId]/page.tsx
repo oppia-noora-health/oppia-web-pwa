@@ -245,12 +245,19 @@ export default function TagCoursesPage() {
       const { deleteCourseFromIDB } = await import("@/utils/courseStorageIDB");
       const { deleteAllCourseMedia } =
         await import("@/services/mediaDownloadService");
+      const { clearCompletionData } = useActivityCompletionStore.getState();
 
       // Delete course files from IndexedDB
       await deleteCourseFromIDB(selectedCourse.id.toString());
 
       // Delete media files from Cache Storage
       await deleteAllCourseMedia(selectedCourse.id.toString());
+
+      // Clear course-scoped runtime/persisted state so a future API stream
+      // starts from the server's activity completion data.
+      clearCompletionData(selectedCourse.id.toString());
+      localStorage.removeItem(`course_reset_${selectedCourse.id}`);
+      await clearCachedActivityTracking(selectedCourse.shortname);
 
       // Mark as deleted to update UI
       markAsDeleted(selectedCourse.id);

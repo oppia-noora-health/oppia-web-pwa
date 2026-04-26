@@ -1,5 +1,4 @@
 // Noora Academy Custom Service Worker
-// Version 8.1 - Fixed 206 partial response caching + offline API handling
 
 const CACHE_VERSION = "v1";
 const CACHE_NAMES = {

@@ -238,12 +238,19 @@ export default function CoursePage() {
       const { deleteCourseFromIDB } = await import("@/utils/courseStorageIDB");
       const { deleteAllCourseMedia } =
         await import("@/services/mediaDownloadService");
+      const { clearCompletionData } = useActivityCompletionStore.getState();
 
       // Delete course files from IndexedDB
       await deleteCourseFromIDB(selectedCourse.courseId);
 
       // Delete media files from Cache Storage
       await deleteAllCourseMedia(selectedCourse.courseId);
+
+      // Clear course-scoped runtime/persisted state so a future API stream
+      // starts from the server's activity completion data.
+      clearCompletionData(selectedCourse.courseId);
+      localStorage.removeItem(`course_reset_${selectedCourse.courseId}`);
+      await clearCachedActivityTracking(selectedCourse.shortname);
 
       removeCourse(selectedCourse.courseId);
     } catch (error) {
