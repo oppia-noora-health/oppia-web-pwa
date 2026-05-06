@@ -4,6 +4,8 @@ const ACCESS_LOG_QUEUE_KEY = "noora_access_log_queue_v1";
 const ACCESS_LOG_ENDPOINT = "/api/access-logs";
 const FLUSH_DELAY_MS = 1500;
 const BATCH_SIZE = 20;
+const ACCESS_LOGS_ENABLED =
+  process.env.NEXT_PUBLIC_ACCESS_LOGS_ENABLED !== "false";
 
 type QueueItem = AccessLogInput;
 
@@ -18,6 +20,10 @@ class AccessLogService {
 
   constructor() {
     if (isBrowser()) {
+      if (!ACCESS_LOGS_ENABLED) {
+        return;
+      }
+
       this.queue = this.readQueueFromStorage();
       window.addEventListener("online", () => {
         void this.flushQueue();
@@ -32,6 +38,10 @@ class AccessLogService {
   }
 
   async log(entry: AccessLogInput, flushNow = false): Promise<void> {
+    if (!ACCESS_LOGS_ENABLED) {
+      return;
+    }
+
     const loggedOffline = isBrowser() ? !navigator.onLine : false;
 
     console.log(
@@ -62,7 +72,12 @@ class AccessLogService {
   }
 
   async flushQueue(): Promise<void> {
-    if (!isBrowser() || this.isFlushing || this.queue.length === 0) {
+    if (
+      !ACCESS_LOGS_ENABLED ||
+      !isBrowser() ||
+      this.isFlushing ||
+      this.queue.length === 0
+    ) {
       return;
     }
 
@@ -88,9 +103,19 @@ class AccessLogService {
         });
 
         if (!response.ok) {
-          console.error(
-            `[ACCESS-LOG-FLUSH-ERROR] API returned status ${response.status}`,
-          );
+          // Try to parse JSON error body for detailed backend error information
+          try {
+            const data = await response.json();
+            console.error(
+              `[ACCESS-LOG-FLUSH-ERROR] API returned status ${response.status}`,
+              data,
+            );
+          } catch (parseError) {
+            const text = await response.text().catch(() => "<no-body>");
+            console.error(
+              `[ACCESS-LOG-FLUSH-ERROR] API returned status ${response.status} - body: ${text}`,
+            );
+          }
           break;
         }
 

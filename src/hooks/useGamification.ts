@@ -207,19 +207,6 @@ export function useGamification() {
           },
         });
 
-        void logActivityUpdate({
-          pageName: `/course/${course.id}/view`,
-          activityName: activity.title,
-          digest: activity.digest,
-          courseId: course.id,
-          courseShortname: course.shortname,
-          courseTitle: course.title,
-          points: result.points,
-          details: {
-            status: "completed",
-          },
-        });
-
         return {
           points: result.points,
           message:

@@ -89,15 +89,7 @@ export class CountlyAnalytics implements AnalyticsEngine {
 
   endSession(): void {}
 
-  trackEvent(eventName: string, data?: Record<string, any>): void {
-    if (!this.isInitialized) return;
-
-    try {
-      Countly.add_event({
-        key: eventName,
-        count: 1,
-        segmentation: data,
-      });
-    } catch (error) {}
+  trackEvent(): void {
+    // Intentionally disabled: Countly should only collect SDK automatic data.
   }
 }

@@ -1,29 +1,11 @@
-/**
- * POST /api/access-logs
- *
- * Receives batches of access log entries from client
- * Writes to daily CSV files on server (RFC 4180 compliant)
- * Handles rotation, retention, and quota management
- *
- * Request body:
- * {
- *   entries: AccessLogInput[]
- * }
- *
- * Response:
- * {
- *   success: boolean,
- *   entriesLogged: number,
- *   errors?: string[]
- * }
- */
-
 import { NextResponse, NextRequest } from "next/server";
 import type { AccessLogInput } from "@/types/accessLog";
 import { logAccessEntries } from "@/lib/csvLogger";
 import { scheduleCleanupIfNeeded } from "@/lib/logRotation";
 
 export const runtime = "nodejs";
+const ACCESS_LOGS_ENABLED =
+  process.env.NEXT_PUBLIC_ACCESS_LOGS_ENABLED !== "false";
 
 // Rate limiting state (simple in-memory)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -108,6 +90,13 @@ function validateRequest(body: unknown): {
 }
 
 export async function POST(request: NextRequest) {
+  if (!ACCESS_LOGS_ENABLED) {
+    return NextResponse.json(
+      { success: true, entriesLogged: 0, disabled: true },
+      { status: 200 },
+    );
+  }
+
   try {
     const ip = getClientIP(request);
 
@@ -149,7 +138,9 @@ export async function POST(request: NextRequest) {
         {
           success: false,
           entriesLogged: result.entriesLogged,
-          errors: result.errors,
+          error: "Failed to log entries to CSV storage",
+          details: result.errors, // Send all error details to frontend
+          errorCount: result.errors.length,
         },
         { status: 500 },
       );
@@ -166,9 +157,29 @@ export async function POST(request: NextRequest) {
       { status: 200 },
     );
   } catch (error) {
-    console.error("Access log API error:", error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorCode = (error as { code?: string }).code || "UNKNOWN_ERROR";
+    const errorStack =
+      error instanceof Error ? error.stack?.split("\n").slice(0, 3) : undefined;
+
+    console.error("Access log API fatal error:", {
+      code: errorCode,
+      message: errorMessage,
+      stack: errorStack,
+    });
+
     return NextResponse.json(
-      { success: false, error: "Internal server error" },
+      {
+        success: false,
+        error: "Internal server error while processing access logs",
+        errorCode,
+        errorMessage,
+        details: [
+          `Error Code: ${errorCode}`,
+          `Message: ${errorMessage}`,
+          "This could be a filesystem permission issue or a server configuration problem",
+        ],
+      },
       { status: 500 },
     );
   }
@@ -179,6 +190,17 @@ export async function POST(request: NextRequest) {
  * Health check endpoint (useful for debugging)
  */
 export async function GET() {
+  if (!ACCESS_LOGS_ENABLED) {
+    return NextResponse.json(
+      {
+        status: "disabled",
+        message: "Access log API is disabled by environment flag",
+        timestamp: new Date().toISOString(),
+      },
+      { status: 200 },
+    );
+  }
+
   return NextResponse.json(
     {
       status: "ok",
