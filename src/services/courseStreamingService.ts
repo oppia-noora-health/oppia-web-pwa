@@ -2,7 +2,57 @@
 
 import { authenticatedGet } from "@/utils/apiClient";
 import { API_PATHS } from "@/utils/apiPaths";
+import { accessLogService } from "@/services/accessLogService";
+import { useAuthStore } from "@/store/useStore";
 import type { SequencingType } from "./courseDownloadService";
+
+function logStreamingApiFailure(
+  operation: string,
+  error: unknown,
+  details: Record<string, unknown> = {},
+) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  const user = useAuthStore.getState().user;
+  const endpoint =
+    typeof details.endpoint === "string" ? details.endpoint : operation;
+  const method =
+    typeof (error as any)?.config?.method === "string"
+      ? String((error as any).config.method).toUpperCase()
+      : typeof (error as any)?.method === "string"
+        ? String((error as any).method).toUpperCase()
+        : null;
+  const statusCode =
+    (error as any)?.response?.status ?? (error as any)?.code ?? null;
+  const message =
+    error instanceof Error ? error.message : String(error ?? "Unknown error");
+
+  console.log(
+    `[LOG-API-FAILURE] Streaming API failed: operation=${operation}, endpoint=${endpoint}, status=${statusCode}, message=${message}`,
+  );
+  void accessLogService.log({
+    event: "api_failure",
+    activityType: "streaming",
+    activityName: operation,
+    apiEndpoint: endpoint,
+    apiMethod: method,
+    errorCode: statusCode,
+    errorMessage: message,
+    pageName: "/course",
+    user: {
+      userId: user?.id ?? null,
+      username: user?.username ?? null,
+      phoneNumber: user?.phoneNumber ?? null,
+    },
+    details: {
+      operation,
+      status: statusCode,
+      ...details,
+    },
+  });
+}
 
 interface CourseStructureResponse {
   id: number;
@@ -506,6 +556,12 @@ export async function fetchHtmlContent(
     );
     return processedContent;
   } catch (error) {
+    logStreamingApiFailure("fetchHtmlContent", error, {
+      endpoint: `/api/proxy-html?server=${encodeURIComponent(server)}&course=${encodeURIComponent(shortname)}&file=${encodeURIComponent(htmlFile)}`,
+      server,
+      shortname,
+      htmlFile,
+    });
     throw error;
   }
 }

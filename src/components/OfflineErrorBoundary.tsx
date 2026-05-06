@@ -2,6 +2,7 @@
 
 import React from "react";
 import { OfflinePageUnavailable } from "@/components/OfflinePageUnavailable";
+import Countly from "countly-sdk-web";
 
 interface OfflineErrorBoundaryProps {
   children: React.ReactNode;
@@ -29,6 +30,15 @@ export class OfflineErrorBoundary extends React.Component<
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error("[OfflineErrorBoundary] Caught error:", error, errorInfo);
+
+    try {
+      Countly.log_error(error, {
+        componentStack: errorInfo.componentStack,
+        source: "OfflineErrorBoundary",
+      });
+    } catch {
+      // Keep the boundary functional even if analytics fails.
+    }
 
     // Increment error count
     this.setState((prev) => ({

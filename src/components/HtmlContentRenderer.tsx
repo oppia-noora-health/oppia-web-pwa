@@ -12,6 +12,7 @@ import { useLanguageStore } from "@/store/useLanguageStore";
 import { useAuthStore } from "@/store/useStore";
 import { getSetting } from "@/utils/settingsStorage";
 import { translations } from "@/locales";
+import { useAccessLog } from "@/hooks/useAccessLog";
 
 // Media file info for streaming mode
 export interface StreamingMediaFile {

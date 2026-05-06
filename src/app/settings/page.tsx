@@ -26,6 +26,7 @@ import {
 import { useTour } from "@/hooks/useTour";
 import { getSettingsTour } from "@/config/tourSteps";
 import { useAuthStore } from "@/store/useStore";
+import { useAccessLog } from "@/hooks/useAccessLog";
 import {
   getSetting,
   setSetting,
@@ -71,6 +72,7 @@ export default function SettingsPage() {
   const { t } = useTranslation();
   const router = useRouter();
   const { user, logout } = useAuthStore();
+  const { logSettingsUpdate, logSettingsReset } = useAccessLog();
   const userId = user?.id?.toString();
   const { language, setLanguage, getCurrentLanguage } = useLanguageStore();
   const [apiUrl, setApiUrl] = useState("");
@@ -170,6 +172,15 @@ export default function SettingsPage() {
         const fullUrl = `${urlToSave}/api/v2/`;
         setApiEnvCookie(urlToSave);
 
+        void logSettingsUpdate({
+          pageName: "/settings",
+          details: {
+            setting: "custom_api_url",
+            apiUrlChanged,
+            requestedUrl: trimmedUrl,
+          },
+        });
+
         // Logout if API URL changed and user is logged in
         if (apiUrlChanged && user) {
           // Save API URL to both user and guest keys before logout
@@ -242,6 +253,14 @@ export default function SettingsPage() {
     setPreviousApiUrl(resetUrlClean);
     setSaveMessage("");
     setInvalidUrlWarning("");
+
+    void logSettingsReset({
+      pageName: "/settings",
+      details: {
+        apiUrlChanged,
+        resetUrl: resetUrlClean,
+      },
+    });
 
     // If URL changed and user is logged in, logout
     if (apiUrlChanged && user) {

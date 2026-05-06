@@ -14,6 +14,60 @@ import { parseActivityTrackingXML } from "@/types/activityTracking";
 import { useActivityCompletionStore } from "@/store/useStore";
 import { analytics } from "@/lib/analytics";
 import { getLocalizedText } from "@/utils/localization";
+import { accessLogService } from "@/services/accessLogService";
+import { useAuthStore } from "@/store/useStore";
+
+function logDownloadApiFailure(
+  operation: string,
+  error: unknown,
+  details: Record<string, unknown> = {},
+) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  const user = useAuthStore.getState().user;
+  const endpoint =
+    typeof details.endpoint === "string"
+      ? details.endpoint
+      : typeof details.url === "string"
+        ? details.url
+        : operation;
+  const method =
+    typeof (error as any)?.config?.method === "string"
+      ? String((error as any).config.method).toUpperCase()
+      : typeof (error as any)?.method === "string"
+        ? String((error as any).method).toUpperCase()
+        : null;
+  const statusCode =
+    (error as any)?.response?.status ?? (error as any)?.code ?? null;
+  const message =
+    error instanceof Error ? error.message : String(error ?? "Unknown error");
+
+  console.log(
+    `[LOG-API-FAILURE] Download API failed: operation=${operation}, endpoint=${endpoint}, status=${statusCode}, message=${message}`,
+  );
+  void accessLogService.log({
+    event: "api_failure",
+    activityType: "course",
+    activityName: operation,
+    apiEndpoint: endpoint,
+    apiMethod: method,
+    errorCode: statusCode,
+    errorMessage: message,
+    pageName: "/course",
+    user: {
+      userId: user?.id ?? null,
+      username: user?.username ?? null,
+      phoneNumber: user?.phoneNumber ?? null,
+    },
+    details: {
+      operation,
+      status: statusCode,
+      ...details,
+    },
+  });
+}
 
 /**
  * Extract all resource URLs from HTML (scripts, stylesheets, etc.)
@@ -541,6 +595,12 @@ class CourseDownloadService {
       if (controller) {
         this.controllers.delete(courseId);
       }
+      logDownloadApiFailure("downloadCourseWithProgress", error, {
+        courseId,
+        shortname,
+        version,
+        url,
+      });
       onProgress(
         "error",
         0,
@@ -692,6 +752,12 @@ class CourseDownloadService {
 
       return coursePackage;
     } catch (error) {
+      logDownloadApiFailure("downloadCourse", error, {
+        courseId,
+        shortname,
+        version,
+        url,
+      });
       throw error;
     }
   }

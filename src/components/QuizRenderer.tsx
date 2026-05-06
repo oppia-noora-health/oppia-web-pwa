@@ -24,6 +24,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import FeedbackIframe from "@/components/FeedbackIframe";
+import { useAccessLog } from "@/hooks/useAccessLog";
 
 /** Wrap an HTML fragment in a minimal document so it can be rendered in an iframe. */
 function wrapAsHtmlDocument(fragment: string): string {
@@ -216,6 +217,7 @@ export default function QuizRenderer({
 }: QuizRendererProps) {
   const { t } = useTranslation();
   const user = useAuthStore((state) => state.user);
+  const { logQuizStart, logQuizAttempt } = useAccessLog();
 
   // LocalStorage key for persisting pre-test completion/results visibility
   const preTestResultsKey =
@@ -689,6 +691,19 @@ export default function QuizRenderer({
       }
     }
 
+    void logQuizStart({
+      pageName: "/course/quiz",
+      activityType: "quiz",
+      digest: quizData.digest,
+      courseShortname: quizData.courseShortname,
+      activityName: getFirstLanguageValue(quizData.title) || "Quiz",
+      details: {
+        action: "start",
+        maxAttempts: quizData.props?.maxattempts ?? "unlimited",
+        isPreTest,
+      },
+    });
+
     setQuizStarted(true);
     setQuizStartTime(Date.now()); // Start timer
   };
@@ -893,6 +908,24 @@ export default function QuizRenderer({
       const scorePercentage =
         maxScore > 0 ? Math.round((quizUserscore / maxScore) * 100) : 0;
       const passed = scorePercentage >= passThreshold;
+
+      void logQuizAttempt({
+        pageName: "/course/quiz",
+        activityType: "quiz",
+        digest: quizData.digest,
+        courseShortname: quizData.courseShortname,
+        activityName: getFirstLanguageValue(quizData.title) || "Quiz",
+        details: {
+          action: "submit",
+          scorePercentage,
+          passed,
+          timeTaken,
+          totalQuestions,
+          rawScore: quizUserscore,
+          maxScore,
+          isPreTest,
+        },
+      });
 
       // Store quiz results (raw score = quiz userscore for display/API)
       setQuizScore(quizUserscore);
@@ -1778,6 +1811,16 @@ export default function QuizRenderer({
 
     // IMPORTANT: Start the quiz immediately (don't show "Take Quiz" screen)
     // This allows user to retake directly from question 1
+    void logQuizStart({
+      pageName: "/course/quiz",
+      activityType: "quiz",
+      digest: quizData.digest,
+      courseShortname: quizData.courseShortname,
+      activityName: getFirstLanguageValue(quizData.title) || "Quiz",
+      details: {
+        action: "retake",
+      },
+    });
     setQuizStarted(true);
   };
 

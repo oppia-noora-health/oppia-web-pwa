@@ -8,6 +8,7 @@ import {
   type StreamedCourseStructure,
   type StreamedMedia,
 } from "@/services/courseStreamingService";
+import { useAccessLog } from "@/hooks/useAccessLog";
 
 interface UseCourseStreamingReturn {
   loading: boolean;
@@ -43,6 +44,8 @@ export function useCourseStreaming(
   const [contentCache, setContentCache] = useState<Map<string, string>>(
     new Map(),
   );
+  const { logStreamingSession } = useAccessLog();
+  const streamingLoggedRef = useRef(false);
 
   // Track previous shortname to detect actual changes (not just empty -> value)
   const previousShortnameRef = useRef<string>("");
@@ -120,6 +123,20 @@ export function useCourseStreaming(
         }
 
         setCourseData(structure);
+
+        if (!streamingLoggedRef.current) {
+          streamingLoggedRef.current = true;
+          void logStreamingSession({
+            pageName: `/course/${structure.id}/view`,
+            courseId: structure.id,
+            courseShortname: structure.shortname,
+            courseTitle: structure.title,
+            details: {
+              initialPage: initialPage ?? null,
+              shortname: structure.shortname,
+            },
+          });
+        }
       } catch (err) {
         if (!isMounted) {
           return;
@@ -140,6 +157,7 @@ export function useCourseStreaming(
       setCurrentContent("");
       setContentCache(new Map());
       setError(null);
+      streamingLoggedRef.current = false;
     };
   }, [shortname]); // Only shortname - do not re-fetch structure when initialPage (URL page param) changes
 

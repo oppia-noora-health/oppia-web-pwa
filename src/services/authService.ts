@@ -2,6 +2,59 @@
 
 import axios from "axios";
 import { API_PATHS } from "../utils/apiPaths";
+import { accessLogService } from "@/services/accessLogService";
+import { useAuthStore } from "@/store/useStore";
+
+function logAuthApiFailure(
+  operation: string,
+  error: any,
+  details: Record<string, unknown> = {},
+) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  const user = useAuthStore.getState().user;
+  const endpoint =
+    typeof details.endpoint === "string"
+      ? details.endpoint
+      : typeof details.url === "string"
+        ? details.url
+        : API_PATHS.LOGIN();
+  const method =
+    typeof error?.config?.method === "string"
+      ? error.config.method.toUpperCase()
+      : "POST";
+  const statusCode = error?.response?.status ?? error?.code ?? null;
+  const message =
+    error instanceof Error ? error.message : String(error ?? "Unknown error");
+
+  console.log(
+    `[LOG-API-FAILURE] Auth API failed: operation=${operation}, endpoint=${endpoint}, status=${statusCode}, message=${message}`,
+  );
+  void accessLogService.log({
+    event: "api_failure",
+    activityType: "api",
+    activityName: operation,
+    apiEndpoint: endpoint,
+    apiMethod: method,
+    errorCode: statusCode,
+    errorMessage: message,
+    pageName: "/login",
+    user: {
+      userId: user?.id ?? null,
+      username: user?.username ?? null,
+      phoneNumber: user?.phoneNumber ?? null,
+    },
+    details: {
+      operation,
+      status: statusCode,
+      responseMessage:
+        error?.response?.data?.message ?? error?.response?.data?.error ?? null,
+      ...details,
+    },
+  });
+}
 
 export interface CoursePoint {
   course__shortname: string;
@@ -69,6 +122,7 @@ export const fetchUserData = async (
     });
     return response.data;
   } catch (error) {
+    logAuthApiFailure("fetchUserData", error, { endpoint: API_PATHS.LOGIN() });
     throw error;
   }
 };
@@ -114,6 +168,12 @@ export const checkExternalProfile = async (
       account: response.data,
     };
   } catch (error: any) {
+    logAuthApiFailure("checkExternalProfile", error, {
+      endpoint: API_PATHS.EXTERNALPROFILE(),
+      phoneNumber,
+      country,
+      language,
+    });
     if (error.response?.status === 404) {
       return { exists: false };
     }
@@ -142,6 +202,13 @@ export const sendOTP = async (
       throw new Error("Failed to send OTP");
     }
   } catch (error: any) {
+    logAuthApiFailure("sendOTP", error, {
+      endpoint: API_PATHS.SEND_OTP(),
+      phoneNumber,
+      channel,
+      country,
+      language,
+    });
     if (error.response?.status === 404) {
       throw new Error("Phone number not found");
     }
@@ -162,6 +229,10 @@ export const fetchChannels = async (
 
     return response.data;
   } catch (error: any) {
+    logAuthApiFailure("fetchChannels", error, {
+      endpoint: API_PATHS.CHANNEL(),
+      phoneNumber,
+    });
     throw new Error(
       error.response?.data?.message || "Failed to fetch channels",
     );
@@ -191,6 +262,10 @@ export const verifyOTP = async (
 
     return response.data;
   } catch (error: any) {
+    logAuthApiFailure("verifyOTP", error, {
+      endpoint: API_PATHS.LOGIN(),
+      phoneNumber,
+    });
     if (error.response?.status === 400) {
       throw new Error("Invalid OTP");
     }

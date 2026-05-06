@@ -7,6 +7,26 @@ import type {
   CoursePoint,
   CustomFields,
 } from "@/services/authService";
+import { accessLogService } from "@/services/accessLogService";
+
+interface User {
+  id: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber?: string;
+  email?: string;
+  country?: string;
+  language?: string;
+  apiKey?: string;
+  points?: number;
+  badges?: number;
+  coursePoints?: CoursePoint[];
+  customFields?: CustomFields;
+  cohorts?: number[];
+  lastLogin?: string;
+  resourceUri?: string;
+}
 
 // Course cache for temporary storage (online viewing)
 export interface CachedCourse {
@@ -167,6 +187,25 @@ export const useAuthStore = create<AuthState>()(
 
         set({ user, isAuthenticated: true });
 
+        void accessLogService.log(
+          {
+            event: "login",
+            user: {
+              userId: user.id,
+              username: user.username,
+              phoneNumber: loginResponse.phone_number,
+            },
+            pageName: "/login",
+            activityType: "auth",
+            details: {
+              country: loginResponse.custom_fields?.Country ?? null,
+              language: loginResponse.custom_fields?.Language ?? null,
+              lastLogin: loginResponse.last_login ?? null,
+            },
+          },
+          true,
+        );
+
         // Copy guest settings to user so they keep pre-login preferences
         if (typeof window !== "undefined" && user.id) {
           const { migrateGuestSettingsToUser } =
@@ -201,6 +240,26 @@ export const useAuthStore = create<AuthState>()(
         // Get user ID before clearing state (needed to clear user-scoped settings)
         const currentUser = get().user;
         const userId = currentUser?.id?.toString();
+
+        void accessLogService.log(
+          {
+            event: "logout",
+            user: {
+              userId: currentUser?.id ?? null,
+              username: currentUser?.username ?? null,
+              phoneNumber:
+                (currentUser as any)?.phoneNumber ??
+                (currentUser as any)?.phoneNo ??
+                null,
+            },
+            pageName: "/logout",
+            activityType: "auth",
+            details: {
+              source: "useAuthStore.logout",
+            },
+          },
+          true,
+        );
 
         set({ user: null, isAuthenticated: false });
 

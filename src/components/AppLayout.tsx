@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { Suspense } from "react";
 import { useAuthStore } from "@/store/useStore";
 import {
   SidebarProvider,
@@ -18,6 +19,7 @@ import {
 } from "@/utils/pageCaching";
 import { StorageQuotaExceededDialog } from "@/components/course/StorageQuotaExceededDialog";
 import { useNetworkStatus } from "@/hooks/useNetworkStatus";
+import { AccessLogTracker } from "@/components/AccessLogTracker";
 
 // Settings is accessible without auth (AuthProvider) but gets sidebar when authenticated
 const PUBLIC_ROUTES = ["/login", "/verify-otp", "/offline"];
@@ -50,9 +52,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   // When authenticated and online, pre-cache settings/privacy/profile/about-help so they work offline (covers refresh on any page and visit to /course)
   useEffect(() => {
     if (isAuthenticated && isOnline) {
-      preCacheStaticPagesOnLogin().catch((err) =>
-        void 0
-      );
+      preCacheStaticPagesOnLogin().catch((err) => void 0);
     }
   }, [isAuthenticated, isOnline]);
 
@@ -62,7 +62,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   }
 
   const isPublicRoute = PUBLIC_ROUTES.some((route) =>
-    pathname.startsWith(route)
+    pathname.startsWith(route),
   );
 
   // Show navigation only when authenticated and not on public routes
@@ -76,6 +76,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     return (
       <OfflineErrorBoundary key={boundaryKey}>
         <>{children}</>
+        <Suspense fallback={null}>
+          <AccessLogTracker />
+        </Suspense>
         <StorageQuotaExceededDialog />
       </OfflineErrorBoundary>
     );
@@ -85,6 +88,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <OfflineErrorBoundary key={boundaryKey}>
       <SidebarProvider defaultOpen={true}>
+        <Suspense fallback={null}>
+          <AccessLogTracker />
+        </Suspense>
         <AppSidebar />
         <SidebarInset>
           <SidebarController>

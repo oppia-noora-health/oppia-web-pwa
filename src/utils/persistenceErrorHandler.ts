@@ -1,6 +1,9 @@
 // utils/persistenceErrorHandler.ts
 // Error handling and retry logic for offline data persistence
 
+import { accessLogService } from "@/services/accessLogService";
+import { useAuthStore } from "@/store/useStore";
+
 export interface PersistenceResult {
   success: boolean;
   error?: string;
@@ -10,6 +13,39 @@ export interface PersistenceResult {
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY_MS = 100; // Exponential: 100ms, 200ms, 400ms
+
+function logRetryAttempt(
+  operationName: string,
+  attempt: number,
+  maxRetries: number,
+  outcome: "retrying" | "success" | "failed",
+  error?: unknown,
+) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  const user = useAuthStore.getState().user;
+  void accessLogService.log({
+    event: "retry_attempt",
+    activityType: "retry",
+    activityName: operationName,
+    pageName: "/offline",
+    user: {
+      userId: user?.id ?? null,
+      username: user?.username ?? null,
+      phoneNumber: user?.phoneNumber ?? null,
+    },
+    details: {
+      operationName,
+      attempt,
+      maxRetries,
+      outcome,
+      errorMessage:
+        error instanceof Error ? error.message : String(error ?? ""),
+    },
+  });
+}
 
 /**
  * Executes a persistence operation with retry logic
@@ -32,6 +68,10 @@ export async function executeWithRetry(
     try {
       operation();
 
+      if (retryCount > 0) {
+        logRetryAttempt(operationName, attempt, maxRetries, "success");
+      }
+
       return {
         success: true,
         retries: attempt - 1,
@@ -40,6 +80,8 @@ export async function executeWithRetry(
     } catch (error) {
       lastError = error;
       retryCount = attempt - 1;
+
+      logRetryAttempt(operationName, attempt, maxRetries, "retrying", error);
 
       if (attempt <= maxRetries) {
         if (typeof window !== "undefined") {
@@ -61,6 +103,8 @@ export async function executeWithRetry(
             error,
           );
         }
+
+        logRetryAttempt(operationName, attempt, maxRetries, "failed", error);
       }
     }
   }

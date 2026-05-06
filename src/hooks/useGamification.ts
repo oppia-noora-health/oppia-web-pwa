@@ -13,10 +13,19 @@ import {
 import { getUserPoints } from "@/utils/gamificationIDB";
 import { triggerManualSync } from "@/services/gamificationSync";
 import type { Course, Activity } from "@/types/gamification";
+import { useAccessLog } from "@/hooks/useAccessLog";
 
 export function useGamification() {
   const { user } = useAuthStore();
   const { userPoints, userBadges, setPoints } = useGamificationPointsStore();
+  const {
+    logQuizComplete,
+    logActivityComplete,
+    logMediaPlayback,
+    logCourseDownload,
+    logResourceDownload,
+    logActivityUpdate,
+  } = useAccessLog();
 
   // Helper to safely get numeric userId
   const getUserId = useCallback((): number | null => {
@@ -118,6 +127,24 @@ export function useGamification() {
         // Auto-submit if online
         tryAutoSubmit(userId);
 
+        void logQuizComplete({
+          pageName: `/course/${course.id}/view`,
+          activityName: activity.title,
+          digest: activity.digest,
+          courseId: course.id,
+          courseShortname: course.shortname,
+          courseTitle: course.title,
+          points: result.tracker.points,
+          quizScore: score,
+          quizMaxscore: quizData.maxScore || 100,
+          quizPassed: result.tracker.completed,
+          quizTimetaken: timeTaken,
+          details: {
+            passThreshold: quizData.passThreshold ?? 80,
+            quizId: quizData.quizId ?? null,
+          },
+        });
+
         return {
           points: result.tracker.points,
           passed: result.tracker.completed,
@@ -165,6 +192,33 @@ export function useGamification() {
 
         // Auto-submit if online
         tryAutoSubmit(userId);
+
+        void logActivityComplete({
+          pageName: `/course/${course.id}/view`,
+          activityName: activity.title,
+          digest: activity.digest,
+          courseId: course.id,
+          courseShortname: course.shortname,
+          courseTitle: course.title,
+          points: result.points,
+          details: {
+            timeTaken,
+            extraData: extraData ?? null,
+          },
+        });
+
+        void logActivityUpdate({
+          pageName: `/course/${course.id}/view`,
+          activityName: activity.title,
+          digest: activity.digest,
+          courseId: course.id,
+          courseShortname: course.shortname,
+          courseTitle: course.title,
+          points: result.points,
+          details: {
+            status: "completed",
+          },
+        });
 
         return {
           points: result.points,
@@ -229,6 +283,24 @@ export function useGamification() {
         // Auto-submit if online (syncs tracker to server)
         tryAutoSubmit(userId);
 
+        console.log(
+          `[LOG-MEDIA] Calling logMediaPlayback: ${mediaFileName}, points=${result.points}, type=${mediaType}`,
+        );
+        void logMediaPlayback({
+          pageName: `/course/${course.id}/view`,
+          activityName: activity.title,
+          digest: mediaFileDigest || activity.digest,
+          courseId: course.id,
+          courseShortname: course.shortname,
+          courseTitle: course.title,
+          points: result.points,
+          mediaFilename: mediaFileName,
+          details: {
+            mediaType,
+            timeTaken,
+          },
+        });
+
         const mediaLabel = mediaType === "video" ? "Video" : "Audio";
         return {
           points: result.points,
@@ -272,6 +344,19 @@ export function useGamification() {
 
         // Auto-submit if online
         tryAutoSubmit(userId);
+
+        void logCourseDownload({
+          pageName: "/course",
+          activityName: course.shortname,
+          digest: null,
+          courseId: course.id,
+          courseShortname: course.shortname,
+          courseTitle: course.title ?? course.shortname,
+          points: result.points,
+          details: {
+            version: course.version || 1,
+          },
+        });
 
         return {
           points: result.points,
@@ -321,6 +406,19 @@ export function useGamification() {
         // Auto-submit if online
         tryAutoSubmit(userId);
 
+        void logResourceDownload({
+          pageName: `/course/${course.id}/view`,
+          activityName: resourceName,
+          digest: activity.digest,
+          courseId: course.id,
+          courseShortname: course.shortname,
+          courseTitle: course.shortname,
+          points: result.points,
+          details: {
+            resourceName,
+          },
+        });
+
         return {
           points: result.points,
           message:
@@ -365,6 +463,20 @@ export function useGamification() {
 
         // Auto-submit if online
         tryAutoSubmit(userId);
+
+        void logActivityComplete({
+          pageName: `/course/${course.id}/view`,
+          activityName: activity.title,
+          digest: activity.digest,
+          courseId: course.id,
+          courseShortname: course.shortname,
+          courseTitle: course.title,
+          points: result.points,
+          details: {
+            timeTaken,
+            type: "feedback",
+          },
+        });
 
         return {
           points: result.points,

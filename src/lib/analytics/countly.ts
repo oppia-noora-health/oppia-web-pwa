@@ -8,12 +8,10 @@ export class CountlyAnalytics implements AnalyticsEngine {
   private isInitialized = false;
   private readonly appKey: string;
   private readonly serverUrl: string;
-  private readonly appId: string;
 
   constructor() {
     this.appKey = process.env.NEXT_PUBLIC_COUNTLY_APP_KEY || "";
     this.serverUrl = process.env.NEXT_PUBLIC_COUNTLY_SERVER_URL || "";
-    this.appId = process.env.NEXT_PUBLIC_COUNTLY_APP_ID || "";
 
     if (typeof window !== "undefined") {
       this.initialize();
@@ -35,20 +33,17 @@ export class CountlyAnalytics implements AnalyticsEngine {
         // Enable features
         debug: process.env.NODE_ENV === "development",
 
-        // Automatic tracking
-        track_pageview: false, // We'll track manually for better control
-        track_sessions: true,
-        track_scrolls: true,
-        track_clicks: true,
-        track_links: true,
-
         // Use cookies for device ID
         use_session_cookie: true,
         session_cookie_timeout: 30, // minutes
-
-        // Disable error tracking (as per user request)
-        track_errors: false,
       });
+
+      Countly.track_sessions();
+      Countly.track_errors();
+      Countly.track_clicks();
+      Countly.track_links();
+      Countly.track_scrolls();
+      Countly.track_forms();
 
       this.isInitialized = true;
     } catch (error) {}

@@ -45,6 +45,7 @@ import {
   executeWithRetry,
   raceDetector,
 } from "@/utils/persistenceErrorHandler";
+import { useAccessLog } from "@/hooks/useAccessLog";
 
 import {
   hasAttemptedPreTest,
@@ -110,6 +111,7 @@ export default function CourseViewerPage() {
   const sourceFrom = searchParams?.get("from");
   const pretestDoneParam = searchParams?.get("pretestDone"); // "1" = done, "0" = not done, null = unknown
   const { t } = useTranslation();
+  const { logBadgeAwarded, logCourseCompleted } = useAccessLog();
 
   // Determine if we should use streaming mode
   const [useStreaming, setUseStreaming] = useState(false);
@@ -473,6 +475,10 @@ export default function CourseViewerPage() {
   // Which media filenames have been tracked (points awarded) at 100% completion.
   // Prevents double-tracking on Next click for media already tracked immediately.
   const mediaTrackedSetRef = useRef<Set<string>>(new Set());
+
+  // Which media filenames have been LOGGED at 80%+ threshold (separate from tracking).
+  // Prevents duplicate logging when video continues playing past 80%.
+  const mediaLoggedSetRef = useRef<Set<string>>(new Set());
 
   // PDF open tracking — set to true when user clicks a PDF link on current page
   const pdfOpenedRef = useRef<boolean>(false);
@@ -1208,6 +1214,7 @@ export default function CourseViewerPage() {
     pendingMediaMapRef.current.clear();
     mediaPlayedSetRef.current.clear();
     mediaTrackedSetRef.current.clear();
+    mediaLoggedSetRef.current.clear();
   }, [currentPageIndex]);
 
   // Pre-populate mediaPlayedSetRef & mediaTrackedSetRef from:
@@ -1405,6 +1412,19 @@ export default function CourseViewerPage() {
           setAwardedBadge(badgeAwarded);
           setShowBadgeToast(true);
         }, 3500);
+        void logBadgeAwarded({
+          pageName: `/course/${courseId}/view`,
+          activityName: currentSection?.title || "Activity",
+          digest: currentSection?.digest || null,
+          courseId,
+          courseShortname: courseData?.shortname || streamingShortname || null,
+          courseTitle: courseData?.title || null,
+          details: {
+            badgeType: badgeAwarded,
+            completedCount: newCompletedCount,
+            totalActivities,
+          },
+        });
       }
     },
     [
@@ -1432,11 +1452,21 @@ export default function CourseViewerPage() {
       duration: number,
     ) => {
       const decodedFilename = decodeURIComponent(filename);
+    console.warn(
+      `[HANDLE-FULL-MEDIA] START: type=${mediaType}, filename=${decodedFilename}`,
+    );
 
-      // Guard: only process once PER MEDIA FILE (not globally)
-      if (mediaTrackedSetRef.current.has(decodedFilename)) return;
+    // Guard: only process once PER MEDIA FILE (not globally)
+    const inSet = mediaTrackedSetRef.current.has(decodedFilename);
+    console.warn(
+      `[HANDLE-FULL-MEDIA] Guard check: file in set=${inSet}, set size=${mediaTrackedSetRef.current.size}`,
+    );
+    if (inSet) {
+      console.warn(`[HANDLE-FULL-MEDIA] EARLY RETURN - file already tracked`);
+      return;
+    }
 
-      if (
+    if (
         !courseData ||
         !courseData.sections ||
         courseData.sections.length === 0
@@ -1493,6 +1523,7 @@ export default function CourseViewerPage() {
       }
 
       // Mark this file as tracked so handleNextPage doesn't re-track it
+      console.log(`[HANDLE-MEDIA-END] Adding to mediaTrackedSetRef: ${decodedFilename}`);
       mediaTrackedSetRef.current.add(decodedFilename);
       // Remove only THIS file from pending map
       pendingMediaMapRef.current.delete(decodedFilename);
@@ -2213,6 +2244,20 @@ export default function CourseViewerPage() {
               setAwardedBadge(badgeAwarded);
               setShowBadgeToast(true);
               // Do not show points toast so badge is shown first
+              void logCourseCompleted({
+                pageName: `/course/${courseId}/view`,
+                activityName: currentSection?.title || "Activity",
+                digest: currentSection?.digest || null,
+                courseId,
+                courseShortname:
+                  courseData?.shortname || streamingShortname || null,
+                courseTitle: courseData?.title || null,
+                details: {
+                  badgeType: badgeAwarded,
+                  completedCount: newCompletedCount,
+                  totalActivities,
+                },
+              });
             } else {
               // Unordered completion: show points toast, then badge toast after delay
               if (result.points > 0) {
@@ -2226,6 +2271,20 @@ export default function CourseViewerPage() {
                 setAwardedBadge(badgeAwarded);
                 setShowBadgeToast(true);
               }, 3500);
+              void logBadgeAwarded({
+                pageName: `/course/${courseId}/view`,
+                activityName: activityTitle,
+                digest: currentSection?.digest || null,
+                courseId,
+                courseShortname:
+                  courseData?.shortname || streamingShortname || null,
+                courseTitle: courseData?.title || null,
+                details: {
+                  badgeType: badgeAwarded,
+                  completedCount: newCompletedCount,
+                  totalActivities,
+                },
+              });
             }
           } else {
             if (result.points > 0) {
@@ -2682,6 +2741,19 @@ export default function CourseViewerPage() {
             setAwardedBadge(badgeAwarded);
             setShowBadgeToast(true);
           }, 3500);
+          void logBadgeAwarded({
+            pageName: `/course/${courseId}/view`,
+            activityName: currentSection.sectionTitle || "Quiz",
+            digest: activity.digest,
+            courseId,
+            courseShortname: courseData?.shortname || null,
+            courseTitle: courseData?.title || null,
+            details: {
+              badgeType: badgeAwarded,
+              completedCount: newCompletedCount,
+              totalActivities,
+            },
+          });
         }
       }
     } catch (error) {
@@ -2772,6 +2844,19 @@ export default function CourseViewerPage() {
             setAwardedBadge(badgeAwarded);
             setShowBadgeToast(true);
           }, 3500);
+          void logBadgeAwarded({
+            pageName: `/course/${courseId}/view`,
+            activityName: currentSection.sectionTitle || "Feedback",
+            digest: currentSection.digest || null,
+            courseId,
+            courseShortname: courseData?.shortname || null,
+            courseTitle: courseData?.title || null,
+            details: {
+              badgeType: badgeAwarded,
+              completedCount: newCompletedCount,
+              totalActivities,
+            },
+          });
         }
       }
     } catch (error) {}
@@ -3201,6 +3286,28 @@ export default function CourseViewerPage() {
                     duration > 0 ? (timeWatched / duration) * 100 : 0;
                   if (videoPct >= 80) {
                     mediaPlayedSetRef.current.add(decodedFilename);
+                    console.log(
+                      `[MEDIA-80%-THRESHOLD] Video reached 80%: ${decodedFilename} (${videoPct.toFixed(1)}%)`,
+                    );
+                    console.log(`[DEBUG] mediaLoggedSetRef contents:`, Array.from(mediaLoggedSetRef.current));
+                    console.log(`[DEBUG] Checking if '${decodedFilename}' in logged set: ${mediaLoggedSetRef.current.has(decodedFilename)}`);
+
+                    // Log once as soon as threshold is reached.
+                    // This avoids losing media_playback events when users don't navigate immediately.
+                    if (!mediaLoggedSetRef.current.has(decodedFilename)) {
+                      mediaLoggedSetRef.current.add(decodedFilename);
+                      console.log(
+                        `[MEDIA-FULL-COMPLETION] Triggering handleMediaFullCompletion for video: ${decodedFilename}`,
+                      );
+                      void handleMediaFullCompletion(
+                        "video",
+                        filename,
+                        timeWatched,
+                        duration,
+                      );
+                    } else {
+                      console.log(`[MEDIA-SKIP] File already logged, skipping: ${decodedFilename}`);
+                    }
                   }
                 }}
                 onAudioTracking={(filename, timeWatched, duration) => {
@@ -3217,6 +3324,28 @@ export default function CourseViewerPage() {
                   const pct = duration > 0 ? (timeWatched / duration) * 100 : 0;
                   if (pct >= 80) {
                     mediaPlayedSetRef.current.add(decodedFilename);
+                    console.log(
+                      `[MEDIA-80%-THRESHOLD] Audio reached 80%: ${decodedFilename} (${pct.toFixed(1)}%)`,
+                    );
+                    const setSize = mediaLoggedSetRef.current.size;
+                    const isInSet = mediaLoggedSetRef.current.has(decodedFilename);
+                    console.log(`[DEBUG-SET] Logged set size=${setSize}, file in logged set=${isInSet}`);
+
+                    // Log once as soon as threshold is reached.
+                    if (!isInSet) {
+                      mediaLoggedSetRef.current.add(decodedFilename);
+                      console.log(
+                        `[MEDIA-FULL-COMPLETION] Triggering handleMediaFullCompletion for audio: ${decodedFilename}`,
+                      );
+                      void handleMediaFullCompletion(
+                        "audio",
+                        filename,
+                        timeWatched,
+                        duration,
+                      );
+                    } else {
+                      console.log(`[MEDIA-SKIP] File already logged: ${decodedFilename}`);
+                    }
                   }
                 }}
                 onVideoComplete={(filename, timeWatched, duration) => {
