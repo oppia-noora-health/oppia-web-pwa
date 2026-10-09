@@ -1,5 +1,17 @@
 "use client";
 
+import { useEffect } from "react";
+
+function isChunkLoadError(error: Error) {
+  return (
+    error.name === "ChunkLoadError" ||
+    error.message?.includes("Loading chunk") ||
+    error.message?.includes("Failed to fetch dynamically imported module") ||
+    error.message?.includes("error loading dynamically imported module") ||
+    error.message?.includes("Importing a module script failed")
+  );
+}
+
 export default function GlobalError({
   error,
   reset,
@@ -7,6 +19,21 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  useEffect(() => {
+    if (!isChunkLoadError(error)) return;
+    // Only auto-reload when online — reloading offline won't help and would loop
+    if (!navigator.onLine) return;
+
+    // Limit auto-reloads to 2 attempts per session to avoid infinite loops
+    const key = "global_error_reload_count";
+    const attempts = parseInt(sessionStorage.getItem(key) || "0", 10);
+    if (attempts >= 2) return;
+
+    sessionStorage.setItem(key, String(attempts + 1));
+    const t = setTimeout(() => window.location.reload(), 1500);
+    return () => clearTimeout(t);
+  }, [error]);
+
   return (
     <html lang="en">
       <body className="min-h-screen flex flex-col items-center justify-center bg-white p-4">
@@ -22,8 +49,14 @@ export default function GlobalError({
         </a>
         <button
           type="button"
+          onClick={() => window.location.reload()}
+          className="mt-4 text-sm text-[#3ABFF8] hover:underline">
+          Reload page
+        </button>
+        <button
+          type="button"
           onClick={reset}
-          className="mt-4 text-sm text-primary hover:underline">
+          className="mt-2 text-xs text-gray-400 hover:underline">
           Try again
         </button>
       </body>

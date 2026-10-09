@@ -17,11 +17,6 @@ export interface LoginResponse {
   message: string;
 }
 
-export interface ChannelResponse {
-  sms: boolean;
-  whatsapp: boolean;
-}
-
 export interface ExternalProfileRequest {
   phone_number: string;
   country: string;

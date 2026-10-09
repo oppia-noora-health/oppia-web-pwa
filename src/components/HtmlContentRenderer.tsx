@@ -1107,11 +1107,13 @@ export default function HtmlContentRenderer({
           link.addEventListener("click", (e) => {
             e.preventDefault();
             e.stopPropagation();
+            // Re-check streaming media at click time — it may have loaded after initial setup
+            const liveUrl = potentialUrl || getMediaUrlFromStreamingData(videoFilename);
             setUnavailableMediaModal({
               isOpen: true,
               mediaName: videoFilename,
               mediaType: "video",
-              downloadUrl: potentialUrl || undefined,
+              downloadUrl: liveUrl || undefined,
               retrying: false,
             });
           });

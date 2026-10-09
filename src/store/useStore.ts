@@ -26,6 +26,7 @@ interface User {
   cohorts?: number[];
   lastLogin?: string;
   resourceUri?: string;
+  userType?: string;
 }
 
 // Course cache for temporary storage (online viewing)
@@ -169,6 +170,7 @@ export const useAuthStore = create<AuthState>()(
           cohorts: loginResponse.cohorts,
           lastLogin: loginResponse.last_login,
           resourceUri: loginResponse.resource_uri,
+          userType: loginResponse.user_type,
         };
 
         // Store full user data in localStorage

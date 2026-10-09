@@ -6,6 +6,7 @@ import {
 import type { Media, MediaDownloadProgress } from "@/types/media";
 import { useLanguageStore } from "@/store/useLanguageStore";
 import { translations } from "@/locales";
+import { useNetworkStatus } from "@/hooks/useNetworkStatus";
 
 export type MediaGateStatus =
   | "idle"
@@ -31,9 +32,7 @@ export function useMediaDownload(
     translations[language as keyof typeof translations] || translations.en;
   const mediaText = locale.media || translations.en.media;
 
-  const [isOnline, setIsOnline] = useState(
-    typeof navigator !== "undefined" ? navigator.onLine : true,
-  );
+  const { isOnline } = useNetworkStatus();
   const [missingMedia, setMissingMedia] = useState<Media[]>([]);
   const [mediaGateStatus, setMediaGateStatus] =
     useState<MediaGateStatus>("idle");
@@ -78,31 +77,32 @@ export function useMediaDownload(
     checkMissingMedia();
   }, [checkMissingMedia]);
 
+  // React to verified connectivity changes (ping-checked, not raw
+  // navigator.onLine/online/offline events, which can get stuck stale on
+  // some Android/PWA setups and never fire again after a network switch).
+  const wasOnlineRef = useRef(isOnline);
+
   useEffect(() => {
-    const handleOnline = () => {
-      setIsOnline(true);
+    const wasOnline = wasOnlineRef.current;
+    wasOnlineRef.current = isOnline;
+
+    if (isOnline && !wasOnline) {
       if (courseId && isDownloadedCourseSource && !downloadingMedia) {
         void checkMissingMedia();
       }
-    };
+      return;
+    }
 
-    const handleOffline = () => {
-      setIsOnline(false);
+    if (!isOnline && wasOnline) {
       if (controllerRef.current) {
         controllerRef.current.abort();
       }
       setDownloadingMedia(false);
       setMediaGateError(mediaText.gateOfflineReconnectError);
       setMediaGateStatus("blocked-missing");
-    };
-
-    window.addEventListener("online", handleOnline);
-    window.addEventListener("offline", handleOffline);
-    return () => {
-      window.removeEventListener("online", handleOnline);
-      window.removeEventListener("offline", handleOffline);
-    };
+    }
   }, [
+    isOnline,
     checkMissingMedia,
     courseId,
     downloadingMedia,

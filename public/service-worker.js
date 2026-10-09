@@ -242,6 +242,16 @@ async function staleWhileRevalidate(request, cacheName) {
         } catch (e) {
           // console.warn("[SW v7] Failed to cache response:", e);
         }
+      } else if (response && response.status === 404) {
+        // Stale deployment: chunk hash changed, old chunk is gone from server.
+        // Notify clients to reload so they pick up fresh HTML + new chunks.
+        const url = new URL(request.url);
+        if (url.pathname.startsWith("/_next/static/")) {
+          const clients = await self.clients.matchAll({ type: "window" });
+          clients.forEach((client) =>
+            client.postMessage({ type: "RELOAD_REQUIRED", reason: "stale_chunk" }),
+          );
+        }
       }
       return response;
     })
@@ -349,19 +359,14 @@ async function cacheFirst(request, cacheName) {
         }
       }
 
-      // If still not found, try to find the page's main layout chunk as fallback
-      // Instead of returning empty JS (which silently breaks the app), return a
-      // module that triggers Next.js error boundary so the user sees a useful message
+      // Chunk not cached offline — return 503 so Next.js throws a ChunkLoadError
+      // that the global error boundary can detect, rather than silently breaking.
       console.warn("[SW v8.1] Chunk not in any cache:", request.url);
-      return new Response(
-        '// Offline: chunk unavailable\nconsole.warn("[Offline] JS chunk not cached:", ' +
-          JSON.stringify(request.url) +
-          ");",
-        {
-          status: 200,
-          headers: { "Content-Type": "application/javascript" },
-        },
-      );
+      return new Response("", {
+        status: 503,
+        statusText: "Offline - chunk not cached",
+        headers: { "Content-Type": "application/javascript" },
+      });
     }
 
     // Try to return offline page for navigation requests

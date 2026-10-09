@@ -106,6 +106,7 @@ export interface LoginResponse {
   resource_uri: string;
   scoring: boolean;
   username: string;
+  user_type?: string;
 }
 
 /**
@@ -142,6 +143,10 @@ export interface User {
 export interface ChannelResponse {
   sms: boolean;
   whatsapp: boolean;
+}
+
+interface ChannelApiResponse {
+  channels: { id: string; name: string }[];
 }
 
 export interface ExternalProfileResponse {
@@ -212,7 +217,7 @@ export const sendOTP = async (
     if (error.response?.status === 404) {
       throw new Error("Phone number not found");
     }
-    throw new Error(error.response?.data?.message || "Failed to send OTP");
+    throw new Error(error.response?.data?.error || "Failed to send OTP");
   }
 };
 
@@ -223,11 +228,21 @@ export const fetchChannels = async (
   phoneNumber: string,
 ): Promise<ChannelResponse> => {
   try {
-    const response = await axios.post<ChannelResponse>(API_PATHS.CHANNEL(), {
-      phone_number: phoneNumber,
-    });
+    const response = await axios.post<ChannelApiResponse>(
+      API_PATHS.CHANNEL(),
+      {
+        phone_number: phoneNumber,
+      },
+    );
 
-    return response.data;
+    const channelIds = new Set(
+      (response.data.channels ?? []).map((c) => c.id),
+    );
+
+    return {
+      sms: channelIds.has("sms"),
+      whatsapp: channelIds.has("whatsapp"),
+    };
   } catch (error: any) {
     logAuthApiFailure("fetchChannels", error, {
       endpoint: API_PATHS.CHANNEL(),

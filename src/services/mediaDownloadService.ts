@@ -10,6 +10,7 @@ import {
   isMediaInCache,
   deleteCourseMediaFromCache,
 } from "@/utils/mediaCacheStorage";
+import { accessLogService } from "@/services/accessLogService";
 import type {
   Media,
   MediaMetadata,
@@ -166,6 +167,24 @@ export async function getMissingMedia(courseId: string): Promise<Media[]> {
 }
 
 /**
+ * Derive the same-origin Next.js proxy path for a media download URL, so the
+ * browser fetches it same-origin (see next.config.js `/media/:path*` rewrite)
+ * instead of depending on the media host returning correct CORS headers.
+ * Returns null if the URL doesn't look like a proxyable `/media/...` path.
+ */
+function toProxyMediaUrl(downloadUrl: string): string | null {
+  try {
+    const parsed = new URL(downloadUrl);
+    if (parsed.pathname.startsWith("/media/")) {
+      return `${parsed.pathname}${parsed.search}`;
+    }
+  } catch {
+    // Not a valid absolute URL, nothing to proxy.
+  }
+  return null;
+}
+
+/**
  * Download a single media file
  */
 export async function downloadMedia(
@@ -174,16 +193,17 @@ export async function downloadMedia(
   onProgress?: (progress: MediaDownloadProgress) => void,
   signal?: AbortSignal,
 ): Promise<boolean> {
-  try {
-    const directUrl = media.downloadUrl; // Use original staging URL directly
+  const directUrl = media.downloadUrl;
+  const proxyUrl = toProxyMediaUrl(directUrl);
+  let lastError: unknown = null;
 
+  try {
     onProgress?.({
       filename: media.filename,
       progress: 0,
       status: "downloading",
     });
 
-    // Download directly from staging with CORS (no authentication needed)
     const fetchOpts: RequestInit = {
       mode: "cors",
       credentials: "omit",
@@ -191,10 +211,30 @@ export async function downloadMedia(
     if (signal) {
       (fetchOpts as any).signal = signal;
     }
-    const response = await fetch(directUrl, fetchOpts);
 
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    // Try the same-origin proxy first so cross-origin CORS gaps on the media
+    // host can't block the download; fall back to the direct URL otherwise.
+    let response: Response | null = null;
+    if (proxyUrl) {
+      try {
+        response = await fetch(proxyUrl, { signal: fetchOpts.signal });
+        if (!response.ok) {
+          lastError = new Error(
+            `Proxy HTTP ${response.status}: ${response.statusText}`,
+          );
+          response = null;
+        }
+      } catch (proxyError) {
+        lastError = proxyError;
+        response = null;
+      }
+    }
+
+    if (!response) {
+      response = await fetch(directUrl, fetchOpts);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
     }
 
     const contentLength = parseInt(
@@ -256,11 +296,31 @@ export async function downloadMedia(
 
     return true;
   } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+
     onProgress?.({
       filename: media.filename,
       progress: 0,
       status: "failed",
-      error: error instanceof Error ? error.message : "Unknown error",
+      error: errorMessage,
+    });
+
+    // Log the real failure reason (CORS block, 404, quota exceeded, etc.)
+    // instead of letting it disappear - the UI always shows a generic
+    // "check your connection" message regardless of actual cause.
+    void accessLogService.log({
+      event: "api_failure",
+      activityType: "media_download",
+      mediaFilename: media.filename,
+      courseId,
+      errorMessage,
+      details: {
+        directUrl,
+        proxyUrl,
+        proxyError:
+          lastError instanceof Error ? lastError.message : lastError,
+      },
     });
 
     return false;

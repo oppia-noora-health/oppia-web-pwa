@@ -121,6 +121,7 @@ export async function processQuizAttempt(
   quizId?: number,
   responses: QuizResponseData[] = [],
   passThreshold: number = 80, // From quiz props.passthreshold; default 80%
+  isPretest: boolean = false, // Pre-tests are always marked completed regardless of score
 ): Promise<{ tracker: Tracker; quizAttempt: QuizAttempt }> {
   const now = new Date().toISOString();
   const instanceId = uuidv4();
@@ -128,7 +129,9 @@ export async function processQuizAttempt(
   // Calculate score percentage: (correct answers / max score) × 100%
   const scorePercentage =
     maxScore > 0 ? Math.round((score / maxScore) * 100) : 0;
-  const passed = scorePercentage >= passThreshold; // Use quiz's passthreshold
+  // Pre-tests are diagnostic: always send completed = true to the tracker,
+  // even if the score is below the pass threshold.
+  const passed = isPretest ? true : scorePercentage >= passThreshold;
 
   let pointsEarned = 0;
   let eventType = "";

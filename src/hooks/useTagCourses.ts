@@ -42,30 +42,33 @@ export const useTagCourses = (tagId: string) => {
 
         let coursesFromTag: Course[] = tagResponse.courses || [];
 
-        // Filter out restricted courses unless the current user belongs to a cohort
-        // listed on the course (in which case show it).
-        if (
-          user?.cohorts &&
-          Array.isArray(user.cohorts) &&
-          user.cohorts.length > 0
-        ) {
-          const userCohorts = user.cohorts.map((n) => Number(n));
-          coursesFromTag = coursesFromTag.filter((c) => {
-            if (!c.restricted) return true;
-            if (
-              !c.cohorts ||
-              !Array.isArray(c.cohorts) ||
-              c.cohorts.length === 0
-            )
-              return false;
-            // Show restricted course only if any cohort matches user's cohorts
-            return c.cohorts.some((cohort) =>
-              userCohorts.includes(Number(cohort)),
-            );
-          });
-        } else {
-          // No user cohorts -> hide restricted courses
-          coursesFromTag = coursesFromTag.filter((c) => !c.restricted);
+        // Superusers see all courses regardless of restriction or cohort membership.
+        if (user?.userType !== "superuser") {
+          // Filter out restricted courses unless the current user belongs to a cohort
+          // listed on the course (in which case show it).
+          if (
+            user?.cohorts &&
+            Array.isArray(user.cohorts) &&
+            user.cohorts.length > 0
+          ) {
+            const userCohorts = user.cohorts.map((n) => Number(n));
+            coursesFromTag = coursesFromTag.filter((c) => {
+              if (!c.restricted) return true;
+              if (
+                !c.cohorts ||
+                !Array.isArray(c.cohorts) ||
+                c.cohorts.length === 0
+              )
+                return false;
+              // Show restricted course only if any cohort matches user's cohorts
+              return c.cohorts.some((cohort) =>
+                userCohorts.includes(Number(cohort)),
+              );
+            });
+          } else {
+            // No user cohorts -> hide restricted courses
+            coursesFromTag = coursesFromTag.filter((c) => !c.restricted);
+          }
         }
 
         if (coursesFromTag.length === 0) {

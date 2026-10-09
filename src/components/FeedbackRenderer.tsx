@@ -55,7 +55,7 @@ interface FeedbackRendererProps {
   feedbackData: FeedbackData;
   questionHtml: string;
   onComplete?: () => void;
-  onFeedbackSubmit?: (feedbackData: any) => void;
+  onFeedbackSubmit?: (feedbackData: any) => Promise<void>;
 }
 
 export default function FeedbackRenderer({
@@ -71,6 +71,7 @@ export default function FeedbackRenderer({
   const [answers, setAnswers] = useState<Map<number, any>>(new Map());
   const [alreadySubmitted, setAlreadySubmitted] = useState(false);
   const [validationMessage, setValidationMessage] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const totalQuestions = feedbackData.questions?.length || 0;
 
@@ -117,7 +118,7 @@ export default function FeedbackRenderer({
     setAnswers(new Map(answers.set(questionIndex, answer)));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // Check if all non-essay questions have been answered
     const allAnswered = Array.from({ length: totalQuestions }).every(
       (_, index) => {
@@ -154,14 +155,20 @@ export default function FeedbackRenderer({
       feedbackAnswers[question.question.id] = answer;
     });
 
-    // Notify parent component
+    // Wait for server confirmation before navigating so the completion map
+    // is updated before the sequencing lock check runs.
     if (onFeedbackSubmit) {
-      onFeedbackSubmit({
-        feedbackId: feedbackData.id,
-        digest: feedbackData.props?.digest,
-        answers: feedbackAnswers,
-        totalQuestions,
-      });
+      setSubmitting(true);
+      try {
+        await onFeedbackSubmit({
+          feedbackId: feedbackData.id,
+          digest: feedbackData.props?.digest,
+          answers: feedbackAnswers,
+          totalQuestions,
+        });
+      } finally {
+        setSubmitting(false);
+      }
     }
 
     if (onComplete) {
@@ -282,8 +289,9 @@ export default function FeedbackRenderer({
       <div className="flex items-center justify-center gap-4 mt-8 pb-32">
         <Button
           onClick={handleSubmit}
-          className="bg-cyan-500 hover:bg-cyan-600 text-white px-8 py-2">
-          {t("common.submit")}
+          disabled={submitting}
+          className="bg-cyan-500 hover:bg-cyan-600 text-white px-8 py-2 disabled:opacity-60 disabled:cursor-not-allowed">
+          {submitting ? t("common.submitting") || "Submitting..." : t("common.submit")}
         </Button>
       </div>
     </div>

@@ -219,8 +219,9 @@ export const useLogin = () => {
       setIsLoading(true);
       setError("");
 
+      const fullNumber = getFullPhoneNumber();
+
       try {
-        const fullNumber = getFullPhoneNumber();
         await sendOTP(
           fullNumber,
           channel,
@@ -231,27 +232,37 @@ export const useLogin = () => {
         setOtpSentMessage(
           `We have sent a one-time password (OTP) to\n${fullNumber} for verification`,
         );
-        setIsLoading(false);
-
-        // Store phone number and context in session storage for OTP page
-        if (typeof window !== "undefined") {
-          sessionStorage.setItem("otp_phone_number", fullNumber);
-          sessionStorage.setItem("otp_country", selectedCountry.name);
-          sessionStorage.setItem("otp_language", selectedLanguage);
-        }
-
-        // Navigate to verify-otp page
-        router.push("/verify-otp");
       } catch (err: any) {
-        if (err.message.includes("not found")) {
+        const message = err.message || "";
+        if (
+          message.includes("not found") ||
+          message.includes("does not exist")
+        ) {
           setError(
             "Phone number not found. Please contact your nearest Noora Academy team member for assistance.",
           );
-        } else {
-          setError(err.message || "Failed to send OTP");
+          setIsLoading(false);
+          return;
         }
-        setIsLoading(false);
+
+        // Sending the OTP failed for a reason other than the user not
+        // existing (e.g. SMS delivery issue) - still move the user to the
+        // OTP screen so they can retry via the resend options once the
+        // timer runs out, e.g. resend via WhatsApp.
+        setError(message || "Failed to send OTP");
       }
+
+      setIsLoading(false);
+
+      // Store phone number and context in session storage for OTP page
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("otp_phone_number", fullNumber);
+        sessionStorage.setItem("otp_country", selectedCountry.name);
+        sessionStorage.setItem("otp_language", selectedLanguage);
+      }
+
+      // Navigate to verify-otp page
+      router.push("/verify-otp");
     },
     [getFullPhoneNumber, selectedCountry.name, selectedLanguage, router],
   );
@@ -397,12 +408,13 @@ export const useLogin = () => {
 
         setIsLoading(false);
       } catch (err: any) {
-        if (err.message.includes("not found")) {
+        const message = err.message || "";
+        if (message.includes("not found") || message.includes("does not exist")) {
           setError(
             "Phone number not found. Please contact your nearest Noora Academy team member for assistance.",
           );
         } else {
-          setError(err.message || "Failed to resend OTP");
+          setError(message || "Failed to resend OTP");
         }
         setIsLoading(false);
       }

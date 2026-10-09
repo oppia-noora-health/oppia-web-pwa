@@ -103,6 +103,9 @@ export function useGamification() {
 
       // console.log("\n🎯 [useGamification] Tracking quiz attempt");
 
+      // Pre-tests are diagnostic: always marked completed regardless of score
+      const isPretest = activity.isPretest ?? false;
+
       try {
         // Process quiz attempt - this saves tracker, quiz attempt, and updates points
         const result = await processQuizAttemptFn(
@@ -119,6 +122,7 @@ export function useGamification() {
             : quizData.quizId,
           quizData.responses || [],
           quizData.passThreshold ?? 80, // Use quiz's passthreshold; default 80%
+          isPretest,
         );
 
         // Refresh local points state

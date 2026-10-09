@@ -61,6 +61,13 @@ export function ServiceWorkerRegistration() {
           window.dispatchEvent(updateEvent);
         }
 
+        // Stale deployment: service worker detected a 404 on a JS chunk,
+        // meaning the server has newer chunks. Reload to pick up fresh assets.
+        if (event.data.type === "RELOAD_REQUIRED") {
+          window.location.reload();
+          return;
+        }
+
         // Gamification sync
         if (event.data.type === "BACKGROUND_SYNC") {
           // Trigger gamification sync

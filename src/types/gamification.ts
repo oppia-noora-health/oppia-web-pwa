@@ -379,4 +379,5 @@ export interface Activity {
   digest: string;
   title?: string;
   type?: string;
+  isPretest?: boolean;
 }

@@ -179,6 +179,7 @@ export default function DesktopSidebar() {
           updateUser({
             points: newPoints,
             badges: profile.badges || user.badges,
+            userType: profile.user_type,
           });
         }
 

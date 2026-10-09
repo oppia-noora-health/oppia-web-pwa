@@ -2644,10 +2644,22 @@ export default function CourseViewerPage() {
       gamificationEvents: (courseData as any).gamificationEvents,
     };
 
+    // Resolve the quiz's own title (meta activities like pre-test store it on
+    // quizData/content/section.title, not sectionTitle) to detect pre-tests.
+    const rawQuizTitle =
+      (currentSection as any)?.quizData?.title ||
+      (currentSection as any)?.content?.title ||
+      currentSection.title;
+    const quizTitle =
+      typeof rawQuizTitle === "object" && rawQuizTitle !== null
+        ? getLocalizedText(rawQuizTitle, "")
+        : String(rawQuizTitle || "");
+
     const activity = {
       digest: currentSection.digest || "",
       title: currentSection.sectionTitle || "Quiz",
       type: "quiz",
+      isPretest: isPreTestTitle(quizTitle),
       gamificationEvents: (currentSection as any).gamificationEvents,
     };
 
@@ -2802,19 +2814,20 @@ export default function CourseViewerPage() {
     try {
       const result = await trackFeedback(course, activity, timeTaken);
 
-      // Update completion map in Zustand store
-      // Only award points if not already completed today (daily limit)
+      // Always update completion map after server confirms so the sequencing
+      // lock check sees this feedback as completed before navigation.
       const currentCompletionMap = getCompletionData(courseId) || new Map();
-      if (
-        activity.digest &&
-        result.points > 0 &&
-        !wasCompletedToday(currentCompletionMap, activity.digest)
-      ) {
-        // Mark as completed for today
-        const updatedCompletionMap = markCompletedToday(
-          currentCompletionMap,
-          activity.digest,
-        );
+      if (activity.digest) {
+        let updatedCompletionMap: Map<string, boolean>;
+        if (result.points > 0 && !wasCompletedToday(currentCompletionMap, activity.digest)) {
+          // First submission today — mark with daily key for daily-limit tracking
+          updatedCompletionMap = markCompletedToday(currentCompletionMap, activity.digest);
+        } else {
+          // Re-submission or already done today — still mark lifetime completion
+          // so sequencing is never blocked on a new device / cleared storage
+          updatedCompletionMap = new Map(currentCompletionMap);
+          updatedCompletionMap.set(activity.digest, true);
+        }
         setCompletionData(courseId, updatedCompletionMap);
       }
 
@@ -2859,7 +2872,18 @@ export default function CourseViewerPage() {
           });
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      // Offline or server error — mark feedback complete locally so the user
+      // can still proceed. Tracker will sync to server when back online.
+      if (activity.digest) {
+        const currentCompletionMap = getCompletionData(courseId) || new Map();
+        if (!currentCompletionMap.get(activity.digest)) {
+          const updatedCompletionMap = new Map(currentCompletionMap);
+          updatedCompletionMap.set(activity.digest, true);
+          setCompletionData(courseId, updatedCompletionMap);
+        }
+      }
+    }
   };
 
   // Loading states: only full-screen load when we have no course data yet.

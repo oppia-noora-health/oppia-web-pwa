@@ -287,6 +287,7 @@ async function performSync(userId: number, username: string, apiKey: string) {
           updateUser({
             points: newApiPoints,
             badges: profile.badges || 0,
+            userType: profile.user_type,
           });
 
           // Only reset local points if API points have increased (sync reflected)
@@ -460,6 +461,7 @@ export async function triggerManualSync(
           updateUser({
             points: newApiPoints,
             badges: profile.badges || 0,
+            userType: profile.user_type,
           });
 
           // Only reset local points if API points have increased (sync reflected)
