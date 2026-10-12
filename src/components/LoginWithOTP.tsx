@@ -21,7 +21,6 @@ import Header from "./authentication/Header";
 export default function LoginWithOTP() {
   const {
     // State
-    showOTPInput,
     phoneNumber,
     otp,
     selectedCountry,

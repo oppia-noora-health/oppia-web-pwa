@@ -3,7 +3,11 @@
  * Handles CSV formatting, validation, sanitization, and timestamp generation
  */
 
-import type { AccessLogEntry, AccessLogInput } from "@/types/accessLog";
+import type {
+  AccessLogDetails,
+  AccessLogEntry,
+  AccessLogInput,
+} from "@/types/accessLog";
 import crypto from "crypto";
 
 /**

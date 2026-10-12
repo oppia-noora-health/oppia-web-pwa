@@ -1,6 +1,6 @@
 // Noora Academy Custom Service Worker
 
-const CACHE_VERSION = "v1";
+const CACHE_VERSION = "v2";
 const CACHE_NAMES = {
   static: `noora-static-${CACHE_VERSION}`,
   dynamic: `noora-dynamic-${CACHE_VERSION}`,
